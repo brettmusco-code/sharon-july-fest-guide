@@ -1,109 +1,119 @@
-import { useEffect, useRef } from "react";
-import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
+import { useEffect, useMemo, useRef } from "react";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import { events, categoryColors, type EventItem } from "@/data/events";
-
-// Create custom festival-style marker icons
-const createFestivalIcon = (emoji: string, color: string) => {
-  return L.divIcon({
-    className: "festival-marker",
-    html: `
-      <div style="
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 44px;
-        height: 44px;
-        background: ${color};
-        border: 3px solid white;
-        border-radius: 50%;
-        box-shadow: 0 3px 10px rgba(0,0,0,0.3);
-        font-size: 22px;
-        cursor: pointer;
-        transition: transform 0.2s;
-      ">${emoji}</div>
-    `,
-    iconSize: [44, 44],
-    iconAnchor: [22, 22],
-    popupAnchor: [0, -25],
-  });
-};
-
-interface FlyToEventProps {
-  event: EventItem | null;
-}
-
-const FlyToEvent = ({ event }: FlyToEventProps) => {
-  const map = useMap();
-  useEffect(() => {
-    if (event) {
-      map.flyTo([event.lat, event.lng], 17, { duration: 1 });
-    }
-  }, [event, map]);
-  return null;
-};
 
 interface FestivalMapProps {
   selectedEvent: EventItem | null;
 }
 
+const CENTER: L.LatLngExpression = [42.1108, -71.1770];
+const DEFAULT_ZOOM = 16;
+
+const createFestivalIcon = (emoji: string, color: string) =>
+  L.divIcon({
+    className: "festival-marker",
+    html: `
+      <div style="
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        width:44px;
+        height:44px;
+        background:${color};
+        border:3px solid white;
+        border-radius:9999px;
+        box-shadow:0 6px 18px rgba(0,0,0,0.28);
+        font-size:22px;
+      ">${emoji}</div>
+    `,
+    iconSize: [44, 44],
+    iconAnchor: [22, 22],
+    popupAnchor: [0, -24],
+  });
+
 const FestivalMap = ({ selectedEvent }: FestivalMapProps) => {
-  const CENTER: [number, number] = [42.1108, -71.1770];
+  const mapElementRef = useRef<HTMLDivElement | null>(null);
+  const mapRef = useRef<L.Map | null>(null);
+  const markerRefs = useRef<Record<string, L.Marker>>({});
+
+  const markerIcons = useMemo(
+    () =>
+      Object.fromEntries(
+        events.map((event) => [event.id, createFestivalIcon(event.icon, categoryColors[event.category])]),
+      ),
+    [],
+  );
+
+  useEffect(() => {
+    if (!mapElementRef.current || mapRef.current) return;
+
+    const map = L.map(mapElementRef.current, {
+      center: CENTER,
+      zoom: DEFAULT_ZOOM,
+      scrollWheelZoom: true,
+      zoomControl: true,
+    });
+
+    L.tileLayer("https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png", {
+      attribution:
+        '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/">CARTO</a>',
+    }).addTo(map);
+
+    events.forEach((event) => {
+      const marker = L.marker([event.lat, event.lng], {
+        icon: markerIcons[event.id],
+      }).addTo(map);
+
+      marker.bindPopup(
+        `
+          <div style="padding:4px;font-family:Cabin,sans-serif;max-width:240px;">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+              <span style="font-size:24px;line-height:1;">${event.icon}</span>
+              <h3 style="margin:0;font-family:'Abril Fatface',serif;font-size:18px;line-height:1.2;color:hsl(var(--foreground));">${event.title}</h3>
+            </div>
+            <p style="margin:0 0 8px 0;font-size:14px;line-height:1.4;color:hsl(var(--muted-foreground));">${event.description}</p>
+            <div style="font-size:12px;font-weight:700;color:${categoryColors[event.category]};">
+              🕐 ${event.time} &nbsp;•&nbsp; 📍 ${event.location}
+            </div>
+          </div>
+        `,
+        { className: "festival-popup", maxWidth: 280 },
+      );
+
+      markerRefs.current[event.id] = marker;
+    });
+
+    mapRef.current = map;
+
+    return () => {
+      Object.values(markerRefs.current).forEach((marker) => marker.remove());
+      markerRefs.current = {};
+      map.remove();
+      mapRef.current = null;
+    };
+  }, [markerIcons]);
+
+  useEffect(() => {
+    if (!selectedEvent || !mapRef.current) return;
+
+    const marker = markerRefs.current[selectedEvent.id];
+    mapRef.current.flyTo([selectedEvent.lat, selectedEvent.lng], 17, { duration: 1 });
+    marker?.openPopup();
+  }, [selectedEvent]);
 
   return (
-    <section id="map" className="py-16 px-4 bg-muted">
-      <div className="max-w-6xl mx-auto">
-        <div className="text-center mb-10">
-          <h2 className="font-heading text-4xl md:text-5xl text-foreground mb-3">
-            Festival Map
-          </h2>
-          <p className="font-body text-muted-foreground text-lg">
-            Tap a pin to see event details • Click events in the schedule to fly to their location
+    <section id="map" className="bg-muted px-4 py-16">
+      <div className="mx-auto max-w-6xl">
+        <div className="mb-10 text-center">
+          <h2 className="font-heading mb-3 text-4xl text-foreground md:text-5xl">Festival Map</h2>
+          <p className="font-body text-lg text-muted-foreground">
+            Tap a pin to see event details • Click events in the schedule to jump to their location
           </p>
         </div>
 
-        <div className="rounded-xl overflow-hidden shadow-xl border-4 border-card" style={{ height: "500px" }}>
-          <MapContainer
-            center={CENTER}
-            zoom={16}
-            scrollWheelZoom={true}
-            style={{ height: "100%", width: "100%" }}
-            className="z-0"
-          >
-            {/* Watercolor-style tile for festival feel */}
-            <TileLayer
-              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/">CARTO</a>'
-              url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
-            />
-
-            <FlyToEvent event={selectedEvent} />
-
-            {events.map((event) => (
-              <Marker
-                key={event.id}
-                position={[event.lat, event.lng]}
-                icon={createFestivalIcon(event.icon, categoryColors[event.category])}
-              >
-                <Popup className="festival-popup" maxWidth={280}>
-                  <div className="p-1">
-                    <div className="flex items-center gap-2 mb-2">
-                      <span className="text-2xl">{event.icon}</span>
-                      <h3 className="font-bold text-base" style={{ fontFamily: "Abril Fatface, serif" }}>
-                        {event.title}
-                      </h3>
-                    </div>
-                    <p className="text-sm text-gray-600 mb-2" style={{ fontFamily: "Cabin, sans-serif" }}>
-                      {event.description}
-                    </p>
-                    <div className="text-xs font-semibold" style={{ color: categoryColors[event.category], fontFamily: "Cabin, sans-serif" }}>
-                      🕐 {event.time} • 📍 {event.location}
-                    </div>
-                  </div>
-                </Popup>
-              </Marker>
-            ))}
-          </MapContainer>
+        <div className="overflow-hidden rounded-xl border-4 border-card shadow-xl">
+          <div ref={mapElementRef} className="h-[500px] w-full" aria-label="Festival event map" />
         </div>
       </div>
     </section>
