@@ -94,19 +94,3 @@
   animation: float 3s ease-in-out infinite;
 }
 
-/* Leaflet overrides for festival style */
-.leaflet-container {
-  font-family: var(--font-body) !important;
-  border-radius: var(--radius);
-}
-
-.festival-popup .leaflet-popup-content-wrapper {
-  background: hsl(var(--card));
-  border: 3px solid hsl(var(--primary));
-  border-radius: 12px;
-  font-family: var(--font-body);
-}
-
-.festival-popup .leaflet-popup-tip {
-  background: hsl(var(--primary));
-}
