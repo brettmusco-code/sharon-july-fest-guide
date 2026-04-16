@@ -8,12 +8,12 @@ interface FestivalMapProps {
 
 // Map event IDs to percentage positions on the illustrated map
 const pinPositions: Record<string, { x: number; y: number }> = {
-  "1": { x: 50, y: 72 },   // Opening Ceremony - beach area
-  "2": { x: 15, y: 20 },   // Parade - path at top left
-  "3": { x: 62, y: 48 },   // Kids Zone - playground area
-  "4": { x: 30, y: 38 },   // BBQ & Food Trucks - food truck cluster
-  "5": { x: 52, y: 22 },   // Live Music - main stage
-  "6": { x: 42, y: 88 },   // Fireworks - over the lake
+  "1": { x: 55, y: 68 },   // Opening Ceremony - beach / flag area
+  "2": { x: 25, y: 18 },   // Parade - Main Street downtown area upper-left
+  "3": { x: 82, y: 42 },   // Kids Zone - playground near school upper-right
+  "4": { x: 35, y: 48 },   // BBQ & Food Trucks - food truck cluster left of pavilion
+  "5": { x: 60, y: 42 },   // Live Music - main stage center field
+  "6": { x: 50, y: 90 },   // Fireworks - over Lake Massapoag
 };
 
 const FestivalMap = ({ selectedEvent }: FestivalMapProps) => {
