@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { events, categoryColors, categoryLabels, type EventItem } from "@/data/events";
 import { Clock, MapPin } from "lucide-react";
 
@@ -5,7 +6,13 @@ interface ScheduleSectionProps {
   onEventClick?: (event: EventItem) => void;
 }
 
+type Filter = "all" | EventItem["category"];
+
 const ScheduleSection = ({ onEventClick }: ScheduleSectionProps) => {
+  const [filter, setFilter] = useState<Filter>("all");
+
+  const filteredEvents = filter === "all" ? events : events.filter((e) => e.category === filter);
+
   return (
     <section id="schedule" className="py-16 px-4 bg-background">
       <div className="max-w-4xl mx-auto">
@@ -18,28 +25,43 @@ const ScheduleSection = ({ onEventClick }: ScheduleSectionProps) => {
           </p>
         </div>
 
-        {/* Category legend */}
-        <div className="flex flex-wrap justify-center gap-3 mb-10">
-          {(Object.keys(categoryLabels) as EventItem["category"][]).map((cat) => (
-            <span
-              key={cat}
-              className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-sm font-body font-medium border"
-              style={{
-                borderColor: categoryColors[cat],
-                color: categoryColors[cat],
-              }}
-            >
-              <span
-                className="w-2.5 h-2.5 rounded-full"
-                style={{ background: categoryColors[cat] }}
-              />
-              {categoryLabels[cat]}
-            </span>
-          ))}
+        {/* Category filter buttons */}
+        <div className="flex flex-wrap justify-center gap-2 mb-10">
+          <button
+            onClick={() => setFilter("all")}
+            className={`inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full text-sm font-body font-medium border-2 transition-all ${
+              filter === "all"
+                ? "bg-foreground text-background border-foreground"
+                : "border-border text-foreground hover:border-foreground"
+            }`}
+          >
+            All Events
+          </button>
+          {(Object.keys(categoryLabels) as EventItem["category"][]).map((cat) => {
+            const active = filter === cat;
+            return (
+              <button
+                key={cat}
+                onClick={() => setFilter(cat)}
+                className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full text-sm font-body font-medium border-2 transition-all"
+                style={{
+                  borderColor: categoryColors[cat],
+                  background: active ? categoryColors[cat] : "transparent",
+                  color: active ? "#fff" : categoryColors[cat],
+                }}
+              >
+                <span
+                  className="w-2.5 h-2.5 rounded-full"
+                  style={{ background: active ? "#fff" : categoryColors[cat] }}
+                />
+                {categoryLabels[cat]}
+              </button>
+            );
+          })}
         </div>
 
         <div className="space-y-4">
-          {events.map((event) => (
+          {filteredEvents.map((event) => (
             <button
               key={event.id}
               onClick={() => onEventClick?.(event)}
@@ -80,6 +102,11 @@ const ScheduleSection = ({ onEventClick }: ScheduleSectionProps) => {
               </div>
             </button>
           ))}
+          {filteredEvents.length === 0 && (
+            <p className="text-center font-body text-muted-foreground py-8">
+              No events in this category.
+            </p>
+          )}
         </div>
       </div>
     </section>
