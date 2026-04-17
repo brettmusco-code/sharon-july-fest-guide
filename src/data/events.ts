@@ -6,7 +6,7 @@ export interface EventItem {
   location: string;
   lat: number;
   lng: number;
-  category: "music" | "food" | "kids" | "fireworks" | "parade" | "general";
+  category: "food" | "entertainment" | "kids" | "general";
   icon: string;
 }
 
@@ -30,7 +30,7 @@ export const events: EventItem[] = [
     location: "Main Street",
     lat: 42.1123,
     lng: -71.1785,
-    category: "parade",
+    category: "entertainment",
     icon: "🎺",
   },
   {
@@ -63,7 +63,7 @@ export const events: EventItem[] = [
     location: "Main Stage",
     lat: 42.1105,
     lng: -71.1765,
-    category: "music",
+    category: "entertainment",
     icon: "🎵",
   },
   {
@@ -74,25 +74,21 @@ export const events: EventItem[] = [
     location: "Over Lake Massapoag",
     lat: 42.1095,
     lng: -71.1780,
-    category: "fireworks",
+    category: "entertainment",
     icon: "🎆",
   },
 ];
 
 export const categoryColors: Record<EventItem["category"], string> = {
-  music: "#6366f1",
   food: "#f59e0b",
+  entertainment: "#6366f1",
   kids: "#10b981",
-  fireworks: "#ef4444",
-  parade: "#3b82f6",
   general: "#8b5cf6",
 };
 
 export const categoryLabels: Record<EventItem["category"], string> = {
-  music: "Live Music",
-  food: "Food & Drinks",
-  kids: "Kids & Family",
-  fireworks: "Fireworks",
-  parade: "Parade",
+  food: "Food & Drink",
+  entertainment: "Entertainment",
+  kids: "Kids",
   general: "General",
 };
