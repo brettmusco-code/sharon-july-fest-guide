@@ -57,7 +57,7 @@ const FestivalMap = ({ selectedEvent }: FestivalMapProps) => {
             pinch={{ step: 5 }}
             doubleClick={{ mode: "toggle", step: 1.5 }}
             limitToBounds
-            onTransformed={(ref) => setScale(ref.state.scale)}
+            onTransform={(ref) => setScale(ref.state.scale)}
           >
             {({ zoomIn, zoomOut, resetTransform }) => (
               <>
