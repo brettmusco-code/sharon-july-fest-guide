@@ -1,8 +1,11 @@
-import { ReactNode } from "react";
+import { ReactNode, useState } from "react";
 import { Navigate, NavLink, useLocation } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
-import { Calendar, Map, Tag, LogOut, Home } from "lucide-react";
+import { Calendar, Map, Tag, LogOut, Home, ShieldCheck } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
+import { useQueryClient } from "@tanstack/react-query";
 
 const tabs = [
   { to: "/admin", label: "Events", icon: Calendar, end: true },
