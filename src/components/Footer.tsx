@@ -10,7 +10,7 @@ const Footer = () => {
           July 3, 2026 • Memorial Park Beach, Sharon, MA
         </p>
         <p className="font-body text-secondary-foreground/50 text-xs">
-          © 2026 Town of Sharon. Have a safe and happy Independence Day!
+          Have a safe and happy Independence Day!
         </p>
       </div>
     </footer>
