@@ -17,8 +17,8 @@ const FestivalMap = ({ selectedEvent }: FestivalMapProps) => {
   const mapUrl = settings?.map_image_url ?? festivalMapFallback;
 
   return (
-    <section id="map" className="bg-muted px-4 py-16">
-      <div className="mx-auto max-w-6xl">
+    <section id="map" className="bg-muted py-16">
+      <div className="mx-auto w-full px-4">
         <div className="mb-10 text-center">
           <h2 className="font-heading mb-3 text-4xl text-foreground md:text-5xl">Festival Map</h2>
           <p className="font-body text-lg text-muted-foreground">
