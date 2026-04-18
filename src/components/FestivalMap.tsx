@@ -177,18 +177,19 @@ const FestivalMap = ({ selectedEvent }: FestivalMapProps) => {
             )}
           </TransformWrapper>
 
-          <div className="absolute bottom-3 left-3 bg-card/90 backdrop-blur-sm rounded-lg p-2.5 shadow-md border z-30">
-            <div className="grid grid-cols-2 gap-x-4 gap-y-1">
-              {categories.map((cat) => (
-                <div key={cat.slug} className="flex items-center gap-1.5">
-                  <span
-                    className="w-2.5 h-2.5 rounded-full flex-shrink-0"
-                    style={{ background: cat.color }}
-                  />
-                  <span className="font-body text-[10px] text-foreground capitalize">{cat.name}</span>
-                </div>
-              ))}
-            </div>
+        </div>
+
+        <div className="mx-auto mt-4 max-w-3xl rounded-lg border bg-card p-3 shadow-sm">
+          <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2">
+            {categories.map((cat) => (
+              <div key={cat.slug} className="flex items-center gap-1.5">
+                <span
+                  className="h-3 w-3 flex-shrink-0 rounded-full"
+                  style={{ background: cat.color }}
+                />
+                <span className="font-body text-xs capitalize text-foreground">{cat.name}</span>
+              </div>
+            ))}
           </div>
         </div>
       </div>
