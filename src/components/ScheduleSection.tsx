@@ -1,17 +1,20 @@
 import { useState } from "react";
-import { events, categoryColors, categoryLabels, type EventItem } from "@/data/events";
+import { useEvents, useCategories, FestivalEvent } from "@/hooks/useFestivalData";
 import { Clock, MapPin } from "lucide-react";
 
 interface ScheduleSectionProps {
-  onEventClick?: (event: EventItem) => void;
+  onEventClick?: (event: FestivalEvent) => void;
 }
 
-type Filter = "all" | EventItem["category"];
-
 const ScheduleSection = ({ onEventClick }: ScheduleSectionProps) => {
-  const [filter, setFilter] = useState<Filter>("all");
+  const [filter, setFilter] = useState<string>("all");
+  const { data: events = [], isLoading } = useEvents();
+  const { data: categories = [] } = useCategories();
 
-  const filteredEvents = filter === "all" ? events : events.filter((e) => e.category === filter);
+  const colorFor = (slug: string) => categories.find((c) => c.slug === slug)?.color ?? "#6366f1";
+  const nameFor = (slug: string) => categories.find((c) => c.slug === slug)?.name ?? slug;
+
+  const filteredEvents = filter === "all" ? events : events.filter((e) => e.category_slug === filter);
 
   return (
     <section id="schedule" className="py-16 px-4 bg-background">
@@ -25,7 +28,6 @@ const ScheduleSection = ({ onEventClick }: ScheduleSectionProps) => {
           </p>
         </div>
 
-        {/* Category filter buttons */}
         <div className="flex flex-wrap justify-center gap-2 mb-10">
           <button
             onClick={() => setFilter("all")}
@@ -37,36 +39,39 @@ const ScheduleSection = ({ onEventClick }: ScheduleSectionProps) => {
           >
             All Events
           </button>
-          {(Object.keys(categoryLabels) as EventItem["category"][]).map((cat) => {
-            const active = filter === cat;
+          {categories.map((cat) => {
+            const active = filter === cat.slug;
             return (
               <button
-                key={cat}
-                onClick={() => setFilter(cat)}
+                key={cat.slug}
+                onClick={() => setFilter(cat.slug)}
                 className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full text-sm font-body font-medium border-2 transition-all"
                 style={{
-                  borderColor: categoryColors[cat],
-                  background: active ? categoryColors[cat] : "transparent",
-                  color: active ? "#fff" : categoryColors[cat],
+                  borderColor: cat.color,
+                  background: active ? cat.color : "transparent",
+                  color: active ? "#fff" : cat.color,
                 }}
               >
                 <span
                   className="w-2.5 h-2.5 rounded-full"
-                  style={{ background: active ? "#fff" : categoryColors[cat] }}
+                  style={{ background: active ? "#fff" : cat.color }}
                 />
-                {categoryLabels[cat]}
+                {cat.name}
               </button>
             );
           })}
         </div>
 
         <div className="space-y-4">
-          {filteredEvents.map((event) => (
+          {isLoading && (
+            <p className="text-center font-body text-muted-foreground py-8">Loading events…</p>
+          )}
+          {!isLoading && filteredEvents.map((event) => (
             <button
               key={event.id}
               onClick={() => onEventClick?.(event)}
               className="w-full text-left group bg-card rounded-lg border-2 p-5 hover:shadow-lg transition-all duration-200 cursor-pointer"
-              style={{ borderLeftColor: categoryColors[event.category], borderLeftWidth: "4px" }}
+              style={{ borderLeftColor: colorFor(event.category_slug), borderLeftWidth: "4px" }}
             >
               <div className="flex items-start gap-4">
                 <span className="text-3xl flex-shrink-0 mt-1">{event.icon}</span>
@@ -78,11 +83,11 @@ const ScheduleSection = ({ onEventClick }: ScheduleSectionProps) => {
                     <span
                       className="text-xs font-body font-semibold px-2 py-0.5 rounded-full self-start"
                       style={{
-                        background: categoryColors[event.category] + "20",
-                        color: categoryColors[event.category],
+                        background: colorFor(event.category_slug) + "20",
+                        color: colorFor(event.category_slug),
                       }}
                     >
-                      {categoryLabels[event.category]}
+                      {nameFor(event.category_slug)}
                     </span>
                   </div>
                   <p className="font-body text-muted-foreground text-sm mb-2">
@@ -102,7 +107,7 @@ const ScheduleSection = ({ onEventClick }: ScheduleSectionProps) => {
               </div>
             </button>
           ))}
-          {filteredEvents.length === 0 && (
+          {!isLoading && filteredEvents.length === 0 && (
             <p className="text-center font-body text-muted-foreground py-8">
               No events in this category.
             </p>
