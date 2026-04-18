@@ -59,9 +59,12 @@ const AdminCategories = () => {
       toast({ title: "Invalid input", description: parsed.error.errors[0].message, variant: "destructive" });
       return;
     }
+    const data = parsed.data;
     const res = editing
-      ? await supabase.from("categories").update(parsed.data).eq("id", editing.id)
-      : await supabase.from("categories").insert([parsed.data]);
+      ? await supabase.from("categories").update(data).eq("id", editing.id)
+      : await supabase.from("categories").insert({
+          slug: data.slug, name: data.name, color: data.color, icon: data.icon, sort_order: data.sort_order,
+        });
     if (res.error) {
       toast({ title: "Save failed", description: res.error.message, variant: "destructive" });
       return;
