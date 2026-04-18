@@ -49,10 +49,11 @@ const FestivalMap = ({ selectedEvent }: FestivalMapProps) => {
         <div className="relative mx-auto overflow-hidden rounded-xl border-4 border-card shadow-xl bg-card aspect-[4/5] w-full">
           <TransformWrapper
             ref={transformRef}
-            initialScale={1}
+            initialScale={1.6}
+            initialPositionX={-150}
+            initialPositionY={-100}
             minScale={1}
             maxScale={6}
-            centerOnInit
             wheel={{ step: 0.15 }}
             pinch={{ step: 5 }}
             doubleClick={{ mode: "toggle", step: 1.5 }}
