@@ -2,6 +2,8 @@ import { useState } from "react";
 import HeroSection from "@/components/HeroSection";
 import ScheduleSection from "@/components/ScheduleSection";
 import FestivalMap from "@/components/FestivalMap";
+import WeatherWidget from "@/components/WeatherWidget";
+import InstallBanner from "@/components/InstallBanner";
 import Footer from "@/components/Footer";
 import type { FestivalEvent } from "@/hooks/useFestivalData";
 
@@ -16,9 +18,11 @@ const Index = () => {
   return (
     <div className="min-h-screen">
       <HeroSection />
+      <WeatherWidget />
       <ScheduleSection onEventClick={handleEventClick} />
       <FestivalMap selectedEvent={selectedEvent} />
       <Footer />
+      <InstallBanner />
     </div>
   );
 };

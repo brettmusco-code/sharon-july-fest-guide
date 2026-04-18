@@ -1,4 +1,5 @@
 import { Sparkles, MapPin, Calendar } from "lucide-react";
+import Countdown from "./Countdown";
 
 const HeroSection = () => {
   return (
@@ -53,9 +54,13 @@ const HeroSection = () => {
           <span>July 3, 2026</span>
         </div>
 
-        <div className="flex items-center justify-center gap-2 text-primary-foreground/70 font-body mb-10">
+        <div className="flex items-center justify-center gap-2 text-primary-foreground/70 font-body mb-8">
           <MapPin className="w-5 h-5" />
           <span>Memorial Park Beach & Surrounding Areas</span>
+        </div>
+
+        <div className="mb-10 flex justify-center">
+          <Countdown />
         </div>
 
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
