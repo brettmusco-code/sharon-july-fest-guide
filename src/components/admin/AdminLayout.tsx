@@ -16,6 +16,30 @@ const tabs = [
 const AdminLayout = ({ children }: { children: ReactNode }) => {
   const { session, isAdmin, loading, signOut, user } = useAuth();
   const location = useLocation();
+  const { toast } = useToast();
+  const qc = useQueryClient();
+  const [claiming, setClaiming] = useState(false);
+
+  const claimAdmin = async () => {
+    setClaiming(true);
+    const { data, error } = await supabase.rpc("claim_admin");
+    setClaiming(false);
+    if (error) {
+      toast({ title: "Could not claim admin", description: error.message, variant: "destructive" });
+      return;
+    }
+    if (data === true) {
+      toast({ title: "You are now admin!" });
+      qc.invalidateQueries();
+      window.location.reload();
+    } else {
+      toast({
+        title: "Admin already exists",
+        description: "An admin account already exists. Ask them to grant you access.",
+        variant: "destructive",
+      });
+    }
+  };
 
   if (loading) {
     return <div className="min-h-screen flex items-center justify-center text-muted-foreground">Loading…</div>;
@@ -30,9 +54,14 @@ const AdminLayout = ({ children }: { children: ReactNode }) => {
           <h1 className="font-heading text-3xl mb-3">No admin access</h1>
           <p className="text-muted-foreground mb-6">
             Your account ({user?.email}) is signed in but does not have the admin role.
-            Ask an existing admin to grant you access in Lovable Cloud → Database → user_roles.
+            If you're the first user, click <strong>Claim admin</strong> to set yourself up.
+            Otherwise ask an existing admin to grant you access.
           </p>
-          <div className="flex gap-2 justify-center">
+          <div className="flex gap-2 justify-center flex-wrap">
+            <Button onClick={claimAdmin} disabled={claiming}>
+              <ShieldCheck className="w-4 h-4 mr-1" />
+              {claiming ? "Claiming…" : "Claim admin"}
+            </Button>
             <Button asChild variant="outline"><NavLink to="/">Back to site</NavLink></Button>
             <Button onClick={signOut} variant="ghost">Sign out</Button>
           </div>
