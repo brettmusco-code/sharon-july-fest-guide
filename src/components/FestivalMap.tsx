@@ -46,7 +46,7 @@ const FestivalMap = ({ selectedEvent }: FestivalMapProps) => {
           </p>
         </div>
 
-        <div className="relative mx-auto overflow-hidden rounded-xl border-4 border-card shadow-xl bg-card">
+        <div className="relative mx-auto overflow-hidden rounded-xl border-4 border-card shadow-xl bg-card aspect-[4/5] w-full">
           <TransformWrapper
             ref={transformRef}
             initialScale={1}
