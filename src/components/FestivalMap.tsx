@@ -62,10 +62,7 @@ const FestivalMap = ({ selectedEvent }: FestivalMapProps) => {
             {({ zoomIn, zoomOut, resetTransform }) => (
               <>
                 <TransformComponent
-                  wrapperStyle={{
-                    width: "100%",
-                    height: "min(95vh, 1600px)",
-                  }}
+                  wrapperStyle={{ width: "100%", height: "100%" }}
                   contentStyle={{ width: "100%", height: "100%" }}
                 >
                   <div className="relative w-full h-full">
