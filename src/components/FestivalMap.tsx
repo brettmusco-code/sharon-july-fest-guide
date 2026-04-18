@@ -11,6 +11,7 @@ interface FestivalMapProps {
 
 const FestivalMap = ({ selectedEvent }: FestivalMapProps) => {
   const [activePin, setActivePin] = useState<string | null>(null);
+  const [scale, setScale] = useState(1);
   const { data: events = [] } = useEvents();
   const { data: categories = [] } = useCategories();
   const { data: settings } = useMapSettings();
@@ -20,16 +21,19 @@ const FestivalMap = ({ selectedEvent }: FestivalMapProps) => {
   const colorFor = (slug: string) => categories.find((c) => c.slug === slug)?.color ?? "#6366f1";
   const mapUrl = settings?.map_image_url ?? festivalMapFallback;
 
+  // Counter-scale so pins stay constant size as the map zooms
+  const inv = 1 / scale;
+
   // When an event is selected from outside, zoom/pan to its pin
   useEffect(() => {
     if (!selectedEvent || !transformRef.current) return;
     const wrapperEl = transformRef.current.instance.wrapperComponent;
     if (!wrapperEl) return;
     const { offsetWidth: w, offsetHeight: h } = wrapperEl;
-    const scale = 2;
-    const x = -(selectedEvent.pin_x / 100) * w * scale + w / 2;
-    const y = -(selectedEvent.pin_y / 100) * h * scale + h / 2;
-    transformRef.current.setTransform(x, y, scale, 400, "easeOut");
+    const targetScale = 2.5;
+    const x = -(selectedEvent.pin_x / 100) * w * targetScale + w / 2;
+    const y = -(selectedEvent.pin_y / 100) * h * targetScale + h / 2;
+    transformRef.current.setTransform(x, y, targetScale, 400, "easeOut");
   }, [selectedEvent]);
 
   return (
@@ -47,19 +51,20 @@ const FestivalMap = ({ selectedEvent }: FestivalMapProps) => {
             ref={transformRef}
             initialScale={1}
             minScale={1}
-            maxScale={5}
+            maxScale={6}
             centerOnInit
             wheel={{ step: 0.15 }}
             pinch={{ step: 5 }}
             doubleClick={{ mode: "toggle", step: 1.5 }}
             limitToBounds
+            onTransformed={(_, state) => setScale(state.scale)}
           >
             {({ zoomIn, zoomOut, resetTransform }) => (
               <>
                 <TransformComponent
                   wrapperStyle={{
                     width: "100%",
-                    height: "min(85vh, 1100px)",
+                    height: "min(95vh, 1600px)",
                   }}
                   contentStyle={{ width: "100%", height: "100%" }}
                 >
@@ -82,13 +87,18 @@ const FestivalMap = ({ selectedEvent }: FestivalMapProps) => {
                             e.stopPropagation();
                             setActivePin(isActive ? null : event.id);
                           }}
-                          className="absolute -translate-x-1/2 -translate-y-1/2 transition-all duration-300 group z-10"
-                          style={{ left: `${event.pin_x}%`, top: `${event.pin_y}%` }}
+                          className="absolute group z-10"
+                          style={{
+                            left: `${event.pin_x}%`,
+                            top: `${event.pin_y}%`,
+                            transform: `translate(-50%, -50%) scale(${inv})`,
+                            transformOrigin: "center center",
+                          }}
                           aria-label={`${event.title} - ${event.location}`}
                         >
                           <div
-                            className={`flex items-center justify-center rounded-full border-[3px] border-white shadow-lg transition-all duration-300 ${
-                              isActive ? "w-14 h-14 scale-110" : "w-11 h-11 hover:scale-110"
+                            className={`flex items-center justify-center rounded-full border-[3px] border-white shadow-lg transition-all duration-200 ${
+                              isActive ? "w-14 h-14" : "w-11 h-11 hover:scale-110"
                             }`}
                             style={{ background: color }}
                           >
