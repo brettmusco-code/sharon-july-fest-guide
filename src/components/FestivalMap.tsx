@@ -1,25 +1,20 @@
 import { useState } from "react";
-import { events, categoryColors, type EventItem } from "@/data/events";
-import festivalMapImg from "@/assets/festival-map.jpg";
+import { useEvents, useCategories, useMapSettings, FestivalEvent } from "@/hooks/useFestivalData";
+import festivalMapFallback from "@/assets/festival-map.jpg";
 
 interface FestivalMapProps {
-  selectedEvent: EventItem | null;
+  selectedEvent: FestivalEvent | null;
 }
-
-// Map event IDs to percentage positions on the illustrated map
-const pinPositions: Record<string, { x: number; y: number }> = {
-  "1": { x: 26, y: 38 },   // Opening Ceremony - flag area near food truck
-  "2": { x: 38, y: 19 },   // Parade - Beach St banner / decorated arch
-  "3": { x: 24, y: 36 },   // Kids Zone - playground area
-  "4": { x: 30, y: 32 },   // BBQ & Food Trucks - food truck on left
-  "5": { x: 41, y: 26 },   // Live Music - July 3rd main stage
-  "6": { x: 42, y: 70 },   // Fireworks - over Lake Massapoag
-};
 
 const FestivalMap = ({ selectedEvent }: FestivalMapProps) => {
   const [activePin, setActivePin] = useState<string | null>(null);
+  const { data: events = [] } = useEvents();
+  const { data: categories = [] } = useCategories();
+  const { data: settings } = useMapSettings();
 
   const displayedPin = selectedEvent?.id ?? activePin;
+  const colorFor = (slug: string) => categories.find((c) => c.slug === slug)?.color ?? "#6366f1";
+  const mapUrl = settings?.map_image_url ?? festivalMapFallback;
 
   return (
     <section id="map" className="bg-muted px-4 py-16">
@@ -33,52 +28,45 @@ const FestivalMap = ({ selectedEvent }: FestivalMapProps) => {
 
         <div className="relative mx-auto overflow-hidden rounded-xl border-4 border-card shadow-xl">
           <img
-            src={festivalMapImg}
+            src={mapUrl}
             alt="Illustrated festival map of Sharon July 4th Celebration at Memorial Park Beach"
             className="block w-full h-auto"
-            width={1920}
-            height={1080}
             draggable={false}
           />
 
-          {/* Interactive pins */}
           {events.map((event) => {
-            const pos = pinPositions[event.id];
-            if (!pos) return null;
             const isActive = displayedPin === event.id;
+            const color = colorFor(event.category_slug);
 
             return (
               <button
                 key={event.id}
                 onClick={() => setActivePin(isActive ? null : event.id)}
                 className="absolute -translate-x-1/2 -translate-y-1/2 transition-all duration-300 group z-10"
-                style={{ left: `${pos.x}%`, top: `${pos.y}%` }}
+                style={{ left: `${event.pin_x}%`, top: `${event.pin_y}%` }}
                 aria-label={`${event.title} - ${event.location}`}
               >
-                {/* Pin body */}
                 <div
                   className={`flex items-center justify-center rounded-full border-[3px] border-white shadow-lg transition-all duration-300 ${
                     isActive ? "w-14 h-14 scale-110" : "w-11 h-11 hover:scale-110"
                   }`}
-                  style={{ background: categoryColors[event.category] }}
+                  style={{ background: color }}
                 >
                   <span className={`leading-none ${isActive ? "text-2xl" : "text-xl"}`}>
                     {event.icon}
                   </span>
                 </div>
 
-                {/* Pulse ring when active */}
                 {isActive && (
                   <div
                     className="absolute inset-0 rounded-full animate-ping opacity-30"
-                    style={{ background: categoryColors[event.category] }}
+                    style={{ background: color }}
                   />
                 )}
 
-                {/* Tooltip / popup */}
                 {isActive && (
                   <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-3 w-56 sm:w-64 bg-card rounded-xl border-2 shadow-xl p-3 text-left z-20 animate-fade-in"
-                    style={{ borderColor: categoryColors[event.category] }}
+                    style={{ borderColor: color }}
                   >
                     <div className="flex items-center gap-2 mb-1.5">
                       <span className="text-xl leading-none">{event.icon}</span>
@@ -91,14 +79,13 @@ const FestivalMap = ({ selectedEvent }: FestivalMapProps) => {
                     </p>
                     <div
                       className="font-body text-[11px] font-bold"
-                      style={{ color: categoryColors[event.category] }}
+                      style={{ color }}
                     >
                       🕐 {event.time} &nbsp;•&nbsp; 📍 {event.location}
                     </div>
-                    {/* Arrow */}
                     <div
                       className="absolute top-full left-1/2 -translate-x-1/2 w-3 h-3 rotate-45 -mt-1.5 border-r-2 border-b-2 bg-card"
-                      style={{ borderColor: categoryColors[event.category] }}
+                      style={{ borderColor: color }}
                     />
                   </div>
                 )}
@@ -106,16 +93,15 @@ const FestivalMap = ({ selectedEvent }: FestivalMapProps) => {
             );
           })}
 
-          {/* Legend overlay */}
           <div className="absolute bottom-3 left-3 bg-card/90 backdrop-blur-sm rounded-lg p-2.5 shadow-md border">
             <div className="grid grid-cols-2 gap-x-4 gap-y-1">
-              {(Object.keys(categoryColors) as EventItem["category"][]).map((cat) => (
-                <div key={cat} className="flex items-center gap-1.5">
+              {categories.map((cat) => (
+                <div key={cat.slug} className="flex items-center gap-1.5">
                   <span
                     className="w-2.5 h-2.5 rounded-full flex-shrink-0"
-                    style={{ background: categoryColors[cat] }}
+                    style={{ background: cat.color }}
                   />
-                  <span className="font-body text-[10px] text-foreground capitalize">{cat}</span>
+                  <span className="font-body text-[10px] text-foreground capitalize">{cat.name}</span>
                 </div>
               ))}
             </div>

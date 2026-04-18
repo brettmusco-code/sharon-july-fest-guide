@@ -3,14 +3,13 @@ import HeroSection from "@/components/HeroSection";
 import ScheduleSection from "@/components/ScheduleSection";
 import FestivalMap from "@/components/FestivalMap";
 import Footer from "@/components/Footer";
-import type { EventItem } from "@/data/events";
+import type { FestivalEvent } from "@/hooks/useFestivalData";
 
 const Index = () => {
-  const [selectedEvent, setSelectedEvent] = useState<EventItem | null>(null);
+  const [selectedEvent, setSelectedEvent] = useState<FestivalEvent | null>(null);
 
-  const handleEventClick = (event: EventItem) => {
+  const handleEventClick = (event: FestivalEvent) => {
     setSelectedEvent(event);
-    // Scroll to map
     document.getElementById("map")?.scrollIntoView({ behavior: "smooth" });
   };
 

@@ -85,7 +85,7 @@ const AdminEvents = () => {
     const payload = parsed.data;
     const res = editing
       ? await supabase.from("events").update(payload).eq("id", editing.id)
-      : await supabase.from("events").insert(payload);
+      : await supabase.from("events").insert([payload]);
     if (res.error) {
       toast({ title: "Save failed", description: res.error.message, variant: "destructive" });
       return;

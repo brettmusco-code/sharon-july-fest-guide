@@ -61,7 +61,7 @@ const AdminCategories = () => {
     }
     const res = editing
       ? await supabase.from("categories").update(parsed.data).eq("id", editing.id)
-      : await supabase.from("categories").insert(parsed.data);
+      : await supabase.from("categories").insert([parsed.data]);
     if (res.error) {
       toast({ title: "Save failed", description: res.error.message, variant: "destructive" });
       return;
