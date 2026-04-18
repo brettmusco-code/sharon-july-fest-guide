@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useEvents, useCategories, FestivalEvent } from "@/hooks/useFestivalData";
 import { Clock, MapPin } from "lucide-react";
+import WeatherWidget from "@/components/WeatherWidget";
 
 interface ScheduleSectionProps {
   onEventClick?: (event: FestivalEvent) => void;
@@ -23,9 +24,10 @@ const ScheduleSection = ({ onEventClick }: ScheduleSectionProps) => {
           <h2 className="font-heading text-4xl md:text-5xl text-foreground mb-3">
             Schedule of Events
           </h2>
-          <p className="font-body text-muted-foreground text-lg">
+          <p className="font-body text-muted-foreground text-lg mb-5">
             A full day of fun for the whole family!
           </p>
+          <WeatherWidget />
         </div>
 
         <div className="flex flex-wrap justify-center gap-2 mb-10">
