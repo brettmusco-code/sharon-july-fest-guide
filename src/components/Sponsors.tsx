@@ -1,3 +1,5 @@
+import { trackEvent } from "@/lib/analytics";
+
 const sponsors = [
   {
     name: "Dedham Savings",
@@ -46,6 +48,7 @@ const Sponsors = () => {
               href={sponsor.url}
               target="_blank"
               rel="noopener noreferrer"
+              onClick={() => trackEvent("sponsor_click", sponsor.url, sponsor.name)}
               className="group bg-card rounded-lg border-2 border-border p-6 flex items-center justify-center hover:border-primary hover:shadow-lg transition-all duration-200 aspect-square"
               aria-label={`Visit ${sponsor.name}`}
             >

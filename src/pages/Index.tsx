@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import HeroSection from "@/components/HeroSection";
+import { trackEvent } from "@/lib/analytics";
 import ScheduleSection from "@/components/ScheduleSection";
 import FestivalMap from "@/components/FestivalMap";
 import FaqSection from "@/components/FaqSection";
@@ -12,8 +13,13 @@ import type { FestivalEvent } from "@/hooks/useFestivalData";
 const Index = () => {
   const [selectedEvent, setSelectedEvent] = useState<FestivalEvent | null>(null);
 
+  useEffect(() => {
+    trackEvent("page_visit", "/", "Home");
+  }, []);
+
   const handleEventClick = (event: FestivalEvent) => {
     setSelectedEvent(event);
+    trackEvent("event_click", event.id, event.title);
     document.getElementById("map")?.scrollIntoView({ behavior: "smooth" });
   };
 
