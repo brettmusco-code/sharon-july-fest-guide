@@ -78,8 +78,8 @@ const HeroSection = () => {
           </a>
           <a
             href="#map"
-            className="inline-flex items-center gap-2 bg-secondary text-secondary-foreground border-2 border-background/20 px-8 py-4 rounded-lg font-body font-bold text-lg hover:opacity-90 transition-opacity shadow-md"
-            style={{ background: "hsl(215, 60%, 30%)", color: "white" }}
+            className="inline-flex items-center gap-2 px-8 py-4 rounded-lg font-body font-bold text-lg hover:opacity-90 transition-opacity shadow-md"
+            style={{ background: "white", color: "hsl(215, 60%, 30%)" }}
           >
             <MapPin className="w-5 h-5" />
             Explore Map
