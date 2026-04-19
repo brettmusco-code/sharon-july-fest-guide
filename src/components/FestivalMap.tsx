@@ -98,11 +98,11 @@ const FestivalMap = ({ selectedEvent }: FestivalMapProps) => {
                         >
                           <div
                             className={`flex items-center justify-center rounded-full border-2 border-white shadow-lg transition-all duration-200 ${
-                              isActive ? "w-9 h-9" : "w-7 h-7 hover:scale-110"
+                              isActive ? "w-11 h-11" : "w-9 h-9 hover:scale-110"
                             }`}
                             style={{ background: color }}
                           >
-                            <span className={`leading-none ${isActive ? "text-base" : "text-xs"}`}>
+                            <span className={`leading-none ${isActive ? "text-lg" : "text-sm"}`}>
                               {event.icon}
                             </span>
                           </div>
