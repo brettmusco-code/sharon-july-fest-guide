@@ -6,6 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
 import Footer from "@/components/Footer";
+import AskQuestion from "@/components/AskQuestion";
 import { trackEvent } from "@/lib/analytics";
 
 interface Faq {
@@ -83,6 +84,8 @@ const Info = () => {
             ))}
           </Accordion>
         )}
+
+        <AskQuestion />
       </main>
 
       <Footer />
