@@ -76,6 +76,7 @@ export type Database = {
       }
       events: {
         Row: {
+          all_day: boolean
           category_slug: string
           created_at: string
           description: string
@@ -91,6 +92,7 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          all_day?: boolean
           category_slug: string
           created_at?: string
           description?: string
@@ -106,6 +108,7 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          all_day?: boolean
           category_slug?: string
           created_at?: string
           description?: string
