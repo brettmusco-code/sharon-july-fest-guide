@@ -9,6 +9,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
+import { trackEvent } from "@/lib/analytics";
 
 interface Faq {
   id: string;
@@ -58,7 +59,16 @@ const FaqSection = () => {
           </div>
         ) : (
           <>
-            <Accordion type="single" collapsible className="space-y-2">
+            <Accordion
+              type="single"
+              collapsible
+              className="space-y-2"
+              onValueChange={(value) => {
+                if (!value) return;
+                const faq = faqs.find((f) => f.id === value);
+                if (faq) trackEvent("faq_open", faq.id, faq.question);
+              }}
+            >
               {faqs.map((faq) => (
                 <AccordionItem
                   key={faq.id}
