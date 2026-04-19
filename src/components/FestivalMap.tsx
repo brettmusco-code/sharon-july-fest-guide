@@ -85,6 +85,32 @@ const FestivalMap = ({ selectedEvent, onClearSelected, filter = "all", onFilterC
                       const isActive = displayedPin === event.id;
                       const color = colorFor(event.category_slug);
 
+                      // Smart popup placement to keep it inside the map area
+                      const placeBelow = event.pin_y < 30;
+                      // Horizontal shift: 0 = centered, -1 = left-aligned to pin, 1 = right-aligned to pin
+                      const horizontalAlign =
+                        event.pin_x < 22 ? "left" : event.pin_x > 78 ? "right" : "center";
+
+                      const popupPositionClass = [
+                        placeBelow ? "top-full mt-3" : "bottom-full mb-3",
+                        horizontalAlign === "center"
+                          ? "left-1/2 -translate-x-1/2"
+                          : horizontalAlign === "left"
+                            ? "left-0"
+                            : "right-0",
+                      ].join(" ");
+
+                      const arrowPositionClass = [
+                        placeBelow
+                          ? "bottom-full -mb-1.5 border-l-2 border-t-2"
+                          : "top-full -mt-1.5 border-r-2 border-b-2",
+                        horizontalAlign === "center"
+                          ? "left-1/2 -translate-x-1/2"
+                          : horizontalAlign === "left"
+                            ? "left-4"
+                            : "right-4",
+                      ].join(" ");
+
                       return (
                         <button
                           key={event.id}
@@ -124,7 +150,7 @@ const FestivalMap = ({ selectedEvent, onClearSelected, filter = "all", onFilterC
 
                           {isActive && (
                             <div
-                              className="absolute bottom-full left-1/2 -translate-x-1/2 mb-3 w-56 sm:w-64 bg-card rounded-xl border-2 shadow-xl p-3 text-left z-20 animate-fade-in"
+                              className={`absolute w-56 sm:w-64 bg-card rounded-xl border-2 shadow-xl p-3 text-left z-20 animate-fade-in ${popupPositionClass}`}
                               style={{ borderColor: color }}
                             >
                               {event.image_url && (
@@ -151,7 +177,7 @@ const FestivalMap = ({ selectedEvent, onClearSelected, filter = "all", onFilterC
                                 🕐 {event.time} &nbsp;•&nbsp; 📍 {event.location}
                               </div>
                               <div
-                                className="absolute top-full left-1/2 -translate-x-1/2 w-3 h-3 rotate-45 -mt-1.5 border-r-2 border-b-2 bg-card"
+                                className={`absolute w-3 h-3 rotate-45 bg-card ${arrowPositionClass}`}
                                 style={{ borderColor: color }}
                               />
                             </div>
