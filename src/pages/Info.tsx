@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
 import { ArrowLeft, HelpCircle } from "lucide-react";
@@ -5,6 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
 import Footer from "@/components/Footer";
+import { trackEvent } from "@/lib/analytics";
 
 interface Faq {
   id: string;
@@ -25,6 +27,10 @@ const Info = () => {
       return data as Faq[];
     },
   });
+
+  useEffect(() => {
+    trackEvent("page_visit", "/info", "Info & FAQ");
+  }, []);
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
@@ -51,7 +57,16 @@ const Info = () => {
             <p className="text-muted-foreground">No info available yet. Check back soon!</p>
           </div>
         ) : (
-          <Accordion type="single" collapsible className="space-y-2">
+          <Accordion
+            type="single"
+            collapsible
+            className="space-y-2"
+            onValueChange={(value) => {
+              if (!value) return;
+              const faq = faqs.find((f) => f.id === value);
+              if (faq) trackEvent("faq_open", faq.id, faq.question);
+            }}
+          >
             {faqs.map((faq) => (
               <AccordionItem
                 key={faq.id}

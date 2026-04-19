@@ -15,7 +15,7 @@ import AdminLayout from "@/components/admin/AdminLayout";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Eye, MousePointerClick, Sparkles, Users } from "lucide-react";
+import { Eye, MousePointerClick, Sparkles, Users, MapPin, HelpCircle } from "lucide-react";
 
 interface AnalyticsRow {
   id: string;
@@ -57,8 +57,10 @@ const AdminAnalytics = () => {
     const visits = rows.filter((r) => r.event_type === "page_visit").length;
     const eventClicks = rows.filter((r) => r.event_type === "event_click").length;
     const sponsorClicks = rows.filter((r) => r.event_type === "sponsor_click").length;
+    const mapPinClicks = rows.filter((r) => r.event_type === "map_pin_click").length;
+    const faqOpens = rows.filter((r) => r.event_type === "faq_open").length;
     const uniqueSessions = new Set(rows.map((r) => r.session_id).filter(Boolean)).size;
-    return { visits, eventClicks, sponsorClicks, uniqueSessions };
+    return { visits, eventClicks, sponsorClicks, mapPinClicks, faqOpens, uniqueSessions };
   }, [rows]);
 
   const dailyData = useMemo(() => {
@@ -91,6 +93,9 @@ const AdminAnalytics = () => {
 
   const topEvents = useMemo(() => topItems("event_click"), [rows]);
   const topSponsors = useMemo(() => topItems("sponsor_click"), [rows]);
+  const topPins = useMemo(() => topItems("map_pin_click"), [rows]);
+  const topFaqs = useMemo(() => topItems("faq_open"), [rows]);
+  const topPages = useMemo(() => topItems("page_visit"), [rows]);
 
   return (
     <AdminLayout>
@@ -117,10 +122,12 @@ const AdminAnalytics = () => {
         <p className="text-muted-foreground">Loading…</p>
       ) : (
         <div className="space-y-6">
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
             <StatCard icon={<Eye className="w-5 h-5" />} label="Page visits" value={stats.visits} />
             <StatCard icon={<Users className="w-5 h-5" />} label="Unique sessions" value={stats.uniqueSessions} />
             <StatCard icon={<MousePointerClick className="w-5 h-5" />} label="Event clicks" value={stats.eventClicks} />
+            <StatCard icon={<MapPin className="w-5 h-5" />} label="Map pin taps" value={stats.mapPinClicks} />
+            <StatCard icon={<HelpCircle className="w-5 h-5" />} label="FAQ opens" value={stats.faqOpens} />
             <StatCard icon={<Sparkles className="w-5 h-5" />} label="Sponsor clicks" value={stats.sponsorClicks} />
           </div>
 
@@ -153,8 +160,11 @@ const AdminAnalytics = () => {
           </Card>
 
           <div className="grid md:grid-cols-2 gap-4">
-            <TopList title="Top events" rows={topEvents} emptyText="No event clicks yet." />
+            <TopList title="Top events (schedule clicks)" rows={topEvents} emptyText="No event clicks yet." />
+            <TopList title="Top map pins" rows={topPins} emptyText="No map pin taps yet." />
+            <TopList title="Top FAQs" rows={topFaqs} emptyText="No FAQ opens yet." />
             <TopList title="Top sponsors" rows={topSponsors} emptyText="No sponsor clicks yet." />
+            <TopList title="Page visits" rows={topPages} emptyText="No page visits yet." />
           </div>
         </div>
       )}
