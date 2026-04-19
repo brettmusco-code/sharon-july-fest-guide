@@ -5,6 +5,7 @@ import ScheduleSection from "@/components/ScheduleSection";
 import FestivalMap from "@/components/FestivalMap";
 import FaqSection from "@/components/FaqSection";
 import Sponsors from "@/components/Sponsors";
+import DonateSection from "@/components/DonateSection";
 import InstallBanner from "@/components/InstallBanner";
 import Footer from "@/components/Footer";
 import MessagesBell from "@/components/MessagesBell";
@@ -32,6 +33,7 @@ const Index = () => {
       <ScheduleSection onEventClick={handleEventClick} />
       <FestivalMap selectedEvent={selectedEvent} />
       <FaqSection />
+      <DonateSection />
       <Sponsors />
       <Footer />
       <InstallBanner />
