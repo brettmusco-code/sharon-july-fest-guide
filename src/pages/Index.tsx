@@ -31,7 +31,7 @@ const Index = () => {
       </div>
       <HeroSection />
       <ScheduleSection onEventClick={handleEventClick} />
-      <FestivalMap selectedEvent={selectedEvent} />
+      <FestivalMap selectedEvent={selectedEvent} onClearSelected={() => setSelectedEvent(null)} />
       <FaqSection />
       <DonateSection />
       <Sponsors />

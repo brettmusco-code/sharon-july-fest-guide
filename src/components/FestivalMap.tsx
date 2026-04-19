@@ -8,9 +8,10 @@ import festivalMapFallback from "@/assets/festival-map.jpg";
 
 interface FestivalMapProps {
   selectedEvent: FestivalEvent | null;
+  onClearSelected?: () => void;
 }
 
-const FestivalMap = ({ selectedEvent }: FestivalMapProps) => {
+const FestivalMap = ({ selectedEvent, onClearSelected }: FestivalMapProps) => {
   const [activePin, setActivePin] = useState<string | null>(null);
   const [scale, setScale] = useState(1);
   const { data: events = [] } = useEvents();
@@ -18,16 +19,18 @@ const FestivalMap = ({ selectedEvent }: FestivalMapProps) => {
   const { data: settings } = useMapSettings();
   const transformRef = useRef<ReactZoomPanPinchRef>(null);
 
-  const displayedPin = selectedEvent?.id ?? activePin;
+  // activePin (from map clicks) wins over selectedEvent (from schedule)
+  const displayedPin = activePin ?? selectedEvent?.id ?? null;
   const colorFor = (slug: string) => categories.find((c) => c.slug === slug)?.color ?? "#6366f1";
   const mapUrl = settings?.map_image_url ?? festivalMapFallback;
 
   // Counter-scale so pins stay constant size as the map zooms
   const inv = 1 / scale;
 
-  // When an event is selected from outside, zoom/pan to its pin
+  // When an event is selected from outside, zoom/pan to its pin and reset map's local pin
   useEffect(() => {
     if (!selectedEvent || !transformRef.current) return;
+    setActivePin(null);
     const wrapperEl = transformRef.current.instance.wrapperComponent;
     if (!wrapperEl) return;
     const { offsetWidth: w, offsetHeight: h } = wrapperEl;
@@ -83,8 +86,9 @@ const FestivalMap = ({ selectedEvent }: FestivalMapProps) => {
                           key={event.id}
                           onClick={(e) => {
                             e.stopPropagation();
-                            const opening = !isActive;
+                            const opening = displayedPin !== event.id;
                             setActivePin(opening ? event.id : null);
+                            onClearSelected?.();
                             if (opening) trackEvent("map_pin_click", event.id, event.title);
                           }}
                           className="absolute group z-10"
