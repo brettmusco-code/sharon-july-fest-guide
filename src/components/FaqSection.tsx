@@ -31,7 +31,7 @@ const FaqSection = () => {
     },
   });
 
-  if (!isLoading && faqs.length === 0) return null;
+  
 
   return (
     <section id="faq" className="py-16 px-4 bg-background">
@@ -50,6 +50,12 @@ const FaqSection = () => {
 
         {isLoading ? (
           <p className="text-muted-foreground text-center py-8">Loading…</p>
+        ) : faqs.length === 0 ? (
+          <div className="text-center py-8 px-4 rounded-lg border-2 border-dashed bg-card">
+            <p className="text-muted-foreground font-body">
+              FAQs are coming soon. Check back closer to the celebration!
+            </p>
+          </div>
         ) : (
           <>
             <Accordion type="single" collapsible className="space-y-2">
