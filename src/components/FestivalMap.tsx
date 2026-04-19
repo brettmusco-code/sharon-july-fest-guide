@@ -97,12 +97,12 @@ const FestivalMap = ({ selectedEvent }: FestivalMapProps) => {
                           aria-label={`${event.title} - ${event.location}`}
                         >
                           <div
-                            className={`flex items-center justify-center rounded-full border-[3px] border-white shadow-lg transition-all duration-200 ${
-                              isActive ? "w-14 h-14" : "w-11 h-11 hover:scale-110"
+                            className={`flex items-center justify-center rounded-full border-2 border-white shadow-lg transition-all duration-200 ${
+                              isActive ? "w-9 h-9" : "w-7 h-7 hover:scale-110"
                             }`}
                             style={{ background: color }}
                           >
-                            <span className={`leading-none ${isActive ? "text-2xl" : "text-xl"}`}>
+                            <span className={`leading-none ${isActive ? "text-base" : "text-xs"}`}>
                               {event.icon}
                             </span>
                           </div>
