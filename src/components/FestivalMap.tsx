@@ -8,9 +8,10 @@ import festivalMapFallback from "@/assets/festival-map.jpg";
 
 interface FestivalMapProps {
   selectedEvent: FestivalEvent | null;
+  onClearSelected?: () => void;
 }
 
-const FestivalMap = ({ selectedEvent }: FestivalMapProps) => {
+const FestivalMap = ({ selectedEvent, onClearSelected }: FestivalMapProps) => {
   const [activePin, setActivePin] = useState<string | null>(null);
   const [scale, setScale] = useState(1);
   const { data: events = [] } = useEvents();
@@ -18,7 +19,8 @@ const FestivalMap = ({ selectedEvent }: FestivalMapProps) => {
   const { data: settings } = useMapSettings();
   const transformRef = useRef<ReactZoomPanPinchRef>(null);
 
-  const displayedPin = selectedEvent?.id ?? activePin;
+  // activePin (from map clicks) wins over selectedEvent (from schedule)
+  const displayedPin = activePin ?? selectedEvent?.id ?? null;
   const colorFor = (slug: string) => categories.find((c) => c.slug === slug)?.color ?? "#6366f1";
   const mapUrl = settings?.map_image_url ?? festivalMapFallback;
 
