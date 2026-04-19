@@ -9,9 +9,11 @@ import festivalMapFallback from "@/assets/festival-map.jpg";
 interface FestivalMapProps {
   selectedEvent: FestivalEvent | null;
   onClearSelected?: () => void;
+  filter?: string;
+  onFilterChange?: (filter: string) => void;
 }
 
-const FestivalMap = ({ selectedEvent, onClearSelected }: FestivalMapProps) => {
+const FestivalMap = ({ selectedEvent, onClearSelected, filter = "all", onFilterChange }: FestivalMapProps) => {
   const [activePin, setActivePin] = useState<string | null>(null);
   const [scale, setScale] = useState(1);
   const { data: events = [] } = useEvents();
@@ -23,6 +25,8 @@ const FestivalMap = ({ selectedEvent, onClearSelected }: FestivalMapProps) => {
   const displayedPin = activePin ?? selectedEvent?.id ?? null;
   const colorFor = (slug: string) => categories.find((c) => c.slug === slug)?.color ?? "#6366f1";
   const mapUrl = settings?.map_image_url ?? festivalMapFallback;
+
+  const visibleEvents = filter === "all" ? events : events.filter((e) => e.category_slug === filter);
 
   // Counter-scale so pins stay constant size as the map zooms
   const inv = 1 / scale;
