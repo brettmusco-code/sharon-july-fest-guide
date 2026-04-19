@@ -3,6 +3,7 @@ import { TransformWrapper, TransformComponent, ReactZoomPanPinchRef } from "reac
 import { ZoomIn, ZoomOut, Maximize2 } from "lucide-react";
 import { useEvents, useCategories, useMapSettings, FestivalEvent } from "@/hooks/useFestivalData";
 import { Button } from "@/components/ui/button";
+import { trackEvent } from "@/lib/analytics";
 import festivalMapFallback from "@/assets/festival-map.jpg";
 
 interface FestivalMapProps {
@@ -82,7 +83,9 @@ const FestivalMap = ({ selectedEvent }: FestivalMapProps) => {
                           key={event.id}
                           onClick={(e) => {
                             e.stopPropagation();
-                            setActivePin(isActive ? null : event.id);
+                            const opening = !isActive;
+                            setActivePin(opening ? event.id : null);
+                            if (opening) trackEvent("map_pin_click", event.id, event.title);
                           }}
                           className="absolute group z-10"
                           style={{
