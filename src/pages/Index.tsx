@@ -2,6 +2,7 @@ import { useState } from "react";
 import HeroSection from "@/components/HeroSection";
 import ScheduleSection from "@/components/ScheduleSection";
 import FestivalMap from "@/components/FestivalMap";
+import Sponsors from "@/components/Sponsors";
 import InstallBanner from "@/components/InstallBanner";
 import Footer from "@/components/Footer";
 import type { FestivalEvent } from "@/hooks/useFestivalData";
@@ -19,6 +20,7 @@ const Index = () => {
       <HeroSection />
       <ScheduleSection onEventClick={handleEventClick} />
       <FestivalMap selectedEvent={selectedEvent} />
+      <Sponsors />
       <Footer />
       <InstallBanner />
     </div>
