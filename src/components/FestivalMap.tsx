@@ -48,7 +48,7 @@ const FestivalMap = ({ selectedEvent, onClearSelected, filter = "all", onFilterC
     <section id="map" className="bg-muted py-16">
       <div className="mx-auto w-full px-4">
         <div className="mb-10 text-center">
-          <h2 className="font-heading mb-3 text-4xl text-foreground md:text-5xl">Festival Map</h2>
+          <h2 className="font-heading mb-3 text-4xl text-foreground md:text-5xl">Celebration Map</h2>
           <p className="font-body text-lg text-muted-foreground">
             Pinch, scroll, or use the buttons to zoom • Tap a pin for details
           </p>
