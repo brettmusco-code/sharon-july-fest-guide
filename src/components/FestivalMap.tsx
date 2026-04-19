@@ -27,9 +27,10 @@ const FestivalMap = ({ selectedEvent, onClearSelected }: FestivalMapProps) => {
   // Counter-scale so pins stay constant size as the map zooms
   const inv = 1 / scale;
 
-  // When an event is selected from outside, zoom/pan to its pin
+  // When an event is selected from outside, zoom/pan to its pin and reset map's local pin
   useEffect(() => {
     if (!selectedEvent || !transformRef.current) return;
+    setActivePin(null);
     const wrapperEl = transformRef.current.instance.wrapperComponent;
     if (!wrapperEl) return;
     const { offsetWidth: w, offsetHeight: h } = wrapperEl;
