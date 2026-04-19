@@ -14,6 +14,33 @@ export type Database = {
   }
   public: {
     Tables: {
+      analytics_events: {
+        Row: {
+          created_at: string
+          event_type: string
+          id: string
+          session_id: string | null
+          target_id: string | null
+          target_label: string | null
+        }
+        Insert: {
+          created_at?: string
+          event_type: string
+          id?: string
+          session_id?: string | null
+          target_id?: string | null
+          target_label?: string | null
+        }
+        Update: {
+          created_at?: string
+          event_type?: string
+          id?: string
+          session_id?: string | null
+          target_id?: string | null
+          target_label?: string | null
+        }
+        Relationships: []
+      }
       categories: {
         Row: {
           color: string
@@ -54,6 +81,7 @@ export type Database = {
           description: string
           icon: string
           id: string
+          image_url: string | null
           location: string
           pin_x: number
           pin_y: number
@@ -68,6 +96,7 @@ export type Database = {
           description?: string
           icon?: string
           id?: string
+          image_url?: string | null
           location?: string
           pin_x?: number
           pin_y?: number
@@ -82,6 +111,7 @@ export type Database = {
           description?: string
           icon?: string
           id?: string
+          image_url?: string | null
           location?: string
           pin_x?: number
           pin_y?: number
