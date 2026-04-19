@@ -121,7 +121,7 @@ const FestivalMap = ({ selectedEvent, onClearSelected, filter = "all", onFilterC
                             onClearSelected?.();
                             if (opening) trackEvent("map_pin_click", event.id, event.title);
                           }}
-                          className="absolute group z-10"
+                          className={`absolute group ${isActive ? "z-30" : "z-10"}`}
                           style={{
                             left: `${event.pin_x}%`,
                             top: `${event.pin_y}%`,
