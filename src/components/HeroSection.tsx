@@ -78,8 +78,7 @@ const HeroSection = () => {
           </a>
           <a
             href="#map"
-            className="inline-flex items-center gap-2 px-8 py-4 rounded-lg font-body font-bold text-lg hover:opacity-90 transition-opacity shadow-md"
-            style={{ background: "white", color: "hsl(215, 60%, 30%)" }}
+            className="inline-flex items-center gap-2 bg-firework-gold text-accent-foreground px-8 py-4 rounded-lg font-body font-bold text-lg hover:opacity-90 transition-opacity shadow-md"
           >
             <MapPin className="w-5 h-5" />
             Explore Map
@@ -89,7 +88,8 @@ const HeroSection = () => {
             target="_blank"
             rel="noopener noreferrer"
             onClick={() => trackEvent("sponsor_click", "donate_hero", "Donate button (hero)")}
-            className="inline-flex items-center gap-2 bg-firework-gold text-accent-foreground px-8 py-4 rounded-lg font-body font-bold text-lg hover:opacity-90 transition-opacity shadow-md"
+            className="inline-flex items-center gap-2 px-8 py-4 rounded-lg font-body font-bold text-lg hover:opacity-90 transition-opacity shadow-md"
+            style={{ background: "white", color: "hsl(215, 60%, 30%)" }}
           >
             <Heart className="w-5 h-5" fill="currentColor" />
             Donate
