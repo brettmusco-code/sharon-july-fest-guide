@@ -5,10 +5,17 @@ import WeatherWidget from "@/components/WeatherWidget";
 
 interface ScheduleSectionProps {
   onEventClick?: (event: FestivalEvent) => void;
+  filter?: string;
+  onFilterChange?: (filter: string) => void;
 }
 
-const ScheduleSection = ({ onEventClick }: ScheduleSectionProps) => {
-  const [filter, setFilter] = useState<string>("all");
+const ScheduleSection = ({ onEventClick, filter: filterProp, onFilterChange }: ScheduleSectionProps) => {
+  const [internalFilter, setInternalFilter] = useState<string>("all");
+  const filter = filterProp ?? internalFilter;
+  const setFilter = (f: string) => {
+    if (onFilterChange) onFilterChange(f);
+    else setInternalFilter(f);
+  };
   const { data: events = [], isLoading } = useEvents();
   const { data: categories = [] } = useCategories();
 

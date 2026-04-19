@@ -9,9 +9,11 @@ import festivalMapFallback from "@/assets/festival-map.jpg";
 interface FestivalMapProps {
   selectedEvent: FestivalEvent | null;
   onClearSelected?: () => void;
+  filter?: string;
+  onFilterChange?: (filter: string) => void;
 }
 
-const FestivalMap = ({ selectedEvent, onClearSelected }: FestivalMapProps) => {
+const FestivalMap = ({ selectedEvent, onClearSelected, filter = "all", onFilterChange }: FestivalMapProps) => {
   const [activePin, setActivePin] = useState<string | null>(null);
   const [scale, setScale] = useState(1);
   const { data: events = [] } = useEvents();
@@ -23,6 +25,8 @@ const FestivalMap = ({ selectedEvent, onClearSelected }: FestivalMapProps) => {
   const displayedPin = activePin ?? selectedEvent?.id ?? null;
   const colorFor = (slug: string) => categories.find((c) => c.slug === slug)?.color ?? "#6366f1";
   const mapUrl = settings?.map_image_url ?? festivalMapFallback;
+
+  const visibleEvents = filter === "all" ? events : events.filter((e) => e.category_slug === filter);
 
   // Counter-scale so pins stay constant size as the map zooms
   const inv = 1 / scale;
@@ -77,7 +81,7 @@ const FestivalMap = ({ selectedEvent, onClearSelected }: FestivalMapProps) => {
                       draggable={false}
                     />
 
-                    {events.map((event) => {
+                    {visibleEvents.map((event) => {
                       const isActive = displayedPin === event.id;
                       const color = colorFor(event.category_slug);
 
@@ -195,16 +199,42 @@ const FestivalMap = ({ selectedEvent, onClearSelected }: FestivalMapProps) => {
         </div>
 
         <div className="mx-auto mt-4 max-w-3xl rounded-lg border bg-card p-3 shadow-sm">
-          <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2">
-            {categories.map((cat) => (
-              <div key={cat.slug} className="flex items-center gap-1.5">
-                <span
-                  className="h-3 w-3 flex-shrink-0 rounded-full"
-                  style={{ background: cat.color }}
-                />
-                <span className="font-body text-xs capitalize text-foreground">{cat.name}</span>
-              </div>
-            ))}
+          <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-2">
+            <button
+              type="button"
+              onClick={() => onFilterChange?.("all")}
+              className={`inline-flex items-center gap-1.5 rounded-full border-2 px-3 py-1 text-xs font-body font-medium transition-all ${
+                filter === "all"
+                  ? "border-foreground bg-foreground text-background"
+                  : "border-border text-foreground hover:border-foreground"
+              }`}
+              aria-pressed={filter === "all"}
+            >
+              All
+            </button>
+            {categories.map((cat) => {
+              const active = filter === cat.slug;
+              return (
+                <button
+                  key={cat.slug}
+                  type="button"
+                  onClick={() => onFilterChange?.(active ? "all" : cat.slug)}
+                  className="inline-flex items-center gap-1.5 rounded-full border-2 px-3 py-1 text-xs font-body font-medium transition-all"
+                  style={{
+                    borderColor: cat.color,
+                    background: active ? cat.color : "transparent",
+                    color: active ? "#fff" : cat.color,
+                  }}
+                  aria-pressed={active}
+                >
+                  <span
+                    className="h-2.5 w-2.5 flex-shrink-0 rounded-full"
+                    style={{ background: active ? "#fff" : cat.color }}
+                  />
+                  <span className="capitalize">{cat.name}</span>
+                </button>
+              );
+            })}
           </div>
         </div>
       </div>
