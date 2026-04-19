@@ -102,7 +102,7 @@ const FestivalMap = ({ selectedEvent }: FestivalMapProps) => {
                             }`}
                             style={{ background: color }}
                           >
-                            <span className={`leading-none ${isActive ? "text-lg" : "text-sm"}`}>
+                            <span className={`leading-none ${isActive ? "text-2xl" : "text-xl"}`}>
                               {event.icon}
                             </span>
                           </div>
