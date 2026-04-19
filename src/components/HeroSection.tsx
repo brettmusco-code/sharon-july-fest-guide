@@ -1,5 +1,6 @@
-import { Sparkles, MapPin, Calendar } from "lucide-react";
+import { Sparkles, MapPin, Calendar, Heart } from "lucide-react";
 import Countdown from "./Countdown";
+import { trackEvent } from "@/lib/analytics";
 
 const HeroSection = () => {
   return (
