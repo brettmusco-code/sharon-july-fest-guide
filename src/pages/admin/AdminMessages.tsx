@@ -59,7 +59,10 @@ const AdminMessages = () => {
       return;
     }
     setSubmitting(true);
-    const { error } = await supabase.from("messages").insert(parsed.data);
+    const { error } = await supabase.from("messages").insert({
+      title: parsed.data.title,
+      body: parsed.data.body ?? "",
+    });
     setSubmitting(false);
     if (error) {
       toast({ title: "Failed to post", description: error.message, variant: "destructive" });
