@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
 import { trackEvent } from "@/lib/analytics";
+import AskQuestion from "@/components/AskQuestion";
 
 interface Faq {
   id: string;
@@ -95,6 +96,8 @@ const FaqSection = () => {
             </div>
           </>
         )}
+
+        <AskQuestion />
       </div>
     </section>
   );

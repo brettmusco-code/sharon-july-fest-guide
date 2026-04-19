@@ -2,7 +2,7 @@ import { ReactNode, useState } from "react";
 import { Navigate, NavLink, useLocation } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
-import { Calendar, Map, Tag, LogOut, Home, ShieldCheck, MessageSquare, HelpCircle, BarChart3 } from "lucide-react";
+import { Calendar, Map, Tag, LogOut, Home, ShieldCheck, MessageSquare, HelpCircle, BarChart3, MessageCircleQuestion } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useQueryClient } from "@tanstack/react-query";
@@ -13,6 +13,7 @@ const tabs = [
   { to: "/admin/categories", label: "Categories", icon: Tag, end: false },
   { to: "/admin/messages", label: "Messages", icon: MessageSquare, end: false },
   { to: "/admin/faqs", label: "FAQs", icon: HelpCircle, end: false },
+  { to: "/admin/questions", label: "Questions", icon: MessageCircleQuestion, end: false },
   { to: "/admin/analytics", label: "Analytics", icon: BarChart3, end: false },
 ];
 
