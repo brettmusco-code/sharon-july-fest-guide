@@ -95,8 +95,6 @@ const FaqSection = () => {
             </div>
           </>
         )}
-
-        <AskQuestion />
       </div>
     </section>
   );
