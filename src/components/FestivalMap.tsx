@@ -189,7 +189,7 @@ const FestivalMap = ({ selectedEvent, onClearSelected, filter = "all", onFilterC
                 </TransformComponent>
 
                 {/* Zoom controls */}
-                <div className="absolute top-3 right-3 flex flex-col gap-1.5 z-30">
+                <div className="absolute bottom-3 right-3 flex flex-col gap-1.5 z-30">
                   <Button
                     size="icon"
                     variant="secondary"
