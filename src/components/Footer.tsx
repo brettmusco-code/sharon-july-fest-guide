@@ -1,3 +1,6 @@
+import { Link } from "react-router-dom";
+import { HelpCircle } from "lucide-react";
+
 const Footer = () => {
   return (
     <footer className="bg-secondary text-secondary-foreground py-10 px-4">
@@ -9,6 +12,13 @@ const Footer = () => {
         <p className="font-body text-secondary-foreground/70 text-sm mb-4">
           July 3, 2026 • Memorial Park Beach, Sharon, MA
         </p>
+        <Link
+          to="/info"
+          className="inline-flex items-center gap-1.5 text-sm font-body text-secondary-foreground/80 hover:text-secondary-foreground underline-offset-4 hover:underline mb-4"
+        >
+          <HelpCircle className="w-4 h-4" />
+          Info & FAQ
+        </Link>
         <p className="font-body text-secondary-foreground/50 text-xs">
           Have a safe and happy Independence Day!
         </p>
