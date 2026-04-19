@@ -15,7 +15,7 @@ import AdminLayout from "@/components/admin/AdminLayout";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Eye, MousePointerClick, Sparkles, Users } from "lucide-react";
+import { Eye, MousePointerClick, Sparkles, Users, MapPin, HelpCircle } from "lucide-react";
 
 interface AnalyticsRow {
   id: string;
@@ -57,8 +57,10 @@ const AdminAnalytics = () => {
     const visits = rows.filter((r) => r.event_type === "page_visit").length;
     const eventClicks = rows.filter((r) => r.event_type === "event_click").length;
     const sponsorClicks = rows.filter((r) => r.event_type === "sponsor_click").length;
+    const mapPinClicks = rows.filter((r) => r.event_type === "map_pin_click").length;
+    const faqOpens = rows.filter((r) => r.event_type === "faq_open").length;
     const uniqueSessions = new Set(rows.map((r) => r.session_id).filter(Boolean)).size;
-    return { visits, eventClicks, sponsorClicks, uniqueSessions };
+    return { visits, eventClicks, sponsorClicks, mapPinClicks, faqOpens, uniqueSessions };
   }, [rows]);
 
   const dailyData = useMemo(() => {
@@ -91,6 +93,9 @@ const AdminAnalytics = () => {
 
   const topEvents = useMemo(() => topItems("event_click"), [rows]);
   const topSponsors = useMemo(() => topItems("sponsor_click"), [rows]);
+  const topPins = useMemo(() => topItems("map_pin_click"), [rows]);
+  const topFaqs = useMemo(() => topItems("faq_open"), [rows]);
+  const topPages = useMemo(() => topItems("page_visit"), [rows]);
 
   return (
     <AdminLayout>
