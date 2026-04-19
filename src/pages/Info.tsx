@@ -28,6 +28,10 @@ const Info = () => {
     },
   });
 
+  useEffect(() => {
+    trackEvent("page_visit", "/info", "Info & FAQ");
+  }, []);
+
   return (
     <div className="min-h-screen flex flex-col bg-background">
       <header className="bg-primary text-primary-foreground py-12 px-4">
