@@ -227,6 +227,39 @@ const AdminEvents = () => {
               <Input value={form.location} onChange={(e) => setForm({ ...form, location: e.target.value })} />
             </div>
             <div className="space-y-2">
+              <Label>Image (optional)</Label>
+              {form.image_url ? (
+                <div className="relative inline-block">
+                  <img src={form.image_url} alt="Event" className="w-32 h-32 object-cover rounded-md border" />
+                  <Button
+                    type="button"
+                    size="icon"
+                    variant="destructive"
+                    className="absolute -top-2 -right-2 h-6 w-6"
+                    onClick={() => setForm({ ...form, image_url: null })}
+                  >
+                    <X className="w-3 h-3" />
+                  </Button>
+                </div>
+              ) : (
+                <label className="flex items-center justify-center gap-2 px-4 py-6 border-2 border-dashed rounded-md cursor-pointer hover:bg-muted transition-colors">
+                  <Upload className="w-4 h-4" />
+                  <span className="text-sm">{uploading ? "Uploading…" : "Click to upload (max 5 MB)"}</span>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    disabled={uploading}
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (file) handleImageUpload(file);
+                      e.target.value = "";
+                    }}
+                  />
+                </label>
+              )}
+            </div>
+            <div className="space-y-2">
               <Label>Category</Label>
               <Select value={form.category_slug} onValueChange={(v) => setForm({ ...form, category_slug: v })}>
                 <SelectTrigger><SelectValue placeholder="Pick a category" /></SelectTrigger>
