@@ -2,6 +2,7 @@ import { useState } from "react";
 import HeroSection from "@/components/HeroSection";
 import ScheduleSection from "@/components/ScheduleSection";
 import FestivalMap from "@/components/FestivalMap";
+import FaqSection from "@/components/FaqSection";
 import Sponsors from "@/components/Sponsors";
 import InstallBanner from "@/components/InstallBanner";
 import Footer from "@/components/Footer";
@@ -24,6 +25,7 @@ const Index = () => {
       <HeroSection />
       <ScheduleSection onEventClick={handleEventClick} />
       <FestivalMap selectedEvent={selectedEvent} />
+      <FaqSection />
       <Sponsors />
       <Footer />
       <InstallBanner />
