@@ -13,6 +13,7 @@ import type { FestivalEvent } from "@/hooks/useFestivalData";
 
 const Index = () => {
   const [selectedEvent, setSelectedEvent] = useState<FestivalEvent | null>(null);
+  const [categoryFilter, setCategoryFilter] = useState<string>("all");
 
   useEffect(() => {
     trackEvent("page_visit", "/", "Home");
@@ -30,8 +31,17 @@ const Index = () => {
         <MessagesBell />
       </div>
       <HeroSection />
-      <ScheduleSection onEventClick={handleEventClick} />
-      <FestivalMap selectedEvent={selectedEvent} onClearSelected={() => setSelectedEvent(null)} />
+      <ScheduleSection
+        onEventClick={handleEventClick}
+        filter={categoryFilter}
+        onFilterChange={setCategoryFilter}
+      />
+      <FestivalMap
+        selectedEvent={selectedEvent}
+        onClearSelected={() => setSelectedEvent(null)}
+        filter={categoryFilter}
+        onFilterChange={setCategoryFilter}
+      />
       <FaqSection />
       <DonateSection />
       <Sponsors />
