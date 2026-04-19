@@ -20,6 +20,7 @@ const Index = () => {
       <HeroSection />
       <ScheduleSection onEventClick={handleEventClick} />
       <FestivalMap selectedEvent={selectedEvent} />
+      <Sponsors />
       <Footer />
       <InstallBanner />
     </div>
