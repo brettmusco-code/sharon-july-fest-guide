@@ -22,6 +22,7 @@ export interface FestivalEvent {
   pin_y: number;
   sort_order: number;
   image_url: string | null;
+  all_day: boolean;
 }
 
 export const useCategories = () =>

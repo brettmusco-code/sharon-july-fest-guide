@@ -33,6 +33,7 @@ const eventSchema = z.object({
   pin_y: z.number().min(0).max(100),
   sort_order: z.number().int(),
   image_url: z.string().url().nullable().or(z.literal("")).transform((v) => v || null),
+  all_day: z.boolean().default(false),
 });
 
 type FormState = z.infer<typeof eventSchema>;
@@ -48,6 +49,7 @@ const blank = (sort: number): FormState => ({
   pin_y: 50,
   sort_order: sort,
   image_url: null,
+  all_day: false,
 });
 
 const AdminEvents = () => {
@@ -74,7 +76,7 @@ const AdminEvents = () => {
     setForm({
       title: ev.title, description: ev.description, time: ev.time, location: ev.location,
       category_slug: ev.category_slug, icon: ev.icon, pin_x: ev.pin_x, pin_y: ev.pin_y,
-      sort_order: ev.sort_order, image_url: ev.image_url,
+      sort_order: ev.sort_order, image_url: ev.image_url, all_day: ev.all_day ?? false,
     });
     setOpen(true);
   };
@@ -122,6 +124,7 @@ const AdminEvents = () => {
           pin_y: payload.pin_y,
           sort_order: payload.sort_order,
           image_url: payload.image_url,
+          all_day: payload.all_day,
         });
     if (res.error) {
       toast({ title: "Save failed", description: res.error.message, variant: "destructive" });
@@ -180,7 +183,7 @@ const AdminEvents = () => {
                     </div>
                     <p className="text-sm text-muted-foreground mb-2 line-clamp-2">{ev.description}</p>
                     <div className="flex flex-wrap gap-3 text-xs text-muted-foreground">
-                      <span className="inline-flex items-center gap-1"><Clock className="w-3 h-3" />{ev.time || "—"}</span>
+                      <span className="inline-flex items-center gap-1"><Clock className="w-3 h-3" />{ev.all_day ? "All day" : (ev.time || "—")}</span>
                       <span className="inline-flex items-center gap-1"><MapPin className="w-3 h-3" />{ev.location || "—"}</span>
                       <span>Pin: {ev.pin_x.toFixed(1)}%, {ev.pin_y.toFixed(1)}%</span>
                     </div>
@@ -215,12 +218,27 @@ const AdminEvents = () => {
             <div className="grid grid-cols-2 gap-3">
               <div className="space-y-2">
                 <Label>Time</Label>
-                <Input value={form.time} onChange={(e) => setForm({ ...form, time: e.target.value })} placeholder="9:00 AM" />
+                <Input
+                  value={form.time}
+                  onChange={(e) => setForm({ ...form, time: e.target.value })}
+                  placeholder="9:00 AM"
+                  disabled={form.all_day}
+                />
               </div>
               <div className="space-y-2">
                 <Label>Icon (emoji)</Label>
                 <Input value={form.icon} onChange={(e) => setForm({ ...form, icon: e.target.value })} maxLength={4} />
               </div>
+            </div>
+            <div className="flex items-center gap-2">
+              <input
+                id="all_day"
+                type="checkbox"
+                checked={form.all_day}
+                onChange={(e) => setForm({ ...form, all_day: e.target.checked, time: e.target.checked ? "" : form.time })}
+                className="h-4 w-4"
+              />
+              <Label htmlFor="all_day" className="cursor-pointer">All-day event</Label>
             </div>
             <div className="space-y-2">
               <Label>Location</Label>

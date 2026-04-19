@@ -114,7 +114,7 @@ const ScheduleSection = ({ onEventClick, filter: filterProp, onFilterChange }: S
                   <div className="flex flex-wrap gap-4 text-sm font-body text-muted-foreground">
                     <span className="inline-flex items-center gap-1">
                       <Clock className="w-4 h-4" />
-                      {event.time}
+                      {event.all_day ? "All day" : event.time}
                     </span>
                     <span className="inline-flex items-center gap-1">
                       <MapPin className="w-4 h-4" />
