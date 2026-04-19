@@ -71,14 +71,15 @@ const HeroSection = () => {
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <a
             href="#schedule"
-            className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-8 py-4 rounded-lg font-body font-bold text-lg hover:opacity-90 transition-opacity"
+            className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-8 py-4 rounded-lg font-body font-bold text-lg hover:opacity-90 transition-opacity shadow-md"
           >
             <Sparkles className="w-5 h-5" />
             View Schedule
           </a>
           <a
             href="#map"
-            className="inline-flex items-center gap-2 bg-firework-gold text-accent-foreground px-8 py-4 rounded-lg font-body font-bold text-lg hover:opacity-90 transition-opacity"
+            className="inline-flex items-center gap-2 bg-secondary text-secondary-foreground border-2 border-background/20 px-8 py-4 rounded-lg font-body font-bold text-lg hover:opacity-90 transition-opacity shadow-md"
+            style={{ background: "hsl(215, 60%, 30%)", color: "white" }}
           >
             <MapPin className="w-5 h-5" />
             Explore Map
@@ -88,7 +89,7 @@ const HeroSection = () => {
             target="_blank"
             rel="noopener noreferrer"
             onClick={() => trackEvent("sponsor_click", "donate_hero", "Donate button (hero)")}
-            className="inline-flex items-center gap-2 bg-background text-foreground border-2 border-firework-gold px-8 py-4 rounded-lg font-body font-bold text-lg hover:bg-firework-gold hover:text-accent-foreground transition-colors"
+            className="inline-flex items-center gap-2 bg-firework-gold text-accent-foreground px-8 py-4 rounded-lg font-body font-bold text-lg hover:opacity-90 transition-opacity shadow-md"
           >
             <Heart className="w-5 h-5" fill="currentColor" />
             Donate
