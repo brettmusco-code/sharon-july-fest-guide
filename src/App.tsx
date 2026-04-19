@@ -7,10 +7,12 @@ import { AuthProvider } from "@/hooks/useAuth";
 import Index from "./pages/Index.tsx";
 import Install from "./pages/Install.tsx";
 import Auth from "./pages/Auth.tsx";
+import Info from "./pages/Info.tsx";
 import AdminEvents from "./pages/admin/AdminEvents.tsx";
 import AdminMap from "./pages/admin/AdminMap.tsx";
 import AdminCategories from "./pages/admin/AdminCategories.tsx";
 import AdminMessages from "./pages/admin/AdminMessages.tsx";
+import AdminFaqs from "./pages/admin/AdminFaqs.tsx";
 import NotFound from "./pages/NotFound.tsx";
 
 const queryClient = new QueryClient();
