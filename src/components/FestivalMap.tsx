@@ -116,6 +116,14 @@ const FestivalMap = ({ selectedEvent }: FestivalMapProps) => {
                               className="absolute bottom-full left-1/2 -translate-x-1/2 mb-3 w-56 sm:w-64 bg-card rounded-xl border-2 shadow-xl p-3 text-left z-20 animate-fade-in"
                               style={{ borderColor: color }}
                             >
+                              {event.image_url && (
+                                <img
+                                  src={event.image_url}
+                                  alt={event.title}
+                                  loading="lazy"
+                                  className="w-full h-24 object-cover rounded-md mb-2"
+                                />
+                              )}
                               <div className="flex items-center gap-2 mb-1.5">
                                 <span className="text-xl leading-none">{event.icon}</span>
                                 <h3 className="font-heading text-base text-foreground leading-tight">

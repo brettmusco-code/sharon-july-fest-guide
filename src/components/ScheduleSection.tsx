@@ -76,7 +76,16 @@ const ScheduleSection = ({ onEventClick }: ScheduleSectionProps) => {
               style={{ borderLeftColor: colorFor(event.category_slug), borderLeftWidth: "4px" }}
             >
               <div className="flex items-start gap-4">
-                <span className="text-3xl flex-shrink-0 mt-1">{event.icon}</span>
+                {event.image_url ? (
+                  <img
+                    src={event.image_url}
+                    alt={event.title}
+                    loading="lazy"
+                    className="w-16 h-16 sm:w-20 sm:h-20 rounded-md object-cover flex-shrink-0 border"
+                  />
+                ) : (
+                  <span className="text-3xl flex-shrink-0 mt-1">{event.icon}</span>
+                )}
                 <div className="flex-1 min-w-0">
                   <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3 mb-1">
                     <h3 className="font-heading text-xl text-foreground group-hover:text-primary transition-colors">

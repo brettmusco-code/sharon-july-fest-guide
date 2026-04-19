@@ -20,7 +20,7 @@ import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
-import { Pencil, Plus, Trash2, Clock, MapPin } from "lucide-react";
+import { Pencil, Plus, Trash2, Clock, MapPin, Upload, X } from "lucide-react";
 
 const eventSchema = z.object({
   title: z.string().trim().min(1, "Title required").max(200),
@@ -32,6 +32,7 @@ const eventSchema = z.object({
   pin_x: z.number().min(0).max(100),
   pin_y: z.number().min(0).max(100),
   sort_order: z.number().int(),
+  image_url: z.string().url().nullable().or(z.literal("")).transform((v) => v || null),
 });
 
 type FormState = z.infer<typeof eventSchema>;
@@ -46,6 +47,7 @@ const blank = (sort: number): FormState => ({
   pin_x: 50,
   pin_y: 50,
   sort_order: sort,
+  image_url: null,
 });
 
 const AdminEvents = () => {
@@ -58,6 +60,7 @@ const AdminEvents = () => {
   const [open, setOpen] = useState(false);
   const [confirmDel, setConfirmDel] = useState<FestivalEvent | null>(null);
   const [form, setForm] = useState<FormState>(blank(0));
+  const [uploading, setUploading] = useState(false);
 
   useEffect(() => { document.title = "Admin · Events"; }, []);
 
@@ -71,9 +74,32 @@ const AdminEvents = () => {
     setForm({
       title: ev.title, description: ev.description, time: ev.time, location: ev.location,
       category_slug: ev.category_slug, icon: ev.icon, pin_x: ev.pin_x, pin_y: ev.pin_y,
-      sort_order: ev.sort_order,
+      sort_order: ev.sort_order, image_url: ev.image_url,
     });
     setOpen(true);
+  };
+
+  const handleImageUpload = async (file: File) => {
+    if (file.size > 5 * 1024 * 1024) {
+      toast({ title: "Image too large", description: "Max 5 MB.", variant: "destructive" });
+      return;
+    }
+    setUploading(true);
+    const ext = file.name.split(".").pop() ?? "jpg";
+    const path = `events/${crypto.randomUUID()}.${ext}`;
+    const { error } = await supabase.storage.from("festival").upload(path, file, {
+      cacheControl: "3600",
+      upsert: false,
+    });
+    if (error) {
+      toast({ title: "Upload failed", description: error.message, variant: "destructive" });
+      setUploading(false);
+      return;
+    }
+    const { data } = supabase.storage.from("festival").getPublicUrl(path);
+    setForm((f) => ({ ...f, image_url: data.publicUrl }));
+    setUploading(false);
+    toast({ title: "Image uploaded" });
   };
 
   const save = async () => {
@@ -95,6 +121,7 @@ const AdminEvents = () => {
           pin_x: payload.pin_x,
           pin_y: payload.pin_y,
           sort_order: payload.sort_order,
+          image_url: payload.image_url,
         });
     if (res.error) {
       toast({ title: "Save failed", description: res.error.message, variant: "destructive" });
@@ -198,6 +225,39 @@ const AdminEvents = () => {
             <div className="space-y-2">
               <Label>Location</Label>
               <Input value={form.location} onChange={(e) => setForm({ ...form, location: e.target.value })} />
+            </div>
+            <div className="space-y-2">
+              <Label>Image (optional)</Label>
+              {form.image_url ? (
+                <div className="relative inline-block">
+                  <img src={form.image_url} alt="Event" className="w-32 h-32 object-cover rounded-md border" />
+                  <Button
+                    type="button"
+                    size="icon"
+                    variant="destructive"
+                    className="absolute -top-2 -right-2 h-6 w-6"
+                    onClick={() => setForm({ ...form, image_url: null })}
+                  >
+                    <X className="w-3 h-3" />
+                  </Button>
+                </div>
+              ) : (
+                <label className="flex items-center justify-center gap-2 px-4 py-6 border-2 border-dashed rounded-md cursor-pointer hover:bg-muted transition-colors">
+                  <Upload className="w-4 h-4" />
+                  <span className="text-sm">{uploading ? "Uploading…" : "Click to upload (max 5 MB)"}</span>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    disabled={uploading}
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (file) handleImageUpload(file);
+                      e.target.value = "";
+                    }}
+                  />
+                </label>
+              )}
             </div>
             <div className="space-y-2">
               <Label>Category</Label>
