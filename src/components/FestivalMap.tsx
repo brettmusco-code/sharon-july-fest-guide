@@ -86,8 +86,9 @@ const FestivalMap = ({ selectedEvent, onClearSelected }: FestivalMapProps) => {
                           key={event.id}
                           onClick={(e) => {
                             e.stopPropagation();
-                            const opening = !isActive;
+                            const opening = displayedPin !== event.id;
                             setActivePin(opening ? event.id : null);
+                            onClearSelected?.();
                             if (opening) trackEvent("map_pin_click", event.id, event.title);
                           }}
                           className="absolute group z-10"
