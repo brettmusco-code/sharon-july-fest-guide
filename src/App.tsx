@@ -10,6 +10,7 @@ import Auth from "./pages/Auth.tsx";
 import AdminEvents from "./pages/admin/AdminEvents.tsx";
 import AdminMap from "./pages/admin/AdminMap.tsx";
 import AdminCategories from "./pages/admin/AdminCategories.tsx";
+import AdminMessages from "./pages/admin/AdminMessages.tsx";
 import NotFound from "./pages/NotFound.tsx";
 
 const queryClient = new QueryClient();
@@ -28,6 +29,7 @@ const App = () => (
             <Route path="/admin" element={<AdminEvents />} />
             <Route path="/admin/map" element={<AdminMap />} />
             <Route path="/admin/categories" element={<AdminCategories />} />
+            <Route path="/admin/messages" element={<AdminMessages />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

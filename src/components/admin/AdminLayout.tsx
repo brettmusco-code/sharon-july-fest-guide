@@ -2,7 +2,7 @@ import { ReactNode, useState } from "react";
 import { Navigate, NavLink, useLocation } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
-import { Calendar, Map, Tag, LogOut, Home, ShieldCheck } from "lucide-react";
+import { Calendar, Map, Tag, LogOut, Home, ShieldCheck, MessageSquare } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useQueryClient } from "@tanstack/react-query";
@@ -11,6 +11,7 @@ const tabs = [
   { to: "/admin", label: "Events", icon: Calendar, end: true },
   { to: "/admin/map", label: "Map", icon: Map, end: false },
   { to: "/admin/categories", label: "Categories", icon: Tag, end: false },
+  { to: "/admin/messages", label: "Messages", icon: MessageSquare, end: false },
 ];
 
 const AdminLayout = ({ children }: { children: ReactNode }) => {

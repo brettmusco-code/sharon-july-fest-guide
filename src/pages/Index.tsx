@@ -5,6 +5,7 @@ import FestivalMap from "@/components/FestivalMap";
 import Sponsors from "@/components/Sponsors";
 import InstallBanner from "@/components/InstallBanner";
 import Footer from "@/components/Footer";
+import MessagesBell from "@/components/MessagesBell";
 import type { FestivalEvent } from "@/hooks/useFestivalData";
 
 const Index = () => {
@@ -17,6 +18,9 @@ const Index = () => {
 
   return (
     <div className="min-h-screen">
+      <div className="fixed top-4 right-4 z-50">
+        <MessagesBell />
+      </div>
       <HeroSection />
       <ScheduleSection onEventClick={handleEventClick} />
       <FestivalMap selectedEvent={selectedEvent} />
