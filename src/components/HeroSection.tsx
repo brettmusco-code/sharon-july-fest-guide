@@ -83,6 +83,16 @@ const HeroSection = () => {
             <MapPin className="w-5 h-5" />
             Explore Map
           </a>
+          <a
+            href="https://www.paypal.com/donate/?hosted_button_id=Q76L3XCL2NAQY"
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={() => trackEvent("sponsor_click", "donate_hero", "Donate button (hero)")}
+            className="inline-flex items-center gap-2 bg-background text-foreground border-2 border-firework-gold px-8 py-4 rounded-lg font-body font-bold text-lg hover:bg-firework-gold hover:text-accent-foreground transition-colors"
+          >
+            <Heart className="w-5 h-5" fill="currentColor" />
+            Donate
+          </a>
         </div>
       </div>
     </section>
