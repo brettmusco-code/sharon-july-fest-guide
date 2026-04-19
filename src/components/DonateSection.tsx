@@ -17,7 +17,7 @@ const DonateSection = () => {
           dollar helps keep this beloved tradition alive.
         </p>
         <a
-          href="https://sharonjuly4.org/donate.html"
+          href="https://www.paypal.com/donate/?hosted_button_id=Q76L3XCL2NAQY"
           target="_blank"
           rel="noopener noreferrer"
           onClick={() => trackEvent("sponsor_click", "donate", "Donate button")}
