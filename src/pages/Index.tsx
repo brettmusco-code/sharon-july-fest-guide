@@ -6,7 +6,7 @@ import FestivalMap from "@/components/FestivalMap";
 import FaqSection from "@/components/FaqSection";
 import Sponsors from "@/components/Sponsors";
 import DonateSection from "@/components/DonateSection";
-import InstallBanner from "@/components/InstallBanner";
+
 import Footer from "@/components/Footer";
 import MessagesBell from "@/components/MessagesBell";
 import type { FestivalEvent } from "@/hooks/useFestivalData";
@@ -49,7 +49,7 @@ const Index = () => {
       <DonateSection />
       <Sponsors />
       <Footer />
-      <InstallBanner />
+      
     </div>
   );
 };
