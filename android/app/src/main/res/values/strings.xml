@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="app_name">sma-july4th</string>
-    <string name="title_activity_main">MainActivity</string>
-    <string name="package_name">app.lovable.a2fa98ac279da4f69a666b1e67ba5da5c</string>
-    <string name="custom_url_scheme">app.lovable.a2fa98ac279da4f69a666b1e67ba5da5c</string>
+    <string name="app_name">Sharon Independence Day</string>
+    <string name="title_activity_main">Sharon Independence Day</string>
+    <string name="package_name">com.sharonma.july4th</string>
+    <string name="custom_url_scheme">com.sharonma.july4th</string>
 </resources>

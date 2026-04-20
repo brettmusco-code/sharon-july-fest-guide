@@ -10,7 +10,12 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "cap:sync": "vite build && cap sync",
+    "cap:open:ios": "vite build && cap sync ios && cap open ios",
+    "cap:open:android": "vite build && cap sync android && cap open android",
+    "android:release": "vite build && cap sync android && cd android && ./gradlew bundleRelease",
+    "ios:archive": "vite build && cap sync ios && xcodebuild -workspace ios/App/App.xcworkspace -scheme App -configuration Release -destination 'generic/platform=iOS' -archivePath ios/build/App.xcarchive archive"
   },
   "dependencies": {
     "@capacitor/android": "^8.3.1",
