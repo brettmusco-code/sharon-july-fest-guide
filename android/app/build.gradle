@@ -10,11 +10,11 @@ android {
         versionCode 1
         versionName "1.0.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        aaptOptions {
-             // Strings and resources settings for Capacitor
-             ignoreAssetsPattern '!.svn:!.git:!.ds_store:!*.scc:.*:!CVS:!thumbs.db:!picasa.ini:!*~'
-        }
         vectorDrawables.useSupportLibrary = true
+    }
+
+    aaptOptions {
+        ignoreAssetsPattern '!.svn:!.git:!.ds_store:!*.scc:.*:!CVS:!thumbs.db:!picasa.ini:!*~'
     }
 
     // Load signing info from keystore.properties if present (kept out of git).
@@ -55,12 +55,6 @@ android {
         language { enableSplit = true }
         density  { enableSplit = true }
         abi      { enableSplit = true }
-    }
-}
-
-repositories {
-    flatDir{
-        dirs 'libs'
     }
 }
 
