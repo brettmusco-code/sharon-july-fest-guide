@@ -27,7 +27,10 @@ const Index = () => {
 
   return (
     <div className="min-h-screen">
-      <div className="fixed top-4 right-4 z-50">
+      <div
+        className="fixed right-4 z-50"
+        style={{ top: "calc(env(safe-area-inset-top, 0px) + 1rem)" }}
+      >
         <MessagesBell />
       </div>
       <HeroSection />
