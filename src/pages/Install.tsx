@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
+import { Navigate } from "react-router-dom";
 import { Download, Check, Share, Smartphone, AlertCircle, ExternalLink, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { isNativeCapacitorApp } from "@/lib/native-app";
 
 interface BeforeInstallPromptEvent extends Event {
   prompt: () => Promise<void>;
@@ -16,6 +18,8 @@ const Install = () => {
   const [isStandalone, setIsStandalone] = useState(false);
 
   useEffect(() => {
+    if (isNativeCapacitorApp()) return;
+
     const ua = navigator.userAgent;
     setIsIOS(/iPad|iPhone|iPod/.test(ua));
     setIsAndroid(/Android/.test(ua));
@@ -53,6 +57,10 @@ const Install = () => {
   const copyUrl = async () => {
     await navigator.clipboard.writeText(window.location.origin);
   };
+
+  if (isNativeCapacitorApp()) {
+    return <Navigate to="/" replace />;
+  }
 
   return (
     <div className="min-h-screen bg-secondary flex items-center justify-center px-4 py-8">

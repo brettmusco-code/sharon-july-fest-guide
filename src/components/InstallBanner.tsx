@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { X, Download, Share } from "lucide-react";
 import { Link } from "react-router-dom";
+import { isNativeCapacitorApp } from "@/lib/native-app";
 
 const STORAGE_KEY = "install-banner-dismissed";
 
@@ -10,12 +11,13 @@ interface BeforeInstallPromptEvent extends Event {
 }
 
 const InstallBanner = () => {
+  const native = isNativeCapacitorApp();
   const [show, setShow] = useState(false);
   const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
   const [isIOS, setIsIOS] = useState(false);
 
   useEffect(() => {
-    if (typeof window === "undefined") return;
+    if (native || typeof window === "undefined") return;
 
     // Don't show if already installed
     const isStandalone =
@@ -51,7 +53,7 @@ const InstallBanner = () => {
     }
 
     return () => window.removeEventListener("beforeinstallprompt", handler);
-  }, []);
+  }, [native]);
 
   const dismiss = () => {
     localStorage.setItem(STORAGE_KEY, "1");
@@ -68,6 +70,7 @@ const InstallBanner = () => {
     setDeferredPrompt(null);
   };
 
+  if (native) return null;
   if (!show) return null;
 
   return (
