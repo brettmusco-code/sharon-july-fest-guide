@@ -122,7 +122,10 @@ Deno.serve(async (req) => {
           token,
           notification: { title, body: body || " " },
           data: { type: "announcement" },
-          android: { priority: "HIGH" },
+          android: {
+            priority: "HIGH",
+            notification: { icon: "ic_stat_notify" },
+          },
           apns: {
             headers: { "apns-priority": "10" },
             payload: { aps: { sound: "default" } },
