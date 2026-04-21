@@ -64,19 +64,26 @@ const AdminAnalytics = () => {
   }, [rows]);
 
   const dailyData = useMemo(() => {
-    const buckets: Record<string, { date: string; visits: number; events: number; sponsors: number }> = {};
+    const buckets: Record<
+      string,
+      { date: string; visits: number; visitors: number; events: number; sponsors: number; _sessions: Set<string> }
+    > = {};
     for (let i = days - 1; i >= 0; i--) {
       const d = format(subDays(new Date(), i), "MMM d");
-      buckets[d] = { date: d, visits: 0, events: 0, sponsors: 0 };
+      buckets[d] = { date: d, visits: 0, visitors: 0, events: 0, sponsors: 0, _sessions: new Set() };
     }
     rows.forEach((r) => {
       const key = format(startOfDay(new Date(r.created_at)), "MMM d");
       if (!buckets[key]) return;
+      if (r.session_id) buckets[key]._sessions.add(r.session_id);
       if (r.event_type === "page_visit") buckets[key].visits++;
       else if (r.event_type === "event_click") buckets[key].events++;
       else if (r.event_type === "sponsor_click") buckets[key].sponsors++;
     });
-    return Object.values(buckets);
+    return Object.values(buckets).map(({ _sessions, ...rest }) => ({
+      ...rest,
+      visitors: _sessions.size,
+    }));
   }, [rows, days]);
 
   const topItems = (type: string) => {
@@ -124,7 +131,7 @@ const AdminAnalytics = () => {
         <div className="space-y-6">
           <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
             <StatCard icon={<Eye className="w-5 h-5" />} label="Page visits" value={stats.visits} />
-            <StatCard icon={<Users className="w-5 h-5" />} label="Unique sessions" value={stats.uniqueSessions} />
+            <StatCard icon={<Users className="w-5 h-5" />} label="Unique visitors" value={stats.uniqueSessions} />
             <StatCard icon={<MousePointerClick className="w-5 h-5" />} label="Event clicks" value={stats.eventClicks} />
             <StatCard icon={<MapPin className="w-5 h-5" />} label="Map pin taps" value={stats.mapPinClicks} />
             <StatCard icon={<HelpCircle className="w-5 h-5" />} label="FAQ opens" value={stats.faqOpens} />
@@ -150,7 +157,8 @@ const AdminAnalytics = () => {
                       }}
                     />
                     <Legend />
-                    <Line type="monotone" dataKey="visits" stroke="hsl(var(--primary))" strokeWidth={2} name="Visits" />
+                    <Line type="monotone" dataKey="visitors" stroke="hsl(var(--primary))" strokeWidth={2} name="Unique visitors" />
+                    <Line type="monotone" dataKey="visits" stroke="hsl(var(--accent))" strokeWidth={2} name="Visits" />
                     <Line type="monotone" dataKey="events" stroke="hsl(var(--accent-foreground))" strokeWidth={2} name="Event clicks" />
                     <Line type="monotone" dataKey="sponsors" stroke="hsl(var(--muted-foreground))" strokeWidth={2} name="Sponsor clicks" />
                   </LineChart>
