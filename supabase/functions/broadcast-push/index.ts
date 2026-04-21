@@ -53,8 +53,23 @@ Deno.serve(async (req) => {
   const record =
     (payload.record as Record<string, string> | undefined) ??
     ((payload as { message?: { record?: Record<string, string> } }).message?.record);
+  const attemptId = (payload.attempt_id as string | undefined) ?? null;
+
+  const supabase = createClient(
+    Deno.env.get("SUPABASE_URL") ?? "",
+    Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
+  );
+
+  const finalize = async (patch: Record<string, unknown>) => {
+    if (!attemptId) return;
+    await supabase
+      .from("push_attempts")
+      .update({ ...patch, completed_at: new Date().toISOString() })
+      .eq("id", attemptId);
+  };
 
   if (!record?.title) {
+    await finalize({ status: "error", error: "no record.title" });
     return new Response(JSON.stringify({ ok: false, error: "no record.title" }), {
       status: 400,
       headers: { ...cors, "Content-Type": "application/json" },
@@ -64,13 +79,9 @@ Deno.serve(async (req) => {
   const title = String(record.title).slice(0, 200);
   const body = String(record.body ?? "").slice(0, 350);
 
-  const supabase = createClient(
-    Deno.env.get("SUPABASE_URL") ?? "",
-    Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
-  );
-
   const { data: rows, error: qErr } = await supabase.from("device_push_tokens").select("token");
   if (qErr) {
+    await finalize({ status: "error", error: qErr.message });
     return new Response(JSON.stringify({ ok: false, error: qErr.message }), {
       status: 500,
       headers: { ...cors, "Content-Type": "application/json" },
