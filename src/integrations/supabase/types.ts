@@ -277,6 +277,10 @@ export type Database = {
         }
         Returns: boolean
       }
+      register_push_token: {
+        Args: { p_platform: string; p_token: string }
+        Returns: undefined
+      }
     }
     Enums: {
       app_role: "admin" | "user"

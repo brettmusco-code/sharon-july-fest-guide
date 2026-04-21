@@ -27,6 +27,8 @@ dist-ssr
 .env
 .env.*
 !.env.example
+android/app/google-services.json
+ios/App/App/GoogleService-Info.plist
 
 # Android (Capacitor) — machine-local / generated
 android/.gradle/

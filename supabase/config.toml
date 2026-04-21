@@ -1,1 +1,5 @@
 project_id = "uncnkmgaoawksbfncnkm"
+
+# Database webhooks call this function with `x-webhook-secret` (no user JWT).
+[functions.broadcast-push]
+verify_jwt = false

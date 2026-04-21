@@ -16,12 +16,14 @@ import AdminFaqs from "./pages/admin/AdminFaqs.tsx";
 import AdminQuestions from "./pages/admin/AdminQuestions.tsx";
 import AdminAnalytics from "./pages/admin/AdminAnalytics.tsx";
 import NotFound from "./pages/NotFound.tsx";
+import { PushNotificationsRegister } from "@/components/PushNotificationsRegister";
 
 const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
+      <PushNotificationsRegister />
       <Toaster />
       <Sonner />
       <BrowserRouter>

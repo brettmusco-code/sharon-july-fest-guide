@@ -139,6 +139,56 @@ npm run cap:open:ios      # then Archive in Xcode
 
 ---
 
+## Push notifications (Android + iOS)
+
+The app registers for push on **native** builds and saves an **FCM device token** in Supabase via `register_push_token()`. When an admin inserts a row into **`messages`**, a **Database Webhook** can call the **`broadcast-push`** Edge Function to fan out FCM notifications.
+
+### 1. Firebase (one project for both platforms)
+
+1. [Firebase Console](https://console.firebase.google.com) → Create project (or use existing).
+2. **Add Android app** — package name **`com.sharonma.july4th`**. Download **`google-services.json`** → place at **`android/app/google-services.json`** (gitignored).
+3. **Add iOS app** — bundle **`com.sharonma.july4th`**. Download **`GoogleService-Info.plist`** → place in **`ios/App/App/`** (gitignored).
+4. **iOS only:** Firebase → Project settings → Cloud Messaging → upload your **APNs Authentication Key (.p8)** (create in Apple Developer → Keys).
+5. **Service account:** Firebase → Project settings → Service accounts → **Generate new private key** JSON. You will paste this JSON (as a single-line secret) into Supabase for the Edge Function.
+
+### 2. Apple Xcode capability
+
+Open **`npm run cap:open:ios`**, select the **App** target → **Signing & Capabilities** → **+ Capability** → **Push Notifications**.
+
+### 3. Supabase database
+
+Apply the migration (or run SQL from repo):
+
+- `supabase/migrations/20260421190000_device_push_tokens.sql` — creates **`device_push_tokens`** and **`register_push_token(text, text)`**.
+
+### 4. Supabase Edge Function `broadcast-push`
+
+Deploy the function folder **`supabase/functions/broadcast-push/`**, then set **secrets**:
+
+| Secret | Value |
+|--------|--------|
+| `FIREBASE_SERVICE_ACCOUNT_JSON` | Entire Firebase service account JSON (paste as one secret string). |
+| `PUSH_WEBHOOK_SECRET` | Long random string you invent (e.g. 32+ chars). |
+
+### 5. Database webhook
+
+Supabase Dashboard → **Database → Webhooks** → create webhook:
+
+- **Table:** `public.messages`
+- **Events:** Insert
+- **HTTP Request:** POST to `https://<YOUR_PROJECT_REF>.supabase.co/functions/v1/broadcast-push`
+- **HTTP Headers:** `x-webhook-secret: <same PUSH_WEBHOOK_SECRET>`
+
+### 6. Rebuild native apps
+
+```bash
+npm run cap:sync
+```
+
+Then rebuild Android/iOS store binaries so Firebase config and the push plugin ship with the app.
+
+---
+
 ## Known follow-ups before going live
 
 - **Source icon is 512×512** and was upscaled to 1024×1024. For a crisp App Store icon, supply a true 1024×1024 master PNG (place at `store-assets/app-icon-1024.png`) and re-run the icon generation step in this README's git history.
