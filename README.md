@@ -97,10 +97,50 @@ Output: `android/app/build/outputs/bundle/release/app-release.aab` — upload th
 | Vite build | Absolute `/` paths, sourcemaps on | `base: "./"`, sourcemaps off in prod |
 | Android theme colors | White on white | App navy `#1e3a5f` / gold `#c8a24a` |
 
+## Finish deployment (checklist)
+
+Use this when you are ready to ship **internal testing** (Play) or **TestFlight** / **App Store** (Apple).
+
+### Shared (both stores)
+
+- [ ] **Privacy policy (live URL):**  
+  `https://brettmusco-code.github.io/sharon-july-fest-guide/privacy-policy.html`  
+  Paste this in Play Console and App Store Connect where a privacy URL is required.
+- [ ] **Build with secrets:** run `npm run build` / `npm run cap:sync` / release scripts from a machine that has a local `.env` with `VITE_SUPABASE_*` set (`.env` is not in git).
+- [ ] **Supabase → Realtime:** enable replication for the `messages` table so the bell updates quickly when admins post (Database → Publications / table replication, depending on your project).
+
+### Google Play (finish first — usually faster)
+
+1. [ ] Play Console identity / $25 fee complete.
+2. [ ] App created with package **`com.sharonma.july4th`**.
+3. [ ] **`android/keystore.properties`** + **`android/release.keystore`** on the machine that builds; keystore + passwords backed up outside the repo.
+4. [ ] Run: `npm run android:release` → upload **`android/app/build/outputs/bundle/release/app-release.aab`**.
+5. [ ] **Internal testing:** Testing → Internal testing → Create release → add tester emails → share opt-in link.
+6. [ ] **Store listing:** short + full description, screenshots (≥2), **App icon** `store-assets/play-store-icon-512.png`, **feature graphic** `store-assets/feature-graphic-1024x500.png`.
+7. [ ] **Policy / forms:** Data safety, content rating, target audience, ads = No, etc. (complete all red items on the dashboard).
+8. [ ] Each new upload: increase **`versionCode`** in `android/app/build.gradle` (and optionally `versionName`).
+
+### Apple App Store
+
+1. [ ] **Apple Developer Program** active (no “purchase your membership” banner on developer.apple.com).
+2. [ ] **Identifiers:** App ID with bundle **`com.sharonma.july4th`** registered.
+3. [ ] **App Store Connect:** New app with that bundle ID; fill listing, screenshots, App Privacy, review notes.
+4. [ ] **Xcode:** `npm run cap:open:ios` → App target → Signing & Capabilities → Team selected → device **Any iOS Device (arm64)** → **Product → Archive** → Distribute to App Store Connect.
+5. [ ] **Supabase auth (optional):** if admins use **sign-up email confirmation**, add your Capacitor / web redirect URLs under Supabase → Authentication → URL configuration.
+
+### After each code change
+
+```bash
+npm run android:release   # Play .aab
+npm run cap:open:ios      # then Archive in Xcode
+```
+
+---
+
 ## Known follow-ups before going live
 
 - **Source icon is 512×512** and was upscaled to 1024×1024. For a crisp App Store icon, supply a true 1024×1024 master PNG (place at `store-assets/app-icon-1024.png`) and re-run the icon generation step in this README's git history.
-- Add a hosted **Privacy Policy** URL — both stores require it.
+- Confirm the **privacy policy** contact block in `public/privacy-policy.html` uses the committee’s real email (the public URL is in the checklist above).
 - Configure the iOS **Status Bar** style if it clashes with the app header (currently `black-translucent`).
 - Consider tightening `UISupportedInterfaceOrientations` to portrait-only if landscape layouts aren't polished.
 - Before the first Play upload, generate & **back up** `android/release.keystore` in a password manager — losing it means you can never update the app.
