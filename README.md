@@ -26,6 +26,10 @@ npm run cap:open:android   # opens Android Studio
 
 `cap sync` rewrites `android/capacitor-cordova-android-plugins/build.gradle` with a `flatDir` block that triggers Gradle warnings. The `cap:sync`, `cap:open:android`, and `android:release` scripts run `node scripts/strip-android-flatdir.mjs` after sync to remove it automatically.
 
+### Copy old Supabase data into your new project
+
+After migrations run on the **new** project, use **`scripts/migrate-supabase-data.mjs`**: set `MIGRATE_OLD_URL`, `MIGRATE_OLD_ANON_KEY`, `MIGRATE_NEW_URL`, and `MIGRATE_NEW_SERVICE_ROLE_KEY`, then run `node scripts/migrate-supabase-data.mjs`. It does **not** copy `auth.users` or `user_roles` — recreate admin accounts in the new project’s **Authentication** UI first if needed.
+
 ---
 
 ## iOS — App Store submission
