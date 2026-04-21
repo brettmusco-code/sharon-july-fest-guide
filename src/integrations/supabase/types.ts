@@ -250,6 +250,45 @@ export type Database = {
         }
         Relationships: []
       }
+      push_attempts: {
+        Row: {
+          completed_at: string | null
+          created_at: string
+          error: string | null
+          failed: number | null
+          id: string
+          message_id: string | null
+          message_title: string | null
+          sent: number | null
+          status: string
+          total: number | null
+        }
+        Insert: {
+          completed_at?: string | null
+          created_at?: string
+          error?: string | null
+          failed?: number | null
+          id?: string
+          message_id?: string | null
+          message_title?: string | null
+          sent?: number | null
+          status?: string
+          total?: number | null
+        }
+        Update: {
+          completed_at?: string | null
+          created_at?: string
+          error?: string | null
+          failed?: number | null
+          id?: string
+          message_id?: string | null
+          message_title?: string | null
+          sent?: number | null
+          status?: string
+          total?: number | null
+        }
+        Relationships: []
+      }
       questions: {
         Row: {
           answer: string | null
