@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
 import { Trash2, Send, Pencil, Clock } from "lucide-react";
+import { PushAttemptsCard } from "@/components/admin/PushAttemptsCard";
 
 const messageSchema = z.object({
   title: z.string().trim().min(1, "Title required").max(200, "Title too long"),
@@ -207,6 +208,8 @@ const AdminMessages = () => {
             </form>
           </CardContent>
         </Card>
+
+        <PushAttemptsCard />
 
         <div>
           <h3 className="font-heading text-xl mb-3">All messages</h3>
