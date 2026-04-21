@@ -24,6 +24,8 @@ npm run cap:open:ios       # opens Xcode
 npm run cap:open:android   # opens Android Studio
 ```
 
+`cap sync` rewrites `android/capacitor-cordova-android-plugins/build.gradle` with a `flatDir` block that triggers Gradle warnings. The `cap:sync`, `cap:open:android`, and `android:release` scripts run `node scripts/strip-android-flatdir.mjs` after sync to remove it automatically.
+
 ---
 
 ## iOS — App Store submission
