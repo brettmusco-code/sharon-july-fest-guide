@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Bell } from "lucide-react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
@@ -27,6 +27,7 @@ const formatWhen = (iso: string) => {
 };
 
 const MessagesBell = () => {
+  const queryClient = useQueryClient();
   const [open, setOpen] = useState(false);
   const [lastSeen, setLastSeen] = useState<number>(() => {
     const stored = localStorage.getItem(LAST_SEEN_KEY);
@@ -45,9 +46,10 @@ const MessagesBell = () => {
       return data as Message[];
     },
     refetchInterval: 60_000,
+    refetchOnWindowFocus: true,
   });
 
-  // Realtime updates
+  // Realtime: when an admin adds/edits/deletes a row, refresh the list immediately.
   useEffect(() => {
     const channel = supabase
       .channel("messages-public")
@@ -55,16 +57,14 @@ const MessagesBell = () => {
         "postgres_changes",
         { event: "*", schema: "public", table: "messages" },
         () => {
-          // Trigger refetch via query invalidation isn't available here without queryClient,
-          // but refetchInterval will pick it up; force a quick refresh:
-          window.dispatchEvent(new Event("messages-changed"));
+          void queryClient.invalidateQueries({ queryKey: ["messages"] });
         },
       )
       .subscribe();
     return () => {
-      supabase.removeChannel(channel);
+      void supabase.removeChannel(channel);
     };
-  }, []);
+  }, [queryClient]);
 
   const unreadCount = messages.filter(
     (m) => new Date(m.created_at).getTime() > lastSeen,
