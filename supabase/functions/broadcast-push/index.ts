@@ -97,6 +97,7 @@ Deno.serve(async (req) => {
   const tokenRes = await client.getAccessToken();
   const accessToken = tokenRes?.token;
   if (!accessToken) {
+    await finalize({ status: "error", error: "no oauth token" });
     return new Response(JSON.stringify({ ok: false, error: "no oauth token" }), {
       status: 500,
       headers: { ...cors, "Content-Type": "application/json" },
@@ -133,8 +134,16 @@ Deno.serve(async (req) => {
     else failed++;
   }
 
+  const total = rows?.length ?? 0;
+  await finalize({
+    status: failed === 0 ? "success" : sent === 0 ? "error" : "partial",
+    sent,
+    failed,
+    total,
+  });
+
   return new Response(
-    JSON.stringify({ ok: true, sent, failed, total: rows?.length ?? 0 }),
+    JSON.stringify({ ok: true, sent, failed, total }),
     { status: 200, headers: { ...cors, "Content-Type": "application/json" } },
   );
 });
