@@ -4,7 +4,9 @@ import path from "path";
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
-  base: "./",
+  // Capacitor (native iOS/Android) needs relative paths; web hosting needs absolute "/".
+  // Set CAPACITOR_BUILD=1 before `vite build` when building for native.
+  base: process.env.CAPACITOR_BUILD ? "./" : "/",
   server: {
     host: "::",
     port: 8080,
