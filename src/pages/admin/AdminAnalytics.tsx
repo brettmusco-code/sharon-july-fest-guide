@@ -23,6 +23,7 @@ interface AnalyticsRow {
   target_id: string | null;
   target_label: string | null;
   session_id: string | null;
+  ip_address: string | null;
   created_at: string;
 }
 
