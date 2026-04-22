@@ -3,10 +3,6 @@
 <plist version="1.0">
 <dict>
 	<key>aps-environment</key>
-<<<<<<< HEAD
-	<string>production</string>
-=======
 	<string>$(APS_ENVIRONMENT)</string>
->>>>>>> 37c2188 (fix(ios): FCM token for push (Firebase, AppDelegate, aps build setting))
 </dict>
 </plist>
