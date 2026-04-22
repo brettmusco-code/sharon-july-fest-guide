@@ -23,6 +23,7 @@ interface AnalyticsRow {
   target_id: string | null;
   target_label: string | null;
   session_id: string | null;
+  ip_address: string | null;
   created_at: string;
 }
 
@@ -44,12 +45,12 @@ const AdminAnalytics = () => {
       const since = subDays(new Date(), days).toISOString();
       const { data, error } = await supabase
         .from("analytics_events")
-        .select("id, event_type, target_id, target_label, session_id, created_at")
+        .select("id, event_type, target_id, target_label, session_id, ip_address, created_at")
         .gte("created_at", since)
         .order("created_at", { ascending: false })
         .limit(10000);
       if (error) throw error;
-      return data ?? [];
+      return (data ?? []) as AnalyticsRow[];
     },
   });
 
@@ -59,30 +60,35 @@ const AdminAnalytics = () => {
     const sponsorClicks = rows.filter((r) => r.event_type === "sponsor_click").length;
     const mapPinClicks = rows.filter((r) => r.event_type === "map_pin_click").length;
     const faqOpens = rows.filter((r) => r.event_type === "faq_open").length;
-    const uniqueSessions = new Set(rows.map((r) => r.session_id).filter(Boolean)).size;
-    return { visits, eventClicks, sponsorClicks, mapPinClicks, faqOpens, uniqueSessions };
+    // Unique visitors are counted by IP address across the whole site.
+    // Fall back to session_id only if IP wasn't captured (older rows).
+    const uniqueVisitors = new Set(
+      rows.map((r) => r.ip_address ?? (r.session_id ? `s:${r.session_id}` : null)).filter(Boolean),
+    ).size;
+    return { visits, eventClicks, sponsorClicks, mapPinClicks, faqOpens, uniqueSessions: uniqueVisitors };
   }, [rows]);
 
   const dailyData = useMemo(() => {
     const buckets: Record<
       string,
-      { date: string; visits: number; visitors: number; events: number; sponsors: number; _sessions: Set<string> }
+      { date: string; visits: number; visitors: number; events: number; sponsors: number; _ips: Set<string> }
     > = {};
     for (let i = days - 1; i >= 0; i--) {
       const d = format(subDays(new Date(), i), "MMM d");
-      buckets[d] = { date: d, visits: 0, visitors: 0, events: 0, sponsors: 0, _sessions: new Set() };
+      buckets[d] = { date: d, visits: 0, visitors: 0, events: 0, sponsors: 0, _ips: new Set() };
     }
     rows.forEach((r) => {
       const key = format(startOfDay(new Date(r.created_at)), "MMM d");
       if (!buckets[key]) return;
-      if (r.session_id) buckets[key]._sessions.add(r.session_id);
+      const visitorKey = r.ip_address ?? (r.session_id ? `s:${r.session_id}` : null);
+      if (visitorKey) buckets[key]._ips.add(visitorKey);
       if (r.event_type === "page_visit") buckets[key].visits++;
       else if (r.event_type === "event_click") buckets[key].events++;
       else if (r.event_type === "sponsor_click") buckets[key].sponsors++;
     });
-    return Object.values(buckets).map(({ _sessions, ...rest }) => ({
+    return Object.values(buckets).map(({ _ips, ...rest }) => ({
       ...rest,
-      visitors: _sessions.size,
+      visitors: _ips.size,
     }));
   }, [rows, days]);
 
