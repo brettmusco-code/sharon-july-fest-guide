@@ -155,9 +155,16 @@ The app registers for push on **native** builds and saves an **FCM device token*
 4. **iOS only:** Firebase → Project settings → Cloud Messaging → upload your **APNs Authentication Key (.p8)** (create in Apple Developer → Keys).
 5. **Service account:** Firebase → Project settings → Service accounts → **Generate new private key** JSON. You will paste this JSON (as a single-line secret) into Supabase for the Edge Function.
 
-### 2. Apple Xcode capability
+### 2. Apple Xcode capability (one-time, required)
 
-Open **`npm run cap:open:ios`**, select the **App** target → **Signing & Capabilities** → **+ Capability** → **Push Notifications**.
+Open **`npm run cap:open:ios`**, select the **App** target → **Signing & Capabilities** →
+
+1. **+ Capability → Push Notifications** (this picks up `ios/App/App/App.entitlements`).
+2. **+ Capability → Background Modes** → tick **Remote notifications**.
+3. Drag **`ios/App/App/GoogleService-Info.plist`** into the **App** group in Xcode's left sidebar (check "Copy items if needed" + add to the App target). Without this file, `FirebaseApp.configure()` crashes on launch.
+4. If the linker can't find Firebase, in **App target → General → Frameworks, Libraries, and Embedded Content**, add **FirebaseCore** and **FirebaseMessaging** from the SPM package.
+
+iOS now goes through Firebase the same way Android does: APNs delivers the device token → Firebase Messaging mints an FCM token → the JS layer saves the FCM token in `device_push_tokens` (platform = `ios`). The existing `broadcast-push` Edge Function works for both platforms unchanged.
 
 ### 3. Supabase database
 
