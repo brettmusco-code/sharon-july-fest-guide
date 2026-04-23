@@ -35,16 +35,16 @@ const FaqSection = () => {
   
 
   return (
-    <section id="faq" className="py-16 px-4 bg-background">
+    <section id="faq" className="py-10 px-4 bg-background">
       <div className="max-w-3xl mx-auto">
-        <div className="text-center mb-10">
-          <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-primary/10 text-primary mb-4">
-            <HelpCircle className="w-7 h-7" />
+        <div className="text-center mb-6">
+          <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-primary/10 text-primary mb-3">
+            <HelpCircle className="w-6 h-6" />
           </div>
-          <h2 className="font-heading text-4xl md:text-5xl text-foreground mb-3">
+          <h2 className="font-heading text-3xl md:text-4xl text-foreground mb-2">
             Info & FAQ
           </h2>
-          <p className="font-body text-muted-foreground text-lg">
+          <p className="font-body text-muted-foreground">
             Everything you need to know about the celebration.
           </p>
         </div>
@@ -85,7 +85,7 @@ const FaqSection = () => {
               ))}
             </Accordion>
 
-            <div className="text-center mt-8">
+            <div className="text-center mt-6">
               <Button asChild variant="outline" size="lg">
                 <Link to="/info">
                   See all FAQs

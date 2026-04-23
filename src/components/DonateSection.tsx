@@ -3,15 +3,15 @@ import { trackEvent } from "@/lib/analytics";
 
 const DonateSection = () => {
   return (
-    <section className="py-16 px-4 bg-secondary text-secondary-foreground">
+    <section className="py-10 px-4 bg-secondary text-secondary-foreground">
       <div className="max-w-3xl mx-auto text-center">
-        <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-firework-gold/20 mb-4">
-          <Heart className="w-7 h-7 text-firework-gold" fill="currentColor" />
+        <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-firework-gold/20 mb-3">
+          <Heart className="w-6 h-6 text-firework-gold" fill="currentColor" />
         </div>
-        <h2 className="font-heading text-4xl md:text-5xl mb-4">
+        <h2 className="font-heading text-3xl md:text-4xl mb-3">
           Fully Funded by Donations
         </h2>
-        <p className="font-body text-secondary-foreground/80 text-lg mb-8 leading-relaxed">
+        <p className="font-body text-secondary-foreground/80 mb-5 leading-relaxed">
           Each year, the Sharon Independence Day Celebration is funded entirely by your
           donations. We receive no financial support from the Town of Sharon. Every
           dollar helps keep this beloved tradition alive.

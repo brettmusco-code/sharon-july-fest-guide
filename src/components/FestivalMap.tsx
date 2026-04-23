@@ -46,14 +46,14 @@ const FestivalMap = ({ selectedEvent, onClearSelected, filter = "all", onFilterC
   }, [selectedEvent]);
 
   return (
-    <section id="map" className="bg-muted py-16">
+    <section id="map" className="bg-muted py-10">
       <div className="mx-auto w-full px-4">
-        <div className="mb-8 text-center">
-          <h2 className="font-heading mb-3 text-4xl text-foreground md:text-5xl">Celebration Map</h2>
-          <div className="mb-3 flex justify-center">
+        <div className="mb-5 text-center">
+          <h2 className="font-heading mb-2 text-3xl text-foreground md:text-4xl">Celebration Map</h2>
+          <div className="mb-2 flex justify-center">
             <WeatherWidget />
           </div>
-          <p className="font-body text-lg text-muted-foreground">
+          <p className="font-body text-sm text-muted-foreground">
             Pinch, scroll, or use the buttons to zoom • Tap a pin for details
           </p>
         </div>
