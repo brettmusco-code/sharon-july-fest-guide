@@ -4,6 +4,7 @@ import { ZoomIn, ZoomOut, Maximize2 } from "lucide-react";
 import { useEvents, useCategories, useMapSettings, FestivalEvent } from "@/hooks/useFestivalData";
 import { Button } from "@/components/ui/button";
 import { trackEvent } from "@/lib/analytics";
+import WeatherWidget from "@/components/WeatherWidget";
 import festivalMapFallback from "@/assets/festival-map.jpg";
 
 interface FestivalMapProps {
@@ -47,14 +48,17 @@ const FestivalMap = ({ selectedEvent, onClearSelected, filter = "all", onFilterC
   return (
     <section id="map" className="bg-muted py-16">
       <div className="mx-auto w-full px-4">
-        <div className="mb-10 text-center">
+        <div className="mb-8 text-center">
           <h2 className="font-heading mb-3 text-4xl text-foreground md:text-5xl">Celebration Map</h2>
+          <div className="mb-3 flex justify-center">
+            <WeatherWidget />
+          </div>
           <p className="font-body text-lg text-muted-foreground">
             Pinch, scroll, or use the buttons to zoom • Tap a pin for details
           </p>
         </div>
 
-        <div className="relative mx-auto overflow-hidden rounded-xl border-4 border-card shadow-xl bg-card w-full h-[min(85vh,1000px)]">
+        <div className="relative mx-auto overflow-hidden rounded-xl border-4 border-card shadow-xl bg-card aspect-[4/5] w-full">
           <TransformWrapper
             ref={transformRef}
             initialScale={1}
