@@ -34,14 +34,14 @@ const Index = () => {
         <MessagesBell />
       </div>
       <HeroSection />
-      <ScheduleSection
-        onEventClick={handleEventClick}
-        filter={categoryFilter}
-        onFilterChange={setCategoryFilter}
-      />
       <FestivalMap
         selectedEvent={selectedEvent}
         onClearSelected={() => setSelectedEvent(null)}
+        filter={categoryFilter}
+        onFilterChange={setCategoryFilter}
+      />
+      <ScheduleSection
+        onEventClick={handleEventClick}
         filter={categoryFilter}
         onFilterChange={setCategoryFilter}
       />
