@@ -26,11 +26,10 @@ const ScheduleSection = ({ onEventClick, filter: filterProp, onFilterChange }: S
   return (
     <section id="schedule" className="py-14 px-4 bg-background">
       <div className="max-w-4xl mx-auto">
-        <div className="text-center mb-8">
-          <h2 className="font-heading text-3xl md:text-4xl text-foreground mb-2">
+        <div className="text-center mb-6">
+          <h2 className="font-heading text-3xl md:text-4xl text-foreground">
             Schedule of Events
           </h2>
-          <p className="font-body text-muted-foreground">A full day of fun for the whole family!</p>
         </div>
 
         <div className="flex flex-wrap justify-center gap-2 mb-8">
