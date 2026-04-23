@@ -9,6 +9,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, MessagingDelegate {
     var window: UIWindow?
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+<<<<<<< HEAD
         // Initialize Firebase (reads GoogleService-Info.plist from the bundle).
         FirebaseApp.configure()
         Messaging.messaging().delegate = self
@@ -58,6 +59,64 @@ class AppDelegate: UIResponder, UIApplicationDelegate, MessagingDelegate {
     func applicationWillEnterForeground(_ application: UIApplication) {}
     func applicationDidBecomeActive(_ application: UIApplication) {}
     func applicationWillTerminate(_ application: UIApplication) {}
+=======
+        // Requires GoogleService-Info.plist in the app target (Firebase Console → iOS app).
+        FirebaseApp.configure()
+        return true
+    }
+
+    /// Forwards the FCM registration token to @capacitor/push-notifications (same token type Android uses; required for FCM v1 on the server).
+    func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
+        Messaging.messaging().apnsToken = deviceToken
+        Messaging.messaging().token { token, error in
+            if let error = error {
+                NotificationCenter.default.post(
+                    name: .capacitorDidFailToRegisterForRemoteNotifications,
+                    object: error
+                )
+                return
+            }
+            guard let token = token, !token.isEmpty else {
+                let err = NSError(
+                    domain: "AppDelegate",
+                    code: 0,
+                    userInfo: [NSLocalizedDescriptionKey: "Empty FCM token; check GoogleService-Info.plist and APNs in Firebase Cloud Messaging"]
+                )
+                NotificationCenter.default.post(
+                    name: .capacitorDidFailToRegisterForRemoteNotifications,
+                    object: err
+                )
+                return
+            }
+            NotificationCenter.default.post(
+                name: .capacitorDidRegisterForRemoteNotifications,
+                object: token
+            )
+        }
+    }
+
+    func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
+        NotificationCenter.default.post(
+            name: .capacitorDidFailToRegisterForRemoteNotifications,
+            object: error
+        )
+    }
+
+    func applicationWillResignActive(_ application: UIApplication) {
+    }
+
+    func applicationDidEnterBackground(_ application: UIApplication) {
+    }
+
+    func applicationWillEnterForeground(_ application: UIApplication) {
+    }
+
+    func applicationDidBecomeActive(_ application: UIApplication) {
+    }
+
+    func applicationWillTerminate(_ application: UIApplication) {
+    }
+>>>>>>> 37c2188 (fix(ios): FCM token for push (Firebase, AppDelegate, aps build setting))
 
     func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey: Any] = [:]) -> Bool {
         return ApplicationDelegateProxy.shared.application(app, open: url, options: options)
