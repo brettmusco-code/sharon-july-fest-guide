@@ -54,7 +54,7 @@ const FestivalMap = ({ selectedEvent, onClearSelected, filter = "all", onFilterC
           </p>
         </div>
 
-        <div className="relative mx-auto overflow-hidden rounded-xl border-4 border-card shadow-xl bg-card aspect-[4/5] w-full">
+        <div className="relative mx-auto overflow-hidden rounded-xl border-4 border-card shadow-xl bg-card w-full h-[min(85vh,1000px)]">
           <TransformWrapper
             ref={transformRef}
             initialScale={1}
