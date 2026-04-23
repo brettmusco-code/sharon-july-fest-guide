@@ -58,7 +58,7 @@ const FestivalMap = ({ selectedEvent, onClearSelected, filter = "all", onFilterC
           </p>
         </div>
 
-        <div className="mx-auto mb-4 max-w-3xl rounded-lg border bg-card p-3 shadow-sm">
+        <div className="mx-auto mb-4 max-w-3xl">
           <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-2">
             <button
               type="button"
