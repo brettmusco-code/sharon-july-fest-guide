@@ -30,18 +30,18 @@ const sponsors = [
 
 const Sponsors = () => {
   return (
-    <section id="sponsors" className="py-16 px-4 bg-muted/30">
+    <section id="sponsors" className="py-10 px-4 bg-muted/30">
       <div className="max-w-5xl mx-auto">
-        <div className="text-center mb-10">
-          <h2 className="font-heading text-4xl md:text-5xl text-foreground mb-3">
+        <div className="text-center mb-6">
+          <h2 className="font-heading text-3xl md:text-4xl text-foreground mb-2">
             Our Corporate Sponsors
           </h2>
-          <p className="font-body text-muted-foreground text-lg">
+          <p className="font-body text-muted-foreground">
             Thanks to these wonderful businesses for supporting our celebration!
           </p>
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
           {sponsors.map((sponsor) => (
             <a
               key={sponsor.name}
