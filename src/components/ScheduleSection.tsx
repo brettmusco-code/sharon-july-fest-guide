@@ -24,16 +24,15 @@ const ScheduleSection = ({ onEventClick, filter: filterProp, onFilterChange }: S
   const filteredEvents = filter === "all" ? events : events.filter((e) => e.category_slug === filter);
 
   return (
-    <section id="schedule" className="py-14 px-4 bg-background">
+    <section id="schedule" className="py-10 px-4 bg-background">
       <div className="max-w-4xl mx-auto">
-        <div className="text-center mb-8">
-          <h2 className="font-heading text-3xl md:text-4xl text-foreground mb-2">
+        <div className="text-center mb-5">
+          <h2 className="font-heading text-3xl md:text-4xl text-foreground">
             Schedule of Events
           </h2>
-          <p className="font-body text-muted-foreground">A full day of fun for the whole family!</p>
         </div>
 
-        <div className="flex flex-wrap justify-center gap-2 mb-8">
+        <div className="flex flex-wrap justify-center gap-2 mb-6">
           <button
             onClick={() => setFilter("all")}
             className={`inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full text-sm font-body font-medium border-2 transition-all ${
