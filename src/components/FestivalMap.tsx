@@ -58,6 +58,46 @@ const FestivalMap = ({ selectedEvent, onClearSelected, filter = "all", onFilterC
           </p>
         </div>
 
+        <div className="mx-auto mb-4 max-w-3xl rounded-lg border bg-card p-3 shadow-sm">
+          <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-2">
+            <button
+              type="button"
+              onClick={() => onFilterChange?.("all")}
+              className={`inline-flex items-center gap-1.5 rounded-full border-2 px-3 py-1 text-xs font-body font-medium transition-all ${
+                filter === "all"
+                  ? "border-foreground bg-foreground text-background"
+                  : "border-border text-foreground hover:border-foreground"
+              }`}
+              aria-pressed={filter === "all"}
+            >
+              All
+            </button>
+            {categories.map((cat) => {
+              const active = filter === cat.slug;
+              return (
+                <button
+                  key={cat.slug}
+                  type="button"
+                  onClick={() => onFilterChange?.(active ? "all" : cat.slug)}
+                  className="inline-flex items-center gap-1.5 rounded-full border-2 px-3 py-1 text-xs font-body font-medium transition-all"
+                  style={{
+                    borderColor: cat.color,
+                    background: active ? cat.color : "transparent",
+                    color: active ? "#fff" : cat.color,
+                  }}
+                  aria-pressed={active}
+                >
+                  <span
+                    className="h-2.5 w-2.5 flex-shrink-0 rounded-full"
+                    style={{ background: active ? "#fff" : cat.color }}
+                  />
+                  <span className="capitalize">{cat.name}</span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
         <div className="relative mx-auto overflow-hidden rounded-xl border-4 border-card shadow-xl bg-card aspect-[4/5] w-full">
           <TransformWrapper
             ref={transformRef}
@@ -228,45 +268,6 @@ const FestivalMap = ({ selectedEvent, onClearSelected, filter = "all", onFilterC
 
         </div>
 
-        <div className="mx-auto mt-4 max-w-3xl rounded-lg border bg-card p-3 shadow-sm">
-          <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-2">
-            <button
-              type="button"
-              onClick={() => onFilterChange?.("all")}
-              className={`inline-flex items-center gap-1.5 rounded-full border-2 px-3 py-1 text-xs font-body font-medium transition-all ${
-                filter === "all"
-                  ? "border-foreground bg-foreground text-background"
-                  : "border-border text-foreground hover:border-foreground"
-              }`}
-              aria-pressed={filter === "all"}
-            >
-              All
-            </button>
-            {categories.map((cat) => {
-              const active = filter === cat.slug;
-              return (
-                <button
-                  key={cat.slug}
-                  type="button"
-                  onClick={() => onFilterChange?.(active ? "all" : cat.slug)}
-                  className="inline-flex items-center gap-1.5 rounded-full border-2 px-3 py-1 text-xs font-body font-medium transition-all"
-                  style={{
-                    borderColor: cat.color,
-                    background: active ? cat.color : "transparent",
-                    color: active ? "#fff" : cat.color,
-                  }}
-                  aria-pressed={active}
-                >
-                  <span
-                    className="h-2.5 w-2.5 flex-shrink-0 rounded-full"
-                    style={{ background: active ? "#fff" : cat.color }}
-                  />
-                  <span className="capitalize">{cat.name}</span>
-                </button>
-              );
-            })}
-          </div>
-        </div>
       </div>
     </section>
   );
