@@ -41,7 +41,7 @@ const ScheduleSection = ({ onEventClick, filter: filterProp, onFilterChange }: S
                 : "border-border text-foreground hover:border-foreground"
             }`}
           >
-            All Events
+            All
           </button>
           {categories.map((cat) => {
             const active = filter === cat.slug;
