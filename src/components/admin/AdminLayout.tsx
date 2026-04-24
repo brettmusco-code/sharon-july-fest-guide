@@ -15,6 +15,7 @@ const tabs = [
   { to: "/admin/faqs", label: "FAQs", icon: HelpCircle, end: false },
   { to: "/admin/questions", label: "Questions", icon: MessageCircleQuestion, end: false },
   { to: "/admin/analytics", label: "Analytics", icon: BarChart3, end: false },
+  { to: "/admin/sponsors", label: "Sponsors", icon: Handshake, end: false },
 ];
 
 const AdminLayout = ({ children }: { children: ReactNode }) => {
