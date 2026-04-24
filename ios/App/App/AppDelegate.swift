@@ -8,14 +8,38 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
 
+    /// Set when `GoogleService-Info.plist` is present in the app bundle and Firebase started.
+    private var isFirebaseConfigured = false
+
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        // GoogleService-Info.plist must be in the app target.
-        FirebaseApp.configure()
+        if hasGoogleServicePlist {
+            FirebaseApp.configure()
+            isFirebaseConfigured = true
+        } else {
+            // Plist is gitignored; add it from Firebase Console and include it in the App target, or the app will run without FCM / push.
+            print("[App] GoogleService-Info.plist not in bundle — skipping Firebase. Add the file to the App target for push (see ios/.gitignore note).")
+        }
         return true
+    }
+
+    private var hasGoogleServicePlist: Bool {
+        Bundle.main.path(forResource: "GoogleService-Info", ofType: "plist") != nil
     }
 
     /// APNs → FCM string → Capacitor (same long token as Android; required for FCM v1 in broadcast-push).
     func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
+        guard isFirebaseConfigured else {
+            let err = NSError(
+                domain: "AppDelegate",
+                code: 0,
+                userInfo: [NSLocalizedDescriptionKey: "Add GoogleService-Info.plist to the App target (from Firebase Console) to enable FCM push."]
+            )
+            NotificationCenter.default.post(
+                name: .capacitorDidFailToRegisterForRemoteNotifications,
+                object: err
+            )
+            return
+        }
         Messaging.messaging().apnsToken = deviceToken
         Messaging.messaging().token { token, error in
             if let error = error {
