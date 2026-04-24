@@ -26,6 +26,16 @@ npm run cap:open:android   # opens Android Studio
 
 `cap sync` rewrites `android/capacitor-cordova-android-plugins/build.gradle` with a `flatDir` block that triggers Gradle warnings. The `cap:sync`, `cap:open:android`, and `android:release` scripts run `node scripts/strip-android-flatdir.mjs` after sync to remove it automatically.
 
+### Use your own Supabase (cut over from Lovable)
+
+1. In the [Supabase dashboard](https://supabase.com/dashboard) → **Settings → API**, copy **Project URL**, the **project ref** (the subdomain before `.supabase.co`), and the **anon public** key (long `eyJ…` string — not `service_role`).
+2. In the project root, copy **`.env.example`** to **`.env`** and set `VITE_SUPABASE_URL`, `VITE_SUPABASE_PROJECT_ID`, and `VITE_SUPABASE_PUBLISHABLE_KEY`. Trailing spaces will break the client.
+3. In Lovable, **Connectors → Lovable Cloud → Disable Cloud** if you use it, so the repo is not overwritten. (This is one-way; test your new project first.)
+4. **Optional:** In **`vite.config.ts`**, set the `FALLBACK_SUPABASE_*` strings to the same public URL, anon key, and ref as step 1 so `vite build` works in CI or environments without a `.env`. If you leave them empty, you must always build with a real `.env`.
+5. In the new project, run **all** SQL migrations in order (SQL Editor, or `supabase link` + `db push` if you use the CLI and own the project). Then **link the CLI** if you deploy functions: `supabase link --project-ref <ref>` and update `supabase/config.toml` or let `link` do it.
+6. **Server push (Postgres `net.http_post` trigger):** After migration `20260501000000_push_url_from_app_config.sql` is applied, insert **`app_config`** rows (see **`.env.example`**): `push_edge_function_url` = full `https://<ref>.supabase.co/functions/v1/broadcast-push`, and `push_webhook_secret` = same string as Edge Function secret **`PUSH_WEBHOOK_SECRET`**. Deploy **`broadcast-push`** to the new project and set Edge secrets (`FIREBASE_SERVICE_ACCOUNT_JSON`, `PUSH_WEBHOOK_SECRET`). The `messages` insert trigger calls the function over HTTP; you do not need a separate Dashboard “Database Webhook” if this path is configured.
+7. Run `npm run dev` and test admin + public flows; then `npm run cap:sync` and new store builds (bump **Android `versionCode`** and **iOS build number** each upload).
+
 ### Copy old Supabase data into your new project
 
 After migrations run on the **new** project, use **`scripts/migrate-supabase-data.mjs`**: set `MIGRATE_OLD_URL`, `MIGRATE_OLD_ANON_KEY`, `MIGRATE_NEW_URL`, and `MIGRATE_NEW_SERVICE_ROLE_KEY`, then run `node scripts/migrate-supabase-data.mjs`. It does **not** copy `auth.users` or `user_roles` — recreate admin accounts in the new project’s **Authentication** UI first if needed.

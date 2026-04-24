@@ -2,13 +2,12 @@ import { defineConfig, loadEnv } from "vite";
 import react from "@vitejs/plugin-react-swc";
 import path from "path";
 
-// Public Supabase project values for this app. Safe to commit (URL + anon key
-// are published to every browser anyway). Used as fallbacks when the build
-// host doesn't inject the VITE_SUPABASE_* env vars (e.g. published web build).
-const FALLBACK_SUPABASE_URL = "https://uncnkmgaoawksbfncnkm.supabase.co";
-const FALLBACK_SUPABASE_PUBLISHABLE_KEY =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVuY25rbWdhb2F3a3NiZm5jbmttIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY0NjEzODEsImV4cCI6MjA5MjAzNzM4MX0.m-u6QMd2F36z_btDNnOH03FlrcNdD00bsaoxbctq624";
-const FALLBACK_SUPABASE_PROJECT_ID = "uncnkmgaoawksbfncnkm";
+// After you move off Lovable, set these to YOUR Supabase project (Settings → API),
+// or leave empty and always build with `.env` so you never point at the wrong project.
+// URL + anon key are not secret in the client; they are safe to commit if you use fallbacks.
+const FALLBACK_SUPABASE_URL = "";
+const FALLBACK_SUPABASE_PUBLISHABLE_KEY = "";
+const FALLBACK_SUPABASE_PROJECT_ID = "";
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {
