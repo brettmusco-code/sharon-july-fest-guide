@@ -23,9 +23,10 @@ Deno.serve(async (req) => {
     return new Response("ok", { headers: cors });
   }
 
-  const expected = Deno.env.get("PUSH_WEBHOOK_SECRET");
-  const got = req.headers.get("x-webhook-secret");
-  if (!expected || got !== expected) {
+  // Trim: dashboard/CLI pastes often include trailing newlines, which break ===.
+  const expected = Deno.env.get("PUSH_WEBHOOK_SECRET")?.trim();
+  const got = req.headers.get("x-webhook-secret")?.trim();
+  if (!expected || !got || got !== expected) {
     return new Response(JSON.stringify({ ok: false, error: "unauthorized" }), {
       status: 401,
       headers: { ...cors, "Content-Type": "application/json" },
