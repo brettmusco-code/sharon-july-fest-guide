@@ -14,8 +14,8 @@ const calc = () => {
 };
 
 const Cell = ({ value, label }: { value: number; label: string }) => (
-  <div className="flex flex-col items-center">
-    <div className="font-heading text-2xl md:text-4xl text-firework-gold tabular-nums leading-none">
+  <div className="flex flex-col items-center w-[2.25ch] md:w-[2.5ch]">
+    <div className="font-heading text-2xl md:text-4xl text-firework-gold tabular-nums leading-none text-center">
       {value.toString().padStart(2, "0")}
     </div>
     <div className="font-body text-[10px] md:text-xs uppercase tracking-wider text-primary-foreground/70 mt-1">
