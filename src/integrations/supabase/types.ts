@@ -231,6 +231,7 @@ export type Database = {
           body: string
           created_at: string
           id: string
+          pushed_at: string | null
           scheduled_for: string | null
           title: string
           updated_at: string
@@ -239,6 +240,7 @@ export type Database = {
           body?: string
           created_at?: string
           id?: string
+          pushed_at?: string | null
           scheduled_for?: string | null
           title: string
           updated_at?: string
@@ -247,6 +249,7 @@ export type Database = {
           body?: string
           created_at?: string
           id?: string
+          pushed_at?: string | null
           scheduled_for?: string | null
           title?: string
           updated_at?: string
@@ -357,6 +360,7 @@ export type Database = {
     }
     Functions: {
       claim_admin: { Args: never; Returns: boolean }
+      dispatch_scheduled_messages: { Args: never; Returns: undefined }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -368,6 +372,7 @@ export type Database = {
         Args: { p_platform: string; p_token: string }
         Returns: undefined
       }
+      send_message_push: { Args: { _message_id: string }; Returns: undefined }
     }
     Enums: {
       app_role: "admin" | "user"
