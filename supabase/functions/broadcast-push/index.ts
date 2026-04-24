@@ -11,7 +11,7 @@
  * with header `x-webhook-secret: <PUSH_WEBHOOK_SECRET>`.
  */
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.49.4";
-import { GoogleAuth } from "npm:google-auth-library@9.14.2";
+import { GoogleAuth } from "https://esm.sh/google-auth-library@9.14.2";
 
 const cors = {
   "Access-Control-Allow-Origin": "*",
