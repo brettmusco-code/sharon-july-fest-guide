@@ -93,7 +93,9 @@ const AdminSponsors = () => {
     } else {
       const nextOrder = sponsors.length > 0 ? Math.max(...sponsors.map((s) => s.sort_order)) + 10 : 10;
       const { error } = await supabase.from("sponsors").insert({
-        ...parsed.data,
+        name: parsed.data.name,
+        url: parsed.data.url,
+        logo_url: parsed.data.logo_url,
         sort_order: nextOrder,
       });
       if (error) {
