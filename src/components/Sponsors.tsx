@@ -1,34 +1,29 @@
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 import { trackEvent } from "@/lib/analytics";
 
-const sponsors = [
-  {
-    name: "Dedham Savings",
-    url: "https://www.dedhamsavings.com/",
-    logo: "https://sharonjuly4.org/uploads/1/1/7/7/117790431/dedham-logo-vertical-color_orig.png",
-  },
-  {
-    name: "Dunkin'",
-    url: "https://www.dunkindonuts.com/en",
-    logo: "https://sharonjuly4.org/uploads/1/1/7/7/117790431/dunkin-logo-mid_orig.jpeg",
-  },
-  {
-    name: "Koopman Lumber",
-    url: "https://koopmanlumber.com/",
-    logo: "https://sharonjuly4.org/uploads/1/1/7/7/117790431/koopman2_orig.png",
-  },
-  {
-    name: "The Needle Group",
-    url: "https://www.theneedlegroup.com/",
-    logo: "https://sharonjuly4.org/uploads/1/1/7/7/117790431/needle-sj4_orig.png",
-  },
-  {
-    name: "Orchard Cove",
-    url: "https://www.hebrewseniorlife.org/orchard-cove",
-    logo: "https://sharonjuly4.org/uploads/1/1/7/7/117790431/orchardcove_orig.jpeg",
-  },
-];
+interface Sponsor {
+  id: string;
+  name: string;
+  url: string;
+  logo_url: string;
+}
 
 const Sponsors = () => {
+  const { data: sponsors = [] } = useQuery({
+    queryKey: ["sponsors"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("sponsors")
+        .select("id, name, url, logo_url")
+        .order("sort_order", { ascending: true });
+      if (error) throw error;
+      return data as Sponsor[];
+    },
+  });
+
+  if (sponsors.length === 0) return null;
+
   return (
     <section id="sponsors" className="py-10 px-4 bg-muted/30">
       <div className="max-w-5xl mx-auto">
@@ -44,7 +39,7 @@ const Sponsors = () => {
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
           {sponsors.map((sponsor) => (
             <a
-              key={sponsor.name}
+              key={sponsor.id}
               href={sponsor.url}
               target="_blank"
               rel="noopener noreferrer"
@@ -53,7 +48,7 @@ const Sponsors = () => {
               aria-label={`Visit ${sponsor.name}`}
             >
               <img
-                src={sponsor.logo}
+                src={sponsor.logo_url}
                 alt={`${sponsor.name} logo`}
                 loading="lazy"
                 className="max-h-full max-w-full object-contain group-hover:scale-105 transition-transform duration-200"
