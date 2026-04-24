@@ -2,7 +2,7 @@ import { ReactNode, useState } from "react";
 import { Navigate, NavLink, useLocation } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
-import { Calendar, Map, Tag, LogOut, Home, ShieldCheck, MessageSquare, HelpCircle, BarChart3, MessageCircleQuestion } from "lucide-react";
+import { Calendar, Map, Tag, LogOut, Home, ShieldCheck, MessageSquare, HelpCircle, BarChart3, MessageCircleQuestion, Handshake } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useQueryClient } from "@tanstack/react-query";
