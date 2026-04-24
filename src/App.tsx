@@ -15,6 +15,7 @@ import AdminMessages from "./pages/admin/AdminMessages.tsx";
 import AdminFaqs from "./pages/admin/AdminFaqs.tsx";
 import AdminQuestions from "./pages/admin/AdminQuestions.tsx";
 import AdminAnalytics from "./pages/admin/AdminAnalytics.tsx";
+import AdminSponsors from "./pages/admin/AdminSponsors.tsx";
 import NotFound from "./pages/NotFound.tsx";
 import { PushNotificationsRegister } from "@/components/PushNotificationsRegister";
 
