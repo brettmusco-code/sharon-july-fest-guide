@@ -6,8 +6,6 @@ import FirebaseMessaging
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
-    var window: UIWindow?
-
     /// Set when `GoogleService-Info.plist` is present in the app bundle and Firebase started.
     private var isFirebaseConfigured = false
 
@@ -20,6 +18,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             print("[App] GoogleService-Info.plist not in bundle — skipping Firebase. Add the file to the App target for push (see ios/.gitignore note).")
         }
         return true
+    }
+
+    // MARK: - UIScene session
+
+    func application(
+        _ application: UIApplication,
+        configurationForConnecting connectingSceneSession: UISceneSession,
+        options: UIScene.ConnectionOptions
+    ) -> UISceneConfiguration {
+        UISceneConfiguration(name: "Default Configuration", sessionRole: connectingSceneSession.role)
     }
 
     private var hasGoogleServicePlist: Bool {
