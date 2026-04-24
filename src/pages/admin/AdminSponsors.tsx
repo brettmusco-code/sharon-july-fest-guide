@@ -42,7 +42,7 @@ const AdminSponsors = () => {
   const [deleteId, setDeleteId] = useState<string | null>(null);
 
   const { data: sponsors = [], isLoading } = useQuery({
-    queryKey: ["admin-sponsors"],
+    queryKey: ["sponsors"],
     queryFn: async () => {
       const { data, error } = await supabase
         .from("sponsors")
@@ -54,7 +54,6 @@ const AdminSponsors = () => {
   });
 
   const refresh = () => {
-    qc.invalidateQueries({ queryKey: ["admin-sponsors"] });
     qc.invalidateQueries({ queryKey: ["sponsors"] });
   };
 

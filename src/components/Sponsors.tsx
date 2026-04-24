@@ -7,6 +7,7 @@ interface Sponsor {
   name: string;
   url: string;
   logo_url: string;
+  sort_order: number;
 }
 
 const Sponsors = () => {
@@ -15,11 +16,13 @@ const Sponsors = () => {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("sponsors")
-        .select("id, name, url, logo_url")
+        .select("id, name, url, logo_url, sort_order")
         .order("sort_order", { ascending: true });
       if (error) throw error;
       return data as Sponsor[];
     },
+    staleTime: 0,
+    refetchOnMount: "always",
   });
 
   if (sponsors.length === 0) return null;
