@@ -1,2 +1,0 @@
-[functions.submit-photo]
-verify_jwt = false
