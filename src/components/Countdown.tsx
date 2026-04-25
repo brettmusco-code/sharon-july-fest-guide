@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
+import { usePublicConfig } from "@/hooks/usePublicConfig";
 
-const TARGET = new Date("2026-07-03T17:00:00-04:00").getTime();
+const FALLBACK_TARGET = new Date("2026-07-03T21:15:00-04:00").getTime();
 
-const calc = () => {
-  const diff = Math.max(0, TARGET - Date.now());
+const calcFor = (target: number) => {
+  const diff = Math.max(0, target - Date.now());
   return {
     d: Math.floor(diff / 86400000),
     h: Math.floor((diff % 86400000) / 3600000),
@@ -25,12 +26,19 @@ const Cell = ({ value, label }: { value: number; label: string }) => (
 );
 
 const Countdown = () => {
-  const [t, setT] = useState(calc());
+  const { data: config } = usePublicConfig();
+  const target = config?.fireworks_at
+    ? new Date(config.fireworks_at).getTime()
+    : FALLBACK_TARGET;
+  const validTarget = Number.isFinite(target) ? target : FALLBACK_TARGET;
+
+  const [t, setT] = useState(() => calcFor(validTarget));
 
   useEffect(() => {
-    const id = setInterval(() => setT(calc()), 1000);
+    setT(calcFor(validTarget));
+    const id = setInterval(() => setT(calcFor(validTarget)), 1000);
     return () => clearInterval(id);
-  }, []);
+  }, [validTarget]);
 
   if (t.done) {
     return (
@@ -43,7 +51,7 @@ const Countdown = () => {
   return (
     <div
       className="inline-flex items-center gap-3 md:gap-5 rounded-xl border border-primary-foreground/10 bg-primary-foreground/5 backdrop-blur-sm px-5 py-3 md:px-7 md:py-4"
-      aria-label="Countdown to July 3, 2026"
+      aria-label="Countdown to fireworks"
     >
       <Cell value={t.d} label="Days" />
       <span className="text-firework-gold/40 text-2xl md:text-3xl font-heading">:</span>
