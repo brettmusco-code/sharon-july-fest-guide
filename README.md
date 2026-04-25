@@ -213,7 +213,7 @@ Then rebuild Android/iOS store binaries so Firebase config and the push plugin s
 ## Known follow-ups before going live
 
 - **Source icon is 512×512** and was upscaled to 1024×1024. For a crisp App Store icon, supply a true 1024×1024 master PNG (place at `store-assets/app-icon-1024.png`) and re-run the icon generation step in this README's git history.
-- Confirm the **privacy policy** contact block in `public/privacy-policy.html` uses the committee’s real email (the public URL is in the checklist above).
+- The **privacy policy** in `public/privacy-policy.html` is updated for push, Firebase, and admin accounts; confirm the **contact email** in that file is the one you want on the stores.
 - Configure the iOS **Status Bar** style if it clashes with the app header (currently `black-translucent`).
 - Consider tightening `UISupportedInterfaceOrientations` to portrait-only if landscape layouts aren't polished.
 - Before the first Play upload, generate & **back up** `android/release.keystore` in a password manager — losing it means you can never update the app.
