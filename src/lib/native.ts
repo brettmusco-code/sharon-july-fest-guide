@@ -77,10 +77,13 @@ export async function shareSomething(opts: {
     }
   }
 
+  const nav: (Navigator & { clipboard?: Clipboard }) | undefined =
+    typeof navigator !== "undefined" ? navigator : undefined;
+
   // Web Share API (Safari/Chrome on mobile)
-  if (typeof navigator !== "undefined" && "share" in navigator) {
+  if (nav && typeof nav.share === "function") {
     try {
-      await (navigator as Navigator).share({
+      await nav.share({
         title: opts.title,
         text: opts.text,
         url: opts.url,
@@ -93,14 +96,14 @@ export async function shareSomething(opts: {
   }
 
   // Clipboard fallback
-  try {
-    if (typeof navigator !== "undefined" && navigator.clipboard?.writeText) {
+  if (nav?.clipboard?.writeText) {
+    try {
       const payload = [opts.title, opts.text, opts.url].filter(Boolean).join("\n");
-      await navigator.clipboard.writeText(payload);
+      await nav.clipboard.writeText(payload);
       return true;
+    } catch {
+      /* ignore */
     }
-  } catch {
-    /* ignore */
   }
   return false;
 }
