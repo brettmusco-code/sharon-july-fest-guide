@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { TransformWrapper, TransformComponent, ReactZoomPanPinchRef } from "react-zoom-pan-pinch";
-import { ZoomIn, ZoomOut, Maximize2 } from "lucide-react";
+import { ZoomIn, ZoomOut, Maximize2, X } from "lucide-react";
 import { useEvents, useCategories, useMapSettings, FestivalEvent } from "@/hooks/useFestivalData";
 import { Button } from "@/components/ui/button";
 import { trackEvent } from "@/lib/analytics";
