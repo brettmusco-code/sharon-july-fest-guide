@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
-import { ArrowLeft, HelpCircle } from "lucide-react";
+import { ArrowLeft, HelpCircle, Home } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
@@ -86,6 +86,15 @@ const Info = () => {
         )}
 
         <AskQuestion />
+
+        <div className="mt-10 flex justify-center">
+          <Button asChild size="lg" className="gap-2">
+            <Link to="/">
+              <Home className="w-4 h-4" />
+              Back to home
+            </Link>
+          </Button>
+        </div>
       </main>
 
       <Footer />
