@@ -86,6 +86,15 @@ const Info = () => {
         )}
 
         <AskQuestion />
+
+        <div className="mt-10 flex justify-center">
+          <Button asChild size="lg" className="gap-2">
+            <Link to="/">
+              <Home className="w-4 h-4" />
+              Back to home
+            </Link>
+          </Button>
+        </div>
       </main>
 
       <Footer />
