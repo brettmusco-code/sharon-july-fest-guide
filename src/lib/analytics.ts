@@ -12,7 +12,7 @@ const getSessionId = (): string => {
   return id;
 };
 
-type AnalyticsEventType = "page_visit" | "event_click" | "sponsor_click" | "faq_open" | "map_pin_click" | "question_submit";
+type AnalyticsEventType = "page_visit" | "event_click" | "sponsor_click" | "faq_open" | "map_pin_click" | "question_submit" | "photo_submit" | "share_event" | "share_map";
 
 export const trackEvent = async (
   eventType: AnalyticsEventType,
