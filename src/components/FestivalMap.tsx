@@ -129,32 +129,6 @@ const FestivalMap = ({ selectedEvent, onClearSelected, filter = "all", onFilterC
                       const isActive = displayedPin === event.id;
                       const color = colorFor(event.category_slug);
 
-                      // Smart popup placement to keep it inside the map area
-                      const placeBelow = event.pin_y < 30;
-                      // Horizontal shift: 0 = centered, -1 = left-aligned to pin, 1 = right-aligned to pin
-                      const horizontalAlign =
-                        event.pin_x < 22 ? "left" : event.pin_x > 78 ? "right" : "center";
-
-                      const popupPositionClass = [
-                        placeBelow ? "top-full mt-3" : "bottom-full mb-3",
-                        horizontalAlign === "center"
-                          ? "left-1/2 -translate-x-1/2"
-                          : horizontalAlign === "left"
-                            ? "left-0"
-                            : "right-0",
-                      ].join(" ");
-
-                      const arrowPositionClass = [
-                        placeBelow
-                          ? "bottom-full -mb-1.5 border-l-2 border-t-2"
-                          : "top-full -mt-1.5 border-r-2 border-b-2",
-                        horizontalAlign === "center"
-                          ? "left-1/2 -translate-x-1/2"
-                          : horizontalAlign === "left"
-                            ? "left-4"
-                            : "right-4",
-                      ].join(" ");
-
                       return (
                         <button
                           key={event.id}
@@ -191,46 +165,59 @@ const FestivalMap = ({ selectedEvent, onClearSelected, filter = "all", onFilterC
                               style={{ background: color }}
                             />
                           )}
-
-                          {isActive && (
-                            <div
-                              className={`absolute w-56 sm:w-64 bg-card rounded-xl border-2 shadow-xl p-3 text-left z-20 animate-fade-in ${popupPositionClass}`}
-                              style={{ borderColor: color }}
-                            >
-                              {event.image_url && (
-                                <img
-                                  src={event.image_url}
-                                  alt={event.title}
-                                  loading="lazy"
-                                  className="w-full h-24 object-cover rounded-md mb-2"
-                                />
-                              )}
-                              <div className="flex items-center gap-2 mb-1.5">
-                                <span className="text-xl leading-none">{event.icon}</span>
-                                <h3 className="font-heading text-base text-foreground leading-tight">
-                                  {event.title}
-                                </h3>
-                              </div>
-                              <p className="font-body text-xs text-muted-foreground mb-2 leading-relaxed">
-                                {event.description}
-                              </p>
-                              <div
-                                className="font-body text-[11px] font-bold"
-                                style={{ color }}
-                              >
-                                🕐 {event.time} &nbsp;•&nbsp; 📍 {event.location}
-                              </div>
-                              <div
-                                className={`absolute w-3 h-3 rotate-45 bg-card ${arrowPositionClass}`}
-                                style={{ borderColor: color }}
-                              />
-                            </div>
-                          )}
                         </button>
                       );
                     })}
                   </div>
                 </TransformComponent>
+
+                {/* Floating popup pinned to the map frame — always readable, never clipped */}
+                {(() => {
+                  const activeEvent = visibleEvents.find((e) => e.id === displayedPin);
+                  if (!activeEvent) return null;
+                  const color = colorFor(activeEvent.category_slug);
+                  return (
+                    <div
+                      className="absolute left-1/2 -translate-x-1/2 z-40 w-[calc(100%-1.5rem)] max-w-sm bg-card rounded-xl border-2 shadow-2xl p-3 text-left animate-fade-in"
+                      style={{
+                        borderColor: color,
+                        bottom: "calc(env(safe-area-inset-bottom, 0px) + 3.75rem)",
+                      }}
+                    >
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setActivePin(null);
+                          onClearSelected?.();
+                        }}
+                        aria-label="Close"
+                        className="absolute top-1.5 right-1.5 inline-flex h-7 w-7 items-center justify-center rounded-full bg-muted text-muted-foreground hover:bg-muted/80"
+                      >
+                        <X className="h-4 w-4" />
+                      </button>
+                      {activeEvent.image_url && (
+                        <img
+                          src={activeEvent.image_url}
+                          alt={activeEvent.title}
+                          loading="lazy"
+                          className="w-full h-24 object-cover rounded-md mb-2"
+                        />
+                      )}
+                      <div className="flex items-center gap-2 mb-1.5 pr-7">
+                        <span className="text-xl leading-none">{activeEvent.icon}</span>
+                        <h3 className="font-heading text-base text-foreground leading-tight">
+                          {activeEvent.title}
+                        </h3>
+                      </div>
+                      <p className="font-body text-xs text-muted-foreground mb-2 leading-relaxed">
+                        {activeEvent.description}
+                      </p>
+                      <div className="font-body text-[11px] font-bold" style={{ color }}>
+                        🕐 {activeEvent.time} &nbsp;•&nbsp; 📍 {activeEvent.location}
+                      </div>
+                    </div>
+                  );
+                })()}
 
                 {/* Zoom controls */}
                 <div className="absolute bottom-3 right-3 flex flex-col gap-1.5 z-30">
