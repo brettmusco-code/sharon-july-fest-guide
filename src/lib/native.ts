@@ -93,14 +93,14 @@ export async function shareSomething(opts: {
   }
 
   // Clipboard fallback
-  if (typeof navigator !== "undefined" && "clipboard" in navigator) {
-    try {
+  try {
+    if (typeof navigator !== "undefined" && navigator.clipboard?.writeText) {
       const payload = [opts.title, opts.text, opts.url].filter(Boolean).join("\n");
       await navigator.clipboard.writeText(payload);
       return true;
-    } catch {
-      return false;
     }
+  } catch {
+    /* ignore */
   }
   return false;
 }
