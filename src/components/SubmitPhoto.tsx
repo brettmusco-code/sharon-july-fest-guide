@@ -133,8 +133,21 @@ const SubmitPhoto = () => {
         <Camera className="w-5 h-5 text-primary" />
         <h3 className="font-heading text-xl">Share your festival photos</h3>
       </div>
-      <p className="text-sm text-muted-foreground mb-4">
+      <p className="text-sm text-muted-foreground mb-2">
         Send us your favorite shots from the celebration — we'd love to see them!
+      </p>
+      <p className="text-sm text-muted-foreground mb-4">
+        Follow{" "}
+        <a
+          href="https://instagram.com/sharonjuly4"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-primary underline underline-offset-2 hover:no-underline"
+        >
+          @sharonjuly4
+        </a>{" "}
+        and tag your photos with{" "}
+        <span className="font-medium">#sharon4thewin</span>
       </p>
 
       <form onSubmit={handleSubmit} className="space-y-4">
