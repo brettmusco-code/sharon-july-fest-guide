@@ -1,12 +1,11 @@
 import { useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Link } from "react-router-dom";
-import { ArrowLeft, HelpCircle, Home } from "lucide-react";
+import { HelpCircle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { Button } from "@/components/ui/button";
 import Footer from "@/components/Footer";
 import AskQuestion from "@/components/AskQuestion";
+import AppMenu from "@/components/AppMenu";
 import { trackEvent } from "@/lib/analytics";
 
 interface Faq {
