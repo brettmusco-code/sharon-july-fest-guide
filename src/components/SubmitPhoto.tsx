@@ -8,7 +8,6 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { trackEvent } from "@/lib/analytics";
-import { hapticSuccess, hapticError, hapticLight } from "@/lib/native";
 
 const MAX_BYTES = 15 * 1024 * 1024; // 15 MB
 const ACCEPTED = ["image/jpeg", "image/png", "image/webp", "image/heic", "image/heif"];
@@ -33,7 +32,6 @@ const SubmitPhoto = () => {
   const pickFile = (f: File | null) => {
     if (!f) return;
     if (f.size > MAX_BYTES) {
-      void hapticError();
       toast({
         title: "Photo too large",
         description: `Max 15 MB. Yours is ${(f.size / 1024 / 1024).toFixed(1)} MB.`,
@@ -42,7 +40,6 @@ const SubmitPhoto = () => {
       return;
     }
     if (!ACCEPTED.includes(f.type) && !f.type.startsWith("image/")) {
-      void hapticError();
       toast({
         title: "Not an image",
         description: "Pick a JPG, PNG, or HEIC file.",
@@ -50,7 +47,6 @@ const SubmitPhoto = () => {
       });
       return;
     }
-    void hapticLight();
     setFile(f);
     if (preview) URL.revokeObjectURL(preview);
     setPreview(URL.createObjectURL(f));
@@ -101,12 +97,10 @@ const SubmitPhoto = () => {
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
 
-      void hapticSuccess();
       trackEvent("photo_submit", null, file.name.slice(0, 80));
       setSubmitted(true);
       reset();
     } catch (err) {
-      void hapticError();
       const message = err instanceof Error ? err.message : "Upload failed";
       toast({
         title: "Couldn't upload",

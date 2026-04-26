@@ -1,10 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import { TransformWrapper, TransformComponent, ReactZoomPanPinchRef } from "react-zoom-pan-pinch";
-import { ZoomIn, ZoomOut, Maximize2, X, Share2 } from "lucide-react";
+import { ZoomIn, ZoomOut, Maximize2, X } from "lucide-react";
 import { useEvents, useCategories, useMapSettings, FestivalEvent } from "@/hooks/useFestivalData";
 import { Button } from "@/components/ui/button";
 import { trackEvent } from "@/lib/analytics";
-import { hapticLight, hapticMedium, shareSomething } from "@/lib/native";
 import WeatherWidget from "@/components/WeatherWidget";
 import festivalMapFallback from "@/assets/festival-map.jpg";
 
@@ -139,7 +138,6 @@ const FestivalMap = ({ selectedEvent, onClearSelected, filter = "all", onFilterC
                             setActivePin(opening ? event.id : null);
                             onClearSelected?.();
                             if (opening) {
-                              void hapticLight();
                               trackEvent("map_pin_click", event.id, event.title);
                             }
                           }}
@@ -216,27 +214,8 @@ const FestivalMap = ({ selectedEvent, onClearSelected, filter = "all", onFilterC
                       <p className="font-body text-xs text-muted-foreground mb-2 leading-relaxed">
                         {activeEvent.description}
                       </p>
-                      <div className="flex items-center justify-between gap-2">
-                        <div className="font-body text-[11px] font-bold" style={{ color }}>
-                          🕐 {activeEvent.time} &nbsp;•&nbsp; 📍 {activeEvent.location}
-                        </div>
-                        <button
-                          type="button"
-                          onClick={async () => {
-                            void hapticMedium();
-                            const shared = await shareSomething({
-                              title: activeEvent.title,
-                              text: `${activeEvent.title} — ${activeEvent.time} at ${activeEvent.location}. ${activeEvent.description ?? ""}`.trim(),
-                              url: typeof window !== "undefined" ? window.location.origin : undefined,
-                              dialogTitle: "Share this event",
-                            });
-                            if (shared) trackEvent("share_event", activeEvent.id, activeEvent.title);
-                          }}
-                          className="inline-flex items-center gap-1 text-[11px] font-medium text-primary hover:underline shrink-0"
-                          aria-label="Share this event"
-                        >
-                          <Share2 className="h-3 w-3" /> Share
-                        </button>
+                      <div className="font-body text-[11px] font-bold" style={{ color }}>
+                        🕐 {activeEvent.time} &nbsp;•&nbsp; 📍 {activeEvent.location}
                       </div>
                     </div>
                   );
