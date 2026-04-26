@@ -67,20 +67,20 @@ const AppMenu = () => {
 
           <button
             type="button"
-            onClick={() => goToSection("schedule", "Schedule")}
-            className="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-muted font-body text-base text-left"
-          >
-            <Calendar className="w-5 h-5 text-primary" />
-            Schedule
-          </button>
-
-          <button
-            type="button"
             onClick={() => goToSection("map", "Map")}
             className="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-muted font-body text-base text-left"
           >
             <MapPin className="w-5 h-5 text-primary" />
             Map
+          </button>
+
+          <button
+            type="button"
+            onClick={() => goToSection("schedule", "Schedule")}
+            className="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-muted font-body text-base text-left"
+          >
+            <Calendar className="w-5 h-5 text-primary" />
+            Schedule
           </button>
 
           <Link
