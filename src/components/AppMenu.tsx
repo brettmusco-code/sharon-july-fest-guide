@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
-import { Menu, Camera, HelpCircle, Building2, Home } from "lucide-react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Menu, Camera, HelpCircle, Building2, Home, Calendar, MapPin } from "lucide-react";
 import {
   Sheet,
   SheetContent,
@@ -13,9 +13,27 @@ import { trackEvent } from "@/lib/analytics";
 const AppMenu = () => {
   const [open, setOpen] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
   const isHome = location.pathname === "/";
 
   const close = () => setOpen(false);
+
+  /**
+   * Schedule/Map live as in-page sections on `/`, so from other routes we navigate
+   * home first and defer the scroll until after the page mounts.
+   */
+  const goToSection = (sectionId: "schedule" | "map", label: string) => {
+    trackEvent("menu_click", sectionId, label);
+    close();
+    if (isHome) {
+      document.getElementById(sectionId)?.scrollIntoView({ behavior: "smooth" });
+    } else {
+      navigate("/");
+      setTimeout(() => {
+        document.getElementById(sectionId)?.scrollIntoView({ behavior: "smooth" });
+      }, 80);
+    }
+  };
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
@@ -46,6 +64,24 @@ const AppMenu = () => {
               Home
             </Link>
           )}
+
+          <button
+            type="button"
+            onClick={() => goToSection("schedule", "Schedule")}
+            className="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-muted font-body text-base text-left"
+          >
+            <Calendar className="w-5 h-5 text-primary" />
+            Schedule
+          </button>
+
+          <button
+            type="button"
+            onClick={() => goToSection("map", "Map")}
+            className="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-muted font-body text-base text-left"
+          >
+            <MapPin className="w-5 h-5 text-primary" />
+            Map
+          </button>
 
           <Link
             to="/share-photos"

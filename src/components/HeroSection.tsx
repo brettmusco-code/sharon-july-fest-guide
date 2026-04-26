@@ -105,6 +105,20 @@ const HeroSection = () => {
           <Camera className="w-4 h-4" />
           Share your festival photos with us
         </Link>
+
+        <p className="mt-2 text-primary-foreground/75 font-body text-xs sm:text-sm">
+          Follow{" "}
+          <a
+            href="https://instagram.com/sharonjuly4"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-firework-gold underline underline-offset-4 hover:no-underline"
+          >
+            @sharonjuly4
+          </a>{" "}
+          and tag your photos with{" "}
+          <span className="font-semibold text-firework-gold">#sharon4thewin</span>
+        </p>
       </div>
     </section>
   );
