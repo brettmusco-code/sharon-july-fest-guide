@@ -2,6 +2,8 @@ import { Capacitor } from "@capacitor/core";
 import { Haptics, ImpactStyle, NotificationType } from "@capacitor/haptics";
 import { Share } from "@capacitor/share";
 import { Badge } from "@capawesome/capacitor-badge";
+import { StatusBar, Style as StatusBarStyle } from "@capacitor/status-bar";
+import { SplashScreen } from "@capacitor/splash-screen";
 
 const isNative = () => {
   try {
@@ -10,6 +12,32 @@ const isNative = () => {
     return false;
   }
 };
+
+/**
+ * Brand status bar — deep festival red, white icons.
+ * Matches --primary (356 72% 45%) ≈ #c5202e.
+ * Call once on app boot.
+ */
+export async function initStatusBar() {
+  if (!isNative()) return;
+  try {
+    await StatusBar.setStyle({ style: StatusBarStyle.Dark }); // light icons on dark bg
+    await StatusBar.setBackgroundColor({ color: "#c5202e" }); // Android only; iOS ignores
+    await StatusBar.setOverlaysWebView({ overlay: false });
+  } catch {
+    /* ignore */
+  }
+}
+
+/** Hide the native splash once the app shell has hydrated. */
+export async function hideSplash() {
+  if (!isNative()) return;
+  try {
+    await SplashScreen.hide({ fadeOutDuration: 250 });
+  } catch {
+    /* ignore */
+  }
+}
 
 /** Light tap — pin selection, button presses. Safe no-op on web. */
 export async function hapticLight() {
