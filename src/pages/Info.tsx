@@ -1,12 +1,11 @@
 import { useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Link } from "react-router-dom";
-import { ArrowLeft, HelpCircle, Home } from "lucide-react";
+import { HelpCircle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { Button } from "@/components/ui/button";
 import Footer from "@/components/Footer";
 import AskQuestion from "@/components/AskQuestion";
+import AppMenu from "@/components/AppMenu";
 import { trackEvent } from "@/lib/analytics";
 
 interface Faq {
@@ -35,11 +34,15 @@ const Info = () => {
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
-      <header className="bg-primary text-primary-foreground py-12 px-4">
+      <div
+        className="fixed left-4 z-50"
+        style={{ top: "calc(env(safe-area-inset-top, 0px) + 1rem)" }}
+      >
+        <AppMenu />
+      </div>
+
+      <header className="bg-primary text-primary-foreground py-12 px-4 pt-20">
         <div className="max-w-3xl mx-auto">
-          <Button asChild variant="ghost" size="sm" className="mb-4 text-primary-foreground hover:bg-primary-foreground/10">
-            <Link to="/"><ArrowLeft className="w-4 h-4 mr-1" />Back to home</Link>
-          </Button>
           <div className="flex items-center gap-3 mb-2">
             <HelpCircle className="w-8 h-8" />
             <h1 className="font-heading text-4xl md:text-5xl">Info & FAQ</h1>
@@ -49,6 +52,7 @@ const Info = () => {
           </p>
         </div>
       </header>
+
 
       <main className="flex-1 max-w-3xl mx-auto w-full px-4 py-12">
         {isLoading ? (
@@ -86,15 +90,6 @@ const Info = () => {
         )}
 
         <AskQuestion />
-
-        <div className="mt-10 flex justify-center">
-          <Button asChild size="lg" className="gap-2">
-            <Link to="/">
-              <Home className="w-4 h-4" />
-              Back to home
-            </Link>
-          </Button>
-        </div>
       </main>
 
       <Footer />

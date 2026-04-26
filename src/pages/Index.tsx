@@ -4,7 +4,6 @@ import { trackEvent } from "@/lib/analytics";
 import ScheduleSection from "@/components/ScheduleSection";
 import FestivalMap from "@/components/FestivalMap";
 import FaqSection from "@/components/FaqSection";
-import Sponsors from "@/components/Sponsors";
 import DonateSection from "@/components/DonateSection";
 
 import Footer from "@/components/Footer";
@@ -54,7 +53,6 @@ const Index = () => {
       />
       <FaqSection />
       <DonateSection />
-      <Sponsors />
       <Footer />
       
     </div>
