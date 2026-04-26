@@ -119,7 +119,7 @@ const AdminSettings = () => {
               Visitor photos are stored in <strong>Supabase Storage</strong> (bucket{" "}
               <code className="bg-muted px-1 rounded text-xs">festival-photos</code>) via the
               <code className="bg-muted px-1 rounded text-xs mx-1">submit-photo</code> edge
-              function. No Google Drive or folder ID is required.
+              function.
             </p>
             <p>
               Review and delete submissions in <strong>Admin → Photo submissions</strong>{" "}

@@ -260,43 +260,43 @@ export type Database = {
         Row: {
           caption: string | null
           created_at: string
-          drive_file_id: string | null
-          drive_file_name: string | null
-          drive_file_url: string | null
           error: string | null
+          file_name: string | null
           id: string
           instagram_handle: string | null
           mime_type: string | null
+          public_url: string | null
           size_bytes: number | null
           status: string
+          storage_path: string | null
           submitter_name: string | null
         }
         Insert: {
           caption?: string | null
           created_at?: string
-          drive_file_id?: string | null
-          drive_file_name?: string | null
-          drive_file_url?: string | null
           error?: string | null
+          file_name?: string | null
           id?: string
           instagram_handle?: string | null
           mime_type?: string | null
+          public_url?: string | null
           size_bytes?: number | null
           status?: string
+          storage_path?: string | null
           submitter_name?: string | null
         }
         Update: {
           caption?: string | null
           created_at?: string
-          drive_file_id?: string | null
-          drive_file_name?: string | null
-          drive_file_url?: string | null
           error?: string | null
+          file_name?: string | null
           id?: string
           instagram_handle?: string | null
           mime_type?: string | null
+          public_url?: string | null
           size_bytes?: number | null
           status?: string
+          storage_path?: string | null
           submitter_name?: string | null
         }
         Relationships: []

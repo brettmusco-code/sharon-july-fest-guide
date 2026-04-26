@@ -1,4 +1,4 @@
--- Public photo uploads go to Supabase Storage (replaces Google Drive uploader).
+-- Public photo uploads: Supabase Storage bucket `festival-photos`.
 -- Path convention: {year}/{uuid}_{filename} in bucket "festival-photos".
 
 -- Bucket: public read so getPublicUrl() works; uploads only from Edge (service role).
@@ -31,7 +31,7 @@ using (
   and public.has_role(auth.uid(), 'admin')
 );
 
--- Public app no longer needs Google Drive folder id; only fireworks time is public.
+-- Public app: only `fireworks_at` is readable without admin (countdown, etc.).
 drop policy if exists "Anyone can view public app config keys" on public.app_config;
 
 create policy "Anyone can view public app config keys"

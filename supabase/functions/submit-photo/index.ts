@@ -1,13 +1,6 @@
 // Photo submission edge function (public).
-//
-// Uploads to Supabase Storage bucket `festival-photos` (no Google Drive).
-// Service role only for upload + DB row; RLS on storage allows public read of objects.
-//
-// Multipart form fields (same as before):
-//   file, submitter_name, instagram_handle, caption
-//
-// DB columns drive_file_id / drive_file_url / drive_file_name now mean:
-//   object path in bucket, public URL, display filename (legacy column names).
+// Uploads to Supabase Storage bucket `festival-photos` (service role).
+// Multipart: file, submitter_name, instagram_handle, caption
 
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.49.4";
 
@@ -120,9 +113,9 @@ Deno.serve(async (req) => {
     submitter_name: submitterName || null,
     instagram_handle: instagramHandle || null,
     caption: caption || null,
-    drive_file_id: objectPath,
-    drive_file_url: publicUrl,
-    drive_file_name: objectName,
+    storage_path: objectPath,
+    public_url: publicUrl,
+    file_name: objectName,
     mime_type: mime,
     size_bytes: file.size,
     status: "uploaded",

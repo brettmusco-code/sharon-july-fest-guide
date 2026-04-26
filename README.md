@@ -38,12 +38,12 @@ npm run cap:open:android   # opens Android Studio
 
 ### Photo submissions (`submit-photo` + Supabase Storage)
 
-Public photo uploads go through the **`submit-photo`** Edge Function, which uses the **service role** to upload the image to the **`festival-photos`** storage bucket. No Google Drive or `GOOGLE_SERVICE_ACCOUNT_JSON` is required.
+Public photo uploads go through the **`submit-photo`** Edge Function, which uses the **service role** to upload the image to the **`festival-photos`** storage bucket.
 
 1. After migrations, the bucket and storage policies are created by **`20260526200000_festival_photos_storage.sql`** (public read, admin delete; upload only from the edge function).
 2. Deploy the function: `npx supabase functions deploy submit-photo --no-verify-jwt --project-ref <ref>`.
 3. **Storage quota** counts against your Supabase org plan (see [Pricing](https://supabase.com/pricing)); the app enforces a **15 MB** per-file cap.
-4. **Admin** → **Photo submissions** lists rows in `public.photo_submissions` (legacy column names `drive_file_*` hold the public URL and object path). Deleting a submission also removes the file in storage for paths that look like `YEAR/...` (new uploads only).
+4. **Admin** → **Photo submissions** lists rows in `public.photo_submissions` (`storage_path`, `public_url`, `file_name`). Deleting a submission also removes the stored file when the path looks like `YEAR/...`.
 
 ### Copy old Supabase data into your new project
 

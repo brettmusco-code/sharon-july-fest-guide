@@ -17,9 +17,9 @@ interface Submission {
   submitter_name: string | null;
   instagram_handle: string | null;
   caption: string | null;
-  drive_file_id: string | null;
-  drive_file_url: string | null;
-  drive_file_name: string | null;
+  storage_path: string | null;
+  public_url: string | null;
+  file_name: string | null;
   mime_type: string | null;
   size_bytes: number | null;
   status: string;
@@ -54,7 +54,7 @@ const AdminPhotos = () => {
   const handleDelete = async () => {
     if (!deleteId) return;
     const sub = submissions.find((s) => s.id === deleteId);
-    const path = sub?.drive_file_id?.trim() ?? "";
+    const path = sub?.storage_path?.trim() ?? "";
     if (path.includes("/")) {
       const { error: stErr } = await supabase.storage
         .from("festival-photos")
@@ -106,16 +106,16 @@ const AdminPhotos = () => {
             {submissions.map((s) => (
               <Card key={s.id}>
                 <CardContent className="py-4 flex items-start justify-between gap-3">
-                  {s.drive_file_url && s.status === "uploaded" && (
+                  {s.public_url && s.status === "uploaded" && (
                     <a
-                      href={s.drive_file_url}
+                      href={s.public_url}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="shrink-0 w-20 h-20 rounded-md overflow-hidden border bg-muted"
                     >
                       <img
-                        src={s.drive_file_url}
-                        alt={s.drive_file_name || "Photo"}
+                        src={s.public_url}
+                        alt={s.file_name || "Photo"}
                         className="w-full h-full object-cover"
                         loading="lazy"
                       />
@@ -144,7 +144,7 @@ const AdminPhotos = () => {
                       </p>
                     )}
                     <div className="text-xs text-muted-foreground flex flex-wrap gap-x-3 gap-y-0.5">
-                      <span>{s.drive_file_name || "—"}</span>
+                      <span>{s.file_name || "—"}</span>
                       <span>{formatBytes(s.size_bytes)}</span>
                       {s.mime_type && <span>{s.mime_type}</span>}
                     </div>
@@ -153,9 +153,9 @@ const AdminPhotos = () => {
                     )}
                   </div>
                   <div className="flex flex-col items-end gap-2 shrink-0">
-                    {s.drive_file_url && (
+                    {s.public_url && (
                       <Button asChild variant="ghost" size="sm">
-                        <a href={s.drive_file_url} target="_blank" rel="noopener noreferrer">
+                        <a href={s.public_url} target="_blank" rel="noopener noreferrer">
                           <ExternalLink className="w-4 h-4 mr-1" /> Open full size
                         </a>
                       </Button>
@@ -181,9 +181,9 @@ const AdminPhotos = () => {
           <AlertDialogHeader>
             <AlertDialogTitle>Delete this submission?</AlertDialogTitle>
             <AlertDialogDescription>
-              This deletes the record and, for files stored in Supabase Storage, removes the image
-              file as well. Older Google Drive–based submissions are record-only; remove those
-              from Drive by hand if needed.
+              This deletes the database record. If the file is in Supabase Storage
+              (path like <code className="text-xs">2026/…</code>), the image file is removed too;
+              older failed submissions may be record-only.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

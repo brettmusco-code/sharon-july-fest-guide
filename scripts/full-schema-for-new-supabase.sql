@@ -152,15 +152,15 @@ create table if not exists public.push_attempts (
   completed_at timestamptz
 );
 
--- photo_submissions
+-- photo_submissions (files in Storage bucket festival-photos)
 create table if not exists public.photo_submissions (
   id uuid primary key default gen_random_uuid(),
   submitter_name text,
   instagram_handle text,
   caption text,
-  drive_file_id text,
-  drive_file_name text,
-  drive_file_url text,
+  storage_path text,
+  file_name text,
+  public_url text,
   mime_type text,
   size_bytes bigint,
   status text not null default 'uploaded',
@@ -436,7 +436,7 @@ create policy "Admins can manage roles" on public.user_roles for all to authenti
 
 -- app_config
 create policy "Anyone can view public app config keys" on public.app_config for select
-  using (key = any (array['fireworks_at','photo_drive_folder_id']));
+  using (key = 'fireworks_at');
 create policy "Admins can view app config" on public.app_config for select to authenticated
   using (public.has_role(auth.uid(),'admin'));
 create policy "Admins can insert app config" on public.app_config for insert to authenticated
@@ -490,8 +490,8 @@ create policy "Admins write festival" on storage.objects for all to authenticate
 -- 1. In NEW project SQL editor, set the push webhook secret:
 --      insert into public.app_config (key, value) values
 --        ('push_webhook_secret', 'YOUR_RANDOM_SECRET') on conflict (key) do update set value = excluded.value;
--- 2. Deploy edge functions (broadcast-push, submit-photo) and set their secrets
---    (PUSH_WEBHOOK_SECRET, FIREBASE_SERVICE_ACCOUNT_JSON, GOOGLE_DRIVE_API_KEY).
+-- 2. Deploy edge functions (broadcast-push, submit-photo) and set secrets
+--    (PUSH_WEBHOOK_SECRET, FIREBASE_SERVICE_ACCOUNT_JSON for push; submit-photo uses Storage only).
 -- 3. Sign up your admin user, then call: select public.claim_admin();
 -- 4. Run scripts/migrate-supabase-data.mjs to copy rows from OLD → NEW.
 -- 5. Manually move files in the 'festival' storage bucket (Studio → Storage).
