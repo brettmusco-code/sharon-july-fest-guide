@@ -256,6 +256,51 @@ export type Database = {
         }
         Relationships: []
       }
+      photo_submissions: {
+        Row: {
+          caption: string | null
+          created_at: string
+          drive_file_id: string | null
+          drive_file_name: string | null
+          drive_file_url: string | null
+          error: string | null
+          id: string
+          instagram_handle: string | null
+          mime_type: string | null
+          size_bytes: number | null
+          status: string
+          submitter_name: string | null
+        }
+        Insert: {
+          caption?: string | null
+          created_at?: string
+          drive_file_id?: string | null
+          drive_file_name?: string | null
+          drive_file_url?: string | null
+          error?: string | null
+          id?: string
+          instagram_handle?: string | null
+          mime_type?: string | null
+          size_bytes?: number | null
+          status?: string
+          submitter_name?: string | null
+        }
+        Update: {
+          caption?: string | null
+          created_at?: string
+          drive_file_id?: string | null
+          drive_file_name?: string | null
+          drive_file_url?: string | null
+          error?: string | null
+          id?: string
+          instagram_handle?: string | null
+          mime_type?: string | null
+          size_bytes?: number | null
+          status?: string
+          submitter_name?: string | null
+        }
+        Relationships: []
+      }
       push_attempts: {
         Row: {
           completed_at: string | null
