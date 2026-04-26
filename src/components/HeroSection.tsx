@@ -1,4 +1,5 @@
-import { Sparkles, MapPin, Calendar, Heart } from "lucide-react";
+import { Sparkles, MapPin, Calendar, Heart, Camera } from "lucide-react";
+import { Link } from "react-router-dom";
 import Countdown from "./Countdown";
 import { trackEvent } from "@/lib/analytics";
 
@@ -95,6 +96,15 @@ const HeroSection = () => {
             Donate
           </a>
         </div>
+
+        <Link
+          to="/share-photos"
+          onClick={() => trackEvent("share_photos_click", "hero", "Share photos (hero)")}
+          className="inline-flex items-center gap-2 mt-4 text-primary-foreground/90 hover:text-firework-gold font-body text-sm underline underline-offset-4 transition-colors"
+        >
+          <Camera className="w-4 h-4" />
+          Share your festival photos with us
+        </Link>
       </div>
     </section>
   );

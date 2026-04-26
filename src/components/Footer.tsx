@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { HelpCircle, Facebook, Instagram } from "lucide-react";
+import { HelpCircle, Facebook, Instagram, Camera } from "lucide-react";
 import { trackEvent } from "@/lib/analytics";
 
 const Footer = () => {
@@ -42,13 +42,23 @@ const Footer = () => {
           with <span className="font-semibold">#sharon4thewin</span>
         </p>
 
-        <Link
-          to="/info"
-          className="inline-flex items-center gap-1.5 text-sm font-body text-secondary-foreground/80 hover:text-secondary-foreground underline-offset-4 hover:underline mb-4"
-        >
-          <HelpCircle className="w-4 h-4" />
-          Info & FAQ
-        </Link>
+        <div className="flex flex-wrap items-center justify-center gap-4 mb-4">
+          <Link
+            to="/share-photos"
+            onClick={() => trackEvent("share_photos_click", "footer", "Share photos (footer)")}
+            className="inline-flex items-center gap-1.5 text-sm font-body text-secondary-foreground/80 hover:text-secondary-foreground underline-offset-4 hover:underline"
+          >
+            <Camera className="w-4 h-4" />
+            Share Your Photos
+          </Link>
+          <Link
+            to="/info"
+            className="inline-flex items-center gap-1.5 text-sm font-body text-secondary-foreground/80 hover:text-secondary-foreground underline-offset-4 hover:underline"
+          >
+            <HelpCircle className="w-4 h-4" />
+            Info & FAQ
+          </Link>
+        </div>
         <p className="font-body text-secondary-foreground/50 text-xs">
           Have a safe and happy Independence Day!
         </p>
