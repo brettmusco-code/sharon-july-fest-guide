@@ -5,9 +5,9 @@ import path from "path";
 // After you move off Lovable, set these to YOUR Supabase project (Settings → API),
 // or leave empty and always build with `.env` so you never point at the wrong project.
 // URL + anon key are not secret in the client; they are safe to commit if you use fallbacks.
-const FALLBACK_SUPABASE_URL = "https://uncnkmgaoawksbfncnkm.supabase.co";
-const FALLBACK_SUPABASE_PUBLISHABLE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVuY25rbWdhb2F3a3NiZm5jbmttIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY0NjEzODEsImV4cCI6MjA5MjAzNzM4MX0.m-u6QMd2F36z_btDNnOH03FlrcNdD00bsaoxbctq624";
-const FALLBACK_SUPABASE_PROJECT_ID = "uncnkmgaoawksbfncnkm";
+const FALLBACK_SUPABASE_URL = "";
+const FALLBACK_SUPABASE_PUBLISHABLE_KEY = "";
+const FALLBACK_SUPABASE_PROJECT_ID = "";
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {
