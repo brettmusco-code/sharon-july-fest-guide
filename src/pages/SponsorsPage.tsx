@@ -19,16 +19,7 @@ const SponsorsPage = () => {
         <AppMenu />
       </div>
 
-      <header className="bg-primary text-primary-foreground py-12 px-4 pt-20">
-        <div className="max-w-5xl mx-auto text-center">
-          <h1 className="font-heading text-4xl md:text-5xl mb-2">Our Corporate Sponsors</h1>
-          <p className="text-primary-foreground/80 font-body">
-            Thanks to these wonderful businesses for supporting our celebration!
-          </p>
-        </div>
-      </header>
-
-      <main className="flex-1 py-8">
+      <main className="flex-1 pt-20">
         <Sponsors />
       </main>
 
