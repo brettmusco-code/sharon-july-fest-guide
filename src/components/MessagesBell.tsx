@@ -5,6 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { setAppBadge } from "@/lib/native";
 
 interface Message {
   id: string;
@@ -69,6 +70,11 @@ const MessagesBell = () => {
   const unreadCount = messages.filter(
     (m) => new Date(m.created_at).getTime() > lastSeen,
   ).length;
+
+  // Mirror unread count to the native iOS / Android app icon badge.
+  useEffect(() => {
+    void setAppBadge(unreadCount);
+  }, [unreadCount]);
 
   const handleOpenChange = (next: boolean) => {
     setOpen(next);

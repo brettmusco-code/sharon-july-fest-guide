@@ -6,6 +6,7 @@ import FestivalMap from "@/components/FestivalMap";
 import FaqSection from "@/components/FaqSection";
 import Sponsors from "@/components/Sponsors";
 import DonateSection from "@/components/DonateSection";
+import SubmitPhoto from "@/components/SubmitPhoto";
 
 import Footer from "@/components/Footer";
 import MessagesBell from "@/components/MessagesBell";
@@ -46,6 +47,11 @@ const Index = () => {
         onFilterChange={setCategoryFilter}
       />
       <FaqSection />
+      <div className="bg-background px-4 pb-10">
+        <div className="max-w-4xl mx-auto">
+          <SubmitPhoto />
+        </div>
+      </div>
       <DonateSection />
       <Sponsors />
       <Footer />
