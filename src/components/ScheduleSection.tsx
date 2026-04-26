@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useEvents, useCategories, FestivalEvent } from "@/hooks/useFestivalData";
 import { Clock, MapPin } from "lucide-react";
-import { hapticLight, hapticMedium } from "@/lib/native";
 
 interface ScheduleSectionProps {
   onEventClick?: (event: FestivalEvent) => void;
@@ -13,7 +12,6 @@ const ScheduleSection = ({ onEventClick, filter: filterProp, onFilterChange }: S
   const [internalFilter, setInternalFilter] = useState<string>("all");
   const filter = filterProp ?? internalFilter;
   const setFilter = (f: string) => {
-    void hapticLight();
     if (onFilterChange) onFilterChange(f);
     else setInternalFilter(f);
   };
@@ -75,10 +73,7 @@ const ScheduleSection = ({ onEventClick, filter: filterProp, onFilterChange }: S
           {!isLoading && filteredEvents.map((event) => (
             <button
               key={event.id}
-              onClick={() => {
-                void hapticMedium();
-                onEventClick?.(event);
-              }}
+              onClick={() => onEventClick?.(event)}
               className="w-full text-left group bg-card rounded-lg border-2 p-4 hover:shadow-md transition-all duration-200 cursor-pointer"
               style={{ borderLeftColor: colorFor(event.category_slug), borderLeftWidth: "4px" }}
             >
