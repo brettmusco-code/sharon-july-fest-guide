@@ -53,13 +53,23 @@ const AdminPhotos = () => {
 
   const handleDelete = async () => {
     if (!deleteId) return;
+    const sub = submissions.find((s) => s.id === deleteId);
+    const path = sub?.drive_file_id?.trim() ?? "";
+    if (path.includes("/")) {
+      const { error: stErr } = await supabase.storage
+        .from("festival-photos")
+        .remove([path]);
+      if (stErr) {
+        console.warn("Storage delete:", stErr.message);
+      }
+    }
     const { error } = await supabase.from("photo_submissions").delete().eq("id", deleteId);
     setDeleteId(null);
     if (error) {
       toast({ title: "Delete failed", description: error.message, variant: "destructive" });
       return;
     }
-    toast({ title: "Submission deleted (photo stays in Google Drive)" });
+    toast({ title: "Submission and file removed" });
     qc.invalidateQueries({ queryKey: ["admin-photo-submissions"] });
   };
 
@@ -70,8 +80,8 @@ const AdminPhotos = () => {
           <div>
             <h2 className="font-heading text-3xl mb-1">Photo submissions</h2>
             <p className="text-muted-foreground text-sm">
-              Photos visitors send in. Files are uploaded directly to your Google Drive folder
-              (configured in <strong>Settings</strong>).
+              Photos visitors send in are stored in <strong>Supabase Storage</strong> (
+              <code className="text-xs bg-muted px-1 rounded">festival-photos</code>).
             </p>
           </div>
           <Button
@@ -96,6 +106,21 @@ const AdminPhotos = () => {
             {submissions.map((s) => (
               <Card key={s.id}>
                 <CardContent className="py-4 flex items-start justify-between gap-3">
+                  {s.drive_file_url && s.status === "uploaded" && (
+                    <a
+                      href={s.drive_file_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="shrink-0 w-20 h-20 rounded-md overflow-hidden border bg-muted"
+                    >
+                      <img
+                        src={s.drive_file_url}
+                        alt={s.drive_file_name || "Photo"}
+                        className="w-full h-full object-cover"
+                        loading="lazy"
+                      />
+                    </a>
+                  )}
                   <div className="min-w-0 flex-1">
                     <div className="flex flex-wrap items-baseline gap-2 mb-1">
                       <span className="font-semibold text-sm">
@@ -131,7 +156,7 @@ const AdminPhotos = () => {
                     {s.drive_file_url && (
                       <Button asChild variant="ghost" size="sm">
                         <a href={s.drive_file_url} target="_blank" rel="noopener noreferrer">
-                          <ExternalLink className="w-4 h-4 mr-1" /> Open in Drive
+                          <ExternalLink className="w-4 h-4 mr-1" /> Open full size
                         </a>
                       </Button>
                     )}
@@ -156,8 +181,9 @@ const AdminPhotos = () => {
           <AlertDialogHeader>
             <AlertDialogTitle>Delete this submission?</AlertDialogTitle>
             <AlertDialogDescription>
-              This removes the database record only. The actual photo file in your Google Drive
-              folder will <strong>not</strong> be deleted — remove it manually if you want it gone.
+              This deletes the record and, for files stored in Supabase Storage, removes the image
+              file as well. Older Google Drive–based submissions are record-only; remove those
+              from Drive by hand if needed.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

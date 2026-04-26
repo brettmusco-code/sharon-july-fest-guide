@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
-import { Save, Calendar as CalendarIcon, FolderOpen } from "lucide-react";
+import { Save, Calendar as CalendarIcon, Image } from "lucide-react";
 
 /** Convert ISO -> value usable by <input type="datetime-local"> in the user's local TZ. */
 const toLocalInput = (iso: string | null): string => {
@@ -18,27 +18,11 @@ const toLocalInput = (iso: string | null): string => {
   return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
 };
 
-/**
- * Try to extract a folder ID from any of:
- *   - bare ID (alphanumeric/underscore/dash, ~25-44 chars)
- *   - https://drive.google.com/drive/folders/<id>?...
- *   - https://drive.google.com/drive/u/0/folders/<id>
- */
-const extractFolderId = (input: string): string => {
-  const trimmed = input.trim();
-  if (!trimmed) return "";
-  const match = trimmed.match(/folders\/([a-zA-Z0-9_-]+)/);
-  if (match) return match[1];
-  return trimmed;
-};
-
 const AdminSettings = () => {
   const qc = useQueryClient();
   const { toast } = useToast();
   const [fireworksAt, setFireworksAt] = useState("");
-  const [folderInput, setFolderInput] = useState("");
   const [savingFireworks, setSavingFireworks] = useState(false);
-  const [savingFolder, setSavingFolder] = useState(false);
 
   const { data: rows, isLoading } = useQuery({
     queryKey: ["admin-app-config"],
@@ -46,7 +30,7 @@ const AdminSettings = () => {
       const { data, error } = await supabase
         .from("app_config")
         .select("key, value")
-        .in("key", ["fireworks_at", "photo_drive_folder_id"]);
+        .eq("key", "fireworks_at");
       if (error) throw error;
       return new Map((data ?? []).map((r) => [r.key, r.value]));
     },
@@ -55,7 +39,6 @@ const AdminSettings = () => {
   useEffect(() => {
     if (!rows) return;
     setFireworksAt(toLocalInput(rows.get("fireworks_at") ?? null));
-    setFolderInput(rows.get("photo_drive_folder_id") ?? "");
   }, [rows]);
 
   const upsertConfig = async (key: string, value: string) => {
@@ -82,24 +65,6 @@ const AdminSettings = () => {
     toast({
       title: "Fireworks time saved",
       description: new Date(iso).toLocaleString(),
-    });
-    qc.invalidateQueries({ queryKey: ["admin-app-config"] });
-    qc.invalidateQueries({ queryKey: ["public-config"] });
-  };
-
-  const saveFolder = async () => {
-    const id = extractFolderId(folderInput);
-    setSavingFolder(true);
-    const error = await upsertConfig("photo_drive_folder_id", id);
-    setSavingFolder(false);
-    if (error) {
-      toast({ title: "Save failed", description: error.message, variant: "destructive" });
-      return;
-    }
-    setFolderInput(id);
-    toast({
-      title: id ? "Folder saved" : "Folder cleared",
-      description: id || "Photo submissions will now be rejected until a folder is set.",
     });
     qc.invalidateQueries({ queryKey: ["admin-app-config"] });
     qc.invalidateQueries({ queryKey: ["public-config"] });
@@ -146,51 +111,20 @@ const AdminSettings = () => {
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-lg">
-              <FolderOpen className="w-5 h-5" /> Photo upload folder (Google Drive)
+              <Image className="w-5 h-5" /> Public photo uploads
             </CardTitle>
           </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="space-y-2 text-sm text-muted-foreground">
-              <p>
-                Visitors can submit photos from the site. Each photo is uploaded directly
-                to the Google Drive folder you specify here.
-              </p>
-              <ol className="list-decimal list-inside space-y-1 pl-1">
-                <li>Open the destination folder in Google Drive in a browser.</li>
-                <li>
-                  Copy the URL — it looks like{" "}
-                  <code className="bg-muted px-1 rounded text-xs">
-                    drive.google.com/drive/folders/<strong>FOLDER_ID</strong>
-                  </code>
-                </li>
-                <li>
-                  Paste the full URL <em>or</em> just the folder ID below.
-                </li>
-                <li>
-                  <strong>Important:</strong> the folder must be shared with the Google account
-                  that authorized the Lovable Drive connection (give it Editor access).
-                </li>
-              </ol>
-            </div>
-            <div>
-              <Label htmlFor="folder-id">Folder URL or ID</Label>
-              <Input
-                id="folder-id"
-                value={folderInput}
-                onChange={(e) => setFolderInput(e.target.value)}
-                placeholder="https://drive.google.com/drive/folders/1A2B3C... or just 1A2B3C..."
-                disabled={isLoading}
-              />
-              {folderInput && extractFolderId(folderInput) !== folderInput && (
-                <p className="text-xs text-muted-foreground mt-1">
-                  Will be saved as: <code>{extractFolderId(folderInput)}</code>
-                </p>
-              )}
-            </div>
-            <Button onClick={saveFolder} disabled={savingFolder || isLoading}>
-              <Save className="w-4 h-4 mr-1" />
-              {savingFolder ? "Saving…" : "Save folder"}
-            </Button>
+          <CardContent className="space-y-2 text-sm text-muted-foreground">
+            <p>
+              Visitor photos are stored in <strong>Supabase Storage</strong> (bucket{" "}
+              <code className="bg-muted px-1 rounded text-xs">festival-photos</code>) via the
+              <code className="bg-muted px-1 rounded text-xs mx-1">submit-photo</code> edge
+              function. No Google Drive or folder ID is required.
+            </p>
+            <p>
+              Review and delete submissions in <strong>Admin → Photo submissions</strong>{" "}
+              (deleting a row also removes the file from storage for new submissions).
+            </p>
           </CardContent>
         </Card>
       </div>

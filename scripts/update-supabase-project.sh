@@ -11,7 +11,6 @@ set -euo pipefail
 #   scripts/update-supabase-project.sh \
 #     [--project-ref <ref>] \
 #     [--firebase-json-file <path>] \
-#     [--google-json-file <path>] \
 #     [--push-webhook-secret <secret>]
 #
 # Environment:
@@ -20,15 +19,12 @@ set -euo pipefail
 #     PUSH_WEBHOOK_SECRET
 #     FIREBASE_SERVICE_ACCOUNT_JSON
 #     FIREBASE_SERVICE_ACCOUNT_JSON_FILE
-#     GOOGLE_SERVICE_ACCOUNT_JSON
-#     GOOGLE_SERVICE_ACCOUNT_JSON_FILE
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$ROOT_DIR"
 
 PROJECT_REF="${VITE_SUPABASE_PROJECT_ID:-}"
 FIREBASE_JSON_FILE="${FIREBASE_SERVICE_ACCOUNT_JSON_FILE:-}"
-GOOGLE_JSON_FILE="${GOOGLE_SERVICE_ACCOUNT_JSON_FILE:-}"
 PUSH_SECRET="${PUSH_WEBHOOK_SECRET:-}"
 
 while [[ $# -gt 0 ]]; do
@@ -39,10 +35,6 @@ while [[ $# -gt 0 ]]; do
       ;;
     --firebase-json-file)
       FIREBASE_JSON_FILE="${2:-}"
-      shift 2
-      ;;
-    --google-json-file)
-      GOOGLE_JSON_FILE="${2:-}"
       shift 2
       ;;
     --push-webhook-secret)
@@ -116,21 +108,6 @@ elif [[ -n "${FIREBASE_JSON_FILE}" ]]; then
   npx supabase secrets set FIREBASE_SERVICE_ACCOUNT_JSON="${FIREBASE_JSON_MINIFIED}" --project-ref "${PROJECT_REF}"
 else
   echo "==> Skipping FIREBASE_SERVICE_ACCOUNT_JSON (not provided)"
-fi
-
-if [[ -n "${GOOGLE_SERVICE_ACCOUNT_JSON:-}" ]]; then
-  echo "==> Setting GOOGLE_SERVICE_ACCOUNT_JSON from env var"
-  npx supabase secrets set GOOGLE_SERVICE_ACCOUNT_JSON="${GOOGLE_SERVICE_ACCOUNT_JSON}" --project-ref "${PROJECT_REF}"
-elif [[ -n "${GOOGLE_JSON_FILE}" ]]; then
-  if [[ ! -f "${GOOGLE_JSON_FILE}" ]]; then
-    echo "Google JSON file not found: ${GOOGLE_JSON_FILE}"
-    exit 1
-  fi
-  echo "==> Setting GOOGLE_SERVICE_ACCOUNT_JSON from file: ${GOOGLE_JSON_FILE}"
-  GOOGLE_JSON_MINIFIED="$(node -e 'const fs=require("fs"); const p=process.argv[1]; const x=JSON.parse(fs.readFileSync(p, "utf8")); process.stdout.write(JSON.stringify(x));' "${GOOGLE_JSON_FILE}")"
-  npx supabase secrets set GOOGLE_SERVICE_ACCOUNT_JSON="${GOOGLE_JSON_MINIFIED}" --project-ref "${PROJECT_REF}"
-else
-  echo "==> Skipping GOOGLE_SERVICE_ACCOUNT_JSON (not provided)"
 fi
 
 echo "==> Deploying Edge Function: broadcast-push"

@@ -32,6 +32,12 @@ supabase/.temp/
 !.env.example
 android/app/google-services.json
 ios/App/App/GoogleService-Info.plist
+# Google / Firebase service account JSON keys — never commit
+sharonmajuly4th-*.json
+*-firebase-adminsdk-*.json
+# Generic service account filenames people drop in the repo root
+service-account*.json
+gcloud-*.json
 
 # Android (Capacitor) — machine-local / generated
 android/.gradle/
