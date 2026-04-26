@@ -36,6 +36,31 @@ npm run cap:open:android   # opens Android Studio
 6. **Server push (Postgres `net.http_post` trigger):** After migration `20260501000000_push_url_from_app_config.sql` is applied, insert **`app_config`** rows (see **`.env.example`**): `push_edge_function_url` = full `https://<ref>.supabase.co/functions/v1/broadcast-push`, and `push_webhook_secret` = same string as Edge Function secret **`PUSH_WEBHOOK_SECRET`**. Deploy **`broadcast-push`** to the new project and set Edge secrets (`FIREBASE_SERVICE_ACCOUNT_JSON`, `PUSH_WEBHOOK_SECRET`). The `messages` insert trigger calls the function over HTTP; you do not need a separate Dashboard “Database Webhook” if this path is configured.
 7. Run `npm run dev` and test admin + public flows; then `npm run cap:sync` and new store builds (bump **Android `versionCode`** and **iOS build number** each upload).
 
+### Photo submissions (`submit-photo` Edge Function)
+
+Public photo uploads go through the **`submit-photo`** Edge Function, which authenticates as a Google Cloud service account and uploads the file to **Google Drive** via the standard Drive API (no Lovable connector required).
+
+1. In **Google Cloud Console** → **APIs & Services** → enable the **Google Drive API** for a project you own.
+2. **IAM & Admin → Service Accounts →** create a service account (e.g. `sharon-july4-photos`). Under **Keys**, **Add key → JSON**, and download the JSON file. This is your `GOOGLE_SERVICE_ACCOUNT_JSON` secret.
+3. In **Google Drive**, create the destination folder (or use a Shared Drive). **Share** the folder with the service account's `client_email` (the one in the JSON, like `sharon-july4-photos@your-gcp-project.iam.gserviceaccount.com`) with the **Editor** role (or **Content manager** on a Shared Drive).
+4. Copy the folder ID from its Drive URL (`.../folders/<FOLDER_ID>`).
+5. In Supabase **SQL Editor**, set the folder ID:
+   ```sql
+   insert into public.app_config (key, value) values ('photo_drive_folder_id', '<FOLDER_ID>')
+   on conflict (key) do update set value = excluded.value, updated_at = now();
+   ```
+6. Set the Edge secret and deploy:
+   ```bash
+   npx supabase secrets set GOOGLE_SERVICE_ACCOUNT_JSON="$(cat /path/to/service-account.json)" --project-ref <ref>
+   npx supabase functions deploy submit-photo --no-verify-jwt --project-ref <ref>
+   ```
+7. Try a photo upload in the app and check **`public.photo_submissions`** (admin UI at `/admin/photos` or SQL).
+
+Common errors the function maps to friendly toast messages:
+- **403** → Drive folder not shared with the service account.
+- **404** → `photo_drive_folder_id` points at a folder the service account can't see.
+- **401** → service account key revoked or JSON is wrong / stale.
+
 ### Copy old Supabase data into your new project
 
 After migrations run on the **new** project, use **`scripts/migrate-supabase-data.mjs`**: set `MIGRATE_OLD_URL`, `MIGRATE_OLD_ANON_KEY`, `MIGRATE_NEW_URL`, and `MIGRATE_NEW_SERVICE_ROLE_KEY`, then run `node scripts/migrate-supabase-data.mjs`. It does **not** copy `auth.users` or `user_roles` — recreate admin accounts in the new project’s **Authentication** UI first if needed.

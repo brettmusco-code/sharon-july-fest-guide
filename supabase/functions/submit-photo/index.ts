@@ -1,22 +1,44 @@
-// Photo submission edge function.
+// Photo submission edge function (public).
 //
-// Accepts multipart/form-data from the public site:
-//   file              : the image (required, <=15 MB)
-//   submitter_name    : optional, <=100
-//   instagram_handle  : optional, <=100
-//   caption           : optional, <=1000
+// Flow
+//  1. Receives `multipart/form-data` from the website / app:
+//       file              (required, <=15 MB)
+//       submitter_name    (optional, <=100)
+//       instagram_handle  (optional, <=100)
+//       caption           (optional, <=1000)
+//  2. Looks up the destination Drive folder ID from `public.app_config`
+//     (key `photo_drive_folder_id`).
+//  3. Authenticates as a Google Cloud service account and uploads the file to
+//     Google Drive using a multipart upload (metadata + media). The folder must
+//     be shared with the service account's `client_email` (Editor/Content
+//     manager). Shared Drives are fully supported via `supportsAllDrives=true`.
+//  4. Inserts a row in `public.photo_submissions` so admins can review.
 //
-// Reads the destination Drive folder ID from public.app_config and uploads
-// the file via the Lovable Connector Gateway for Google Drive (multipart).
-// On success inserts a row in public.photo_submissions for admin review.
+// Secrets (Supabase Dashboard → Edge Functions → Secrets)
+//   - GOOGLE_SERVICE_ACCOUNT_JSON — full JSON for a Google Cloud service
+//     account with Drive access. Share the target folder with the account's
+//     email (e.g. `xxx@yyy.iam.gserviceaccount.com`).
+//   - SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY — auto-populated by Supabase.
+//
+// Historical note: the previous implementation used Lovable Cloud's connector
+// gateway (`connector-gateway.lovable.dev`), which stopped working once this
+// project moved off Lovable Cloud.
 
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2.95.0";
-import { corsHeaders } from "https://esm.sh/@supabase/supabase-js@2.95.0/cors";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2.49.4";
+import { GoogleAuth } from "https://esm.sh/google-auth-library@9.14.2";
 
-const DRIVE_GATEWAY = "https://connector-gateway.lovable.dev/google_drive";
+const DRIVE_UPLOAD_URL =
+  "https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&supportsAllDrives=true&fields=id,webViewLink,name";
 const MAX_BYTES = 15 * 1024 * 1024; // 15 MB
 const MAX_NAME = 100;
 const MAX_CAPTION = 1000;
+
+const corsHeaders = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers":
+    "authorization, x-client-info, apikey, content-type",
+  "Access-Control-Allow-Methods": "POST, OPTIONS",
+};
 
 const json = (status: number, body: unknown) =>
   new Response(JSON.stringify(body), {
@@ -40,35 +62,46 @@ Deno.serve(async (req) => {
     return json(405, { error: "Method not allowed" });
   }
 
-  const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
-  const GOOGLE_DRIVE_API_KEY = Deno.env.get("GOOGLE_DRIVE_API_KEY");
   const SUPABASE_URL = Deno.env.get("SUPABASE_URL");
   const SERVICE_ROLE = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
+  const GOOGLE_JSON = Deno.env.get("GOOGLE_SERVICE_ACCOUNT_JSON");
 
-  if (!LOVABLE_API_KEY) return json(500, { error: "LOVABLE_API_KEY is not configured" });
-  if (!GOOGLE_DRIVE_API_KEY) return json(500, { error: "GOOGLE_DRIVE_API_KEY is not configured" });
-  if (!SUPABASE_URL || !SERVICE_ROLE) return json(500, { error: "Supabase env not configured" });
+  if (!SUPABASE_URL || !SERVICE_ROLE) {
+    return json(500, { error: "Supabase env not configured" });
+  }
+  if (!GOOGLE_JSON) {
+    return json(500, {
+      error:
+        "Photo uploads aren't configured yet. GOOGLE_SERVICE_ACCOUNT_JSON is not set.",
+    });
+  }
+
+  let credentials: Record<string, unknown>;
+  try {
+    credentials = JSON.parse(GOOGLE_JSON);
+  } catch {
+    return json(500, { error: "GOOGLE_SERVICE_ACCOUNT_JSON is not valid JSON" });
+  }
 
   // Service-role client so the insert/select bypass RLS cleanly for this trusted server flow.
   const admin = createClient(SUPABASE_URL, SERVICE_ROLE, {
     auth: { persistSession: false, autoRefreshToken: false },
   });
 
-  // Look up the destination folder ID set by an admin in /admin/settings.
-  const { data: cfgRows, error: cfgError } = await admin
+  const { data: cfgRow, error: cfgError } = await admin
     .from("app_config")
     .select("key, value")
     .eq("key", "photo_drive_folder_id")
     .maybeSingle();
   if (cfgError) return json(500, { error: `Config read failed: ${cfgError.message}` });
-  const folderId = (cfgRows?.value ?? "").trim();
+  const folderId = (cfgRow?.value ?? "").trim();
   if (!folderId) {
     return json(503, {
-      error: "Photo uploads aren't configured yet. The festival admin needs to set the Google Drive folder.",
+      error:
+        "Photo uploads aren't configured yet. The festival admin needs to set the Google Drive folder ID in app_config.",
     });
   }
 
-  // Parse multipart body.
   let form: FormData;
   try {
     form = await req.formData();
@@ -93,13 +126,13 @@ Deno.serve(async (req) => {
   const instagramHandle = sanitize(String(form.get("instagram_handle") ?? ""), MAX_NAME).replace(/^@/, "");
   const caption = sanitize(String(form.get("caption") ?? ""), MAX_CAPTION);
 
-  // Build a friendly filename: "<timestamp>_<name?>_<original>".
+  // Friendly filename: "<timestamp>_<name?>_<original>".
   const ts = new Date().toISOString().replace(/[:.]/g, "-");
   const baseName = safeFilename(file.name);
   const namePart = submitterName ? `_${safeFilename(submitterName)}` : "";
   const driveName = `${ts}${namePart}_${baseName}`.slice(0, 200);
 
-  // Description metadata to keep in Drive even if our DB row is deleted.
+  // Description kept in Drive so admins still have context if the DB row is removed.
   const descLines = [
     submitterName ? `Submitted by: ${submitterName}` : null,
     instagramHandle ? `Instagram: @${instagramHandle}` : null,
@@ -107,8 +140,25 @@ Deno.serve(async (req) => {
     `Uploaded: ${new Date().toUTCString()}`,
   ].filter(Boolean);
 
-  // Drive multipart upload (related body with metadata + media).
-  const boundary = `----LovableBoundary${crypto.randomUUID()}`;
+  const auth = new GoogleAuth({
+    credentials: credentials as {
+      client_email: string;
+      private_key: string;
+    },
+    scopes: ["https://www.googleapis.com/auth/drive"],
+  });
+  let accessToken: string;
+  try {
+    const client = await auth.getClient();
+    const tokenResponse = await client.getAccessToken();
+    accessToken = (tokenResponse?.token ?? tokenResponse) as string;
+    if (!accessToken) throw new Error("no token");
+  } catch (err) {
+    console.error("[submit-photo] Google auth failed", err);
+    return json(500, { error: "Server could not authenticate with Google Drive" });
+  }
+
+  const boundary = `----SubmitPhotoBoundary${crypto.randomUUID()}`;
   const metadata = {
     name: driveName,
     parents: [folderId],
@@ -131,23 +181,18 @@ Deno.serve(async (req) => {
   body.set(fileBuf, head.length);
   body.set(tail, head.length + fileBuf.length);
 
-  const driveRes = await fetch(
-    `${DRIVE_GATEWAY}/upload/drive/v3/files?uploadType=multipart&fields=id,webViewLink,name`,
-    {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${LOVABLE_API_KEY}`,
-        "X-Connection-Api-Key": GOOGLE_DRIVE_API_KEY,
-        "Content-Type": `multipart/related; boundary=${boundary}`,
-      },
-      body,
+  const driveRes = await fetch(DRIVE_UPLOAD_URL, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+      "Content-Type": `multipart/related; boundary=${boundary}`,
     },
-  );
+    body,
+  });
 
   const driveText = await driveRes.text();
   if (!driveRes.ok) {
     console.error("[submit-photo] Drive upload failed", driveRes.status, driveText);
-    // Persist a failure record so admins can see attempts went nowhere.
     await admin.from("photo_submissions").insert({
       submitter_name: submitterName || null,
       instagram_handle: instagramHandle || null,
@@ -157,14 +202,15 @@ Deno.serve(async (req) => {
       status: "failed",
       error: `Drive ${driveRes.status}: ${driveText.slice(0, 500)}`,
     });
-    // Friendlier client message
+
     let friendly = "Upload failed. Please try again.";
     if (driveRes.status === 403) {
-      friendly = "The festival's photo folder isn't shared with the upload service yet. Tell an organizer.";
+      friendly =
+        "The festival's photo folder isn't shared with the upload service yet. Tell an organizer.";
     } else if (driveRes.status === 404) {
       friendly = "The photo folder couldn't be found. Tell an organizer.";
     } else if (driveRes.status === 401) {
-      friendly = "The Google Drive connection has expired. Tell an organizer to reconnect it.";
+      friendly = "The Google Drive credential is invalid or expired. Tell an organizer.";
     }
     return json(502, { error: friendly });
   }
@@ -173,7 +219,7 @@ Deno.serve(async (req) => {
   try {
     driveResult = JSON.parse(driveText);
   } catch {
-    /* ignore */
+    /* ignore parse errors; Drive returned 2xx */
   }
 
   const { error: insertError } = await admin.from("photo_submissions").insert({
@@ -188,7 +234,7 @@ Deno.serve(async (req) => {
     status: "uploaded",
   });
   if (insertError) {
-    // The file is in Drive — log but don't fail the user.
+    // File is already in Drive — log for admins but don't fail the user.
     console.error("[submit-photo] DB insert failed:", insertError.message);
   }
 
