@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { Menu, Camera, HelpCircle, Building2, Download, Home } from "lucide-react";
+import { Menu, Camera, HelpCircle, Building2, Home } from "lucide-react";
 import {
   Sheet,
   SheetContent,
@@ -95,17 +95,6 @@ const AppMenu = () => {
             Corporate Sponsors
           </button>
 
-          <Link
-            to="/install"
-            onClick={() => {
-              trackEvent("menu_click", "install", "Install App");
-              close();
-            }}
-            className="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-muted font-body text-base"
-          >
-            <Download className="w-5 h-5 text-primary" />
-            Install App
-          </Link>
         </nav>
       </SheetContent>
     </Sheet>
