@@ -9,6 +9,7 @@ import Index from "./pages/Index.tsx";
 import Install from "./pages/Install.tsx";
 import Auth from "./pages/Auth.tsx";
 import Info from "./pages/Info.tsx";
+import SharePhotos from "./pages/SharePhotos.tsx";
 import AdminEvents from "./pages/admin/AdminEvents.tsx";
 import AdminMap from "./pages/admin/AdminMap.tsx";
 import AdminCategories from "./pages/admin/AdminCategories.tsx";
@@ -55,6 +56,7 @@ const App = () => {
               <Route path="/install" element={<Install />} />
               <Route path="/auth" element={<Auth />} />
               <Route path="/info" element={<Info />} />
+              <Route path="/share-photos" element={<SharePhotos />} />
               <Route path="/admin" element={<AdminEvents />} />
               <Route path="/admin/map" element={<AdminMap />} />
               <Route path="/admin/categories" element={<AdminCategories />} />
