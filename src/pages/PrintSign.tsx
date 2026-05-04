@@ -21,6 +21,7 @@ const SITE_URL = "https://sma-july4th.lovable.app";
 const PrintSign = () => {
   const { data: events = [] } = useEvents();
   const { data: categories = [] } = useCategories();
+  const { data: settings } = useMapSettings();
   const { data: sponsors = [] } = useQuery({
     queryKey: ["sponsors", "print"],
     queryFn: async () => {
