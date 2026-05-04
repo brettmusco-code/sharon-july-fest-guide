@@ -133,15 +133,14 @@ const PrintSign = () => {
                   <div style={{
                     position: "relative",
                     width: "100%",
-                    height: "9in",
                     overflow: "hidden",
+                    paddingBottom: `${VISIBLE * 75}%`,
                   }}>
                     <div style={{
-                      position: "relative",
-                      width: "100%",
-                      height: "100%",
-                    overflow: "hidden",
-                  }}>
+                      position: "absolute",
+                      inset: 0,
+                      overflow: "hidden",
+                    }}>
                     <img
                       src={mapUrl}
                       alt="Festival map"
