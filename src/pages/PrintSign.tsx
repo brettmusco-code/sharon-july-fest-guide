@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useEvents, useCategories, useMapSettings } from "@/hooks/useFestivalData";
 import festivalMapFallback from "@/assets/festival-map.jpg";
+import headerBg from "@/assets/print-header-bg.jpg";
 
 interface Sponsor {
   id: string;
@@ -91,7 +92,8 @@ const PrintSign = () => {
         <div className="sign-page">
           {/* Header band */}
           <header style={{
-            background: "linear-gradient(135deg, #b91c1c 0%, #1d4ed8 100%)",
+            background: `linear-gradient(135deg, rgba(185,28,28,0.88) 0%, rgba(29,78,216,0.88) 100%), url(${headerBg}) center/cover no-repeat`,
+            backgroundBlendMode: "multiply",
             color: "#fff",
             padding: "0.4in 0.7in 0.35in",
             textAlign: "center",
