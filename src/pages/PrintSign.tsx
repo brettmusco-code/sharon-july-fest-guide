@@ -95,20 +95,43 @@ const PrintSign = () => {
             background: `linear-gradient(135deg, rgba(185,28,28,0.88) 0%, rgba(29,78,216,0.88) 100%), url(${headerBg}) center/cover no-repeat`,
             backgroundBlendMode: "multiply",
             color: "#fff",
-            padding: "0.4in 0.7in 0.35in",
-            textAlign: "center",
+            padding: "0.35in 0.7in 0.3in",
+            display: "flex",
+            alignItems: "center",
+            gap: "0.4in",
           }}>
-            <div style={{ fontSize: 24, fontWeight: 700, letterSpacing: "0.18em", opacity: 0.92 }}>
-              SHARON • MASSACHUSETTS
+            <div style={{ flex: 1, textAlign: "center" }}>
+              <div style={{ fontSize: 24, fontWeight: 700, letterSpacing: "0.18em", opacity: 0.92 }}>
+                SHARON • MASSACHUSETTS
+              </div>
+              <h1 style={{
+                fontSize: 72, lineHeight: 1.0, margin: "8px 0 6px",
+                fontWeight: 900, letterSpacing: "-0.02em",
+              }}>
+                INDEPENDENCE DAY CELEBRATION
+              </h1>
+              <div style={{ fontSize: 26, fontWeight: 600, opacity: 0.95 }}>
+                Memorial Park Beach · Lake Massapoag
+              </div>
             </div>
-            <h1 style={{
-              fontSize: 78, lineHeight: 1.0, margin: "8px 0 6px",
-              fontWeight: 900, letterSpacing: "-0.02em",
+            <div style={{
+              display: "flex", flexDirection: "column", alignItems: "center",
+              flexShrink: 0,
             }}>
-              INDEPENDENCE DAY CELEBRATION
-            </h1>
-            <div style={{ fontSize: 28, fontWeight: 600, opacity: 0.95 }}>
-              Memorial Park Beach · Lake Massapoag
+              <img
+                src={qrSrc}
+                alt="QR code to festival site"
+                style={{
+                  width: 160, height: 160, background: "#fff",
+                  padding: 8, borderRadius: 8,
+                }}
+              />
+              <div style={{
+                fontSize: 16, fontWeight: 700, marginTop: 8, textAlign: "center",
+                lineHeight: 1.2, maxWidth: 180,
+              }}>
+                Scan to download the app for live schedule, alerts & map
+              </div>
             </div>
           </header>
 
@@ -313,23 +336,8 @@ const PrintSign = () => {
             display: "flex", justifyContent: "space-between", alignItems: "center",
             fontSize: 22, fontWeight: 600, gap: 24,
           }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 18 }}>
-              <img
-                src={qrSrc}
-                alt="QR code to festival site"
-                style={{
-                  width: 130, height: 130, background: "#fff",
-                  padding: 8, borderRadius: 8,
-                }}
-              />
-              <div style={{ lineHeight: 1.25 }}>
-                <div style={{ fontSize: 20, opacity: 0.8, fontWeight: 600 }}>
-                  Scan for live schedule, alerts & map
-                </div>
-                <div style={{ fontSize: 26, fontWeight: 800 }}>
-                  sma-july4th.lovable.app
-                </div>
-              </div>
+            <div style={{ fontSize: 26, fontWeight: 800 }}>
+              sma-july4th.lovable.app
             </div>
             <div style={{ opacity: 0.85, fontSize: 24 }}>#SharonJuly4th</div>
           </footer>
