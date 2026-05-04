@@ -23,6 +23,7 @@ import AdminSponsors from "./pages/admin/AdminSponsors.tsx";
 import AdminPhotos from "./pages/admin/AdminPhotos.tsx";
 import AdminSettings from "./pages/admin/AdminSettings.tsx";
 import NotFound from "./pages/NotFound.tsx";
+import PrintSign from "./pages/PrintSign.tsx";
 import { PushNotificationsRegister } from "@/components/PushNotificationsRegister";
 import { hydrateOfflineCache, startOfflinePersistence } from "@/lib/offline-cache";
 
@@ -71,6 +72,7 @@ const App = () => {
               <Route path="/admin/sponsors" element={<AdminSponsors />} />
               <Route path="/admin/photos" element={<AdminPhotos />} />
               <Route path="/admin/settings" element={<AdminSettings />} />
+              <Route path="/print" element={<PrintSign />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>
