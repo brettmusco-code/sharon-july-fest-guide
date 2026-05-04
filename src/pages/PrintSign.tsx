@@ -128,7 +128,7 @@ const PrintSign = () => {
               {(() => {
                 // Crop: hide top 8% and bottom 15% of the source map to focus on the beach.
                 const CROP_TOP = 0.08;
-                const CROP_BOTTOM = 0.15;
+                const CROP_BOTTOM = 0.22;
                 const VISIBLE = 1 - CROP_TOP - CROP_BOTTOM; // 0.77
                 // Constrain map display height so the schedule fits on the page.
                 return (
@@ -279,25 +279,26 @@ const PrintSign = () => {
           {/* Sponsors strip */}
           {sponsors.length > 0 && (
             <section style={{
-              padding: "0.15in 0.6in 0.1in",
+              padding: "0.12in 0.6in 0.12in",
               borderTop: "2px solid #e5e7eb",
+              flexShrink: 0,
             }}>
               <div style={{
-                fontSize: 24, fontWeight: 700, letterSpacing: "0.18em",
-                textAlign: "center", color: "#6b7280", marginBottom: 14,
+                fontSize: 20, fontWeight: 700, letterSpacing: "0.18em",
+                textAlign: "center", color: "#6b7280", marginBottom: 10,
               }}>
                 THANK YOU TO OUR SPONSORS
               </div>
               <div style={{
                 display: "flex", flexWrap: "wrap", justifyContent: "center",
-                alignItems: "center", gap: "20px 44px",
+                alignItems: "center", gap: "14px 32px",
               }}>
                 {sponsors.map((s) => (
                   <img
                     key={s.id}
                     src={s.logo_url}
                     alt={s.name}
-                    style={{ maxHeight: 120, maxWidth: 240, objectFit: "contain" }}
+                    style={{ maxHeight: 80, maxWidth: 180, objectFit: "contain" }}
                   />
                 ))}
               </div>
@@ -307,7 +308,8 @@ const PrintSign = () => {
           {/* Footer */}
           <footer style={{
             background: "#0a0a0a", color: "#fff",
-            padding: "0.3in 0.7in",
+            padding: "0.22in 0.7in",
+            flexShrink: 0,
             display: "flex", justifyContent: "space-between", alignItems: "center",
             fontSize: 22, fontWeight: 600, gap: 24,
           }}>
