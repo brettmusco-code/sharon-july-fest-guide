@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useEvents, useCategories, useMapSettings } from "@/hooks/useFestivalData";
 import festivalMapFallback from "@/assets/festival-map.jpg";
+import headerBg from "@/assets/print-header-bg.jpg";
 
 interface Sponsor {
   id: string;
