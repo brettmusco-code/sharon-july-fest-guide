@@ -48,6 +48,7 @@ const PrintSign = () => {
   return (
     <>
       <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700;800;900&display=swap');
         @page { size: 20in 30in; margin: 0; }
         @media print {
           html, body { background: #fff !important; }
@@ -63,7 +64,7 @@ const PrintSign = () => {
           box-shadow: 0 10px 40px rgba(0,0,0,0.15);
           display: flex;
           flex-direction: column;
-          font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+          font-family: 'Roboto', ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
         }
       `}</style>
 
@@ -290,21 +291,21 @@ const PrintSign = () => {
               borderTop: "2px solid #e5e7eb",
             }}>
               <div style={{
-                fontSize: 18, fontWeight: 700, letterSpacing: "0.15em",
-                textAlign: "center", color: "#6b7280", marginBottom: 8,
+                fontSize: 24, fontWeight: 700, letterSpacing: "0.18em",
+                textAlign: "center", color: "#6b7280", marginBottom: 14,
               }}>
                 THANK YOU TO OUR SPONSORS
               </div>
               <div style={{
                 display: "flex", flexWrap: "wrap", justifyContent: "center",
-                alignItems: "center", gap: "12px 28px",
+                alignItems: "center", gap: "20px 44px",
               }}>
                 {sponsors.map((s) => (
                   <img
                     key={s.id}
                     src={s.logo_url}
                     alt={s.name}
-                    style={{ maxHeight: 70, maxWidth: 160, objectFit: "contain" }}
+                    style={{ maxHeight: 120, maxWidth: 240, objectFit: "contain" }}
                   />
                 ))}
               </div>
