@@ -92,28 +92,28 @@ const PrintSign = () => {
           <header style={{
             background: "linear-gradient(135deg, #b91c1c 0%, #1d4ed8 100%)",
             color: "#fff",
-            padding: "0.6in 0.7in 0.55in",
+            padding: "0.4in 0.7in 0.35in",
             textAlign: "center",
           }}>
-            <div style={{ fontSize: 28, fontWeight: 700, letterSpacing: "0.18em", opacity: 0.92 }}>
+            <div style={{ fontSize: 24, fontWeight: 700, letterSpacing: "0.18em", opacity: 0.92 }}>
               SHARON • MASSACHUSETTS
             </div>
             <h1 style={{
-              fontSize: 100, lineHeight: 1.0, margin: "10px 0 8px",
+              fontSize: 78, lineHeight: 1.0, margin: "8px 0 6px",
               fontWeight: 900, letterSpacing: "-0.02em",
             }}>
               INDEPENDENCE DAY CELEBRATION
             </h1>
-            <div style={{ fontSize: 36, fontWeight: 600, opacity: 0.95 }}>
+            <div style={{ fontSize: 28, fontWeight: 600, opacity: 0.95 }}>
               Memorial Park Beach · Lake Massapoag
             </div>
           </header>
 
           {/* Map */}
-          <section style={{ padding: "0.45in 0.6in 0.2in" }}>
+          <section style={{ padding: "0.25in 0.6in 0.15in" }}>
             <h2 style={{
-              fontSize: 44, fontWeight: 800, margin: "0 0 12px",
-              borderBottom: "4px solid #0a0a0a", paddingBottom: 8,
+              fontSize: 38, fontWeight: 800, margin: "0 0 8px",
+              borderBottom: "4px solid #0a0a0a", paddingBottom: 6,
             }}>
               Festival Map
             </h2>
@@ -127,11 +127,18 @@ const PrintSign = () => {
                 const CROP_TOP = 0.08;
                 const CROP_BOTTOM = 0.15;
                 const VISIBLE = 1 - CROP_TOP - CROP_BOTTOM; // 0.77
+                // Constrain map display height so the schedule fits on the page.
                 return (
                   <div style={{
                     position: "relative",
                     width: "100%",
-                    paddingTop: `${VISIBLE * 100}%`, // square-ish container sized to visible portion
+                    height: "9in",
+                    overflow: "hidden",
+                  }}>
+                    <div style={{
+                      position: "relative",
+                      width: "100%",
+                      height: "100%",
                     overflow: "hidden",
                   }}>
                     <img
