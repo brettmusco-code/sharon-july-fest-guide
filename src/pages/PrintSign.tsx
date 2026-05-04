@@ -217,21 +217,22 @@ const PrintSign = () => {
 
           {/* Schedule */}
           <section style={{
-            padding: "0.2in 0.6in 0.25in",
+            padding: "0.15in 0.6in 0.2in",
             display: "flex",
             flexDirection: "column",
             minHeight: 0,
+            flex: 1,
           }}>
             <h2 style={{
-              fontSize: 48, fontWeight: 800, margin: "0 0 12px",
-              borderBottom: "4px solid #0a0a0a", paddingBottom: 8,
+              fontSize: 38, fontWeight: 800, margin: "0 0 8px",
+              borderBottom: "4px solid #0a0a0a", paddingBottom: 6,
             }}>
               Schedule of Events
             </h2>
             <div style={{
               display: "flex",
               flexDirection: "column",
-              gap: 8,
+              gap: 6,
             }}>
               {events.map((ev) => {
                 const color = colorFor(ev.category_slug);
@@ -240,37 +241,37 @@ const PrintSign = () => {
                     key={ev.id}
                     style={{
                       display: "grid",
-                      gridTemplateColumns: "70px 2.4in 1fr",
+                      gridTemplateColumns: "56px 2.1in 1fr",
                       alignItems: "center",
-                      gap: 18,
-                      padding: "10px 16px",
+                      gap: 14,
+                      padding: "8px 14px",
                       border: "2px solid #0a0a0a",
-                      borderLeft: `14px solid ${color}`,
+                      borderLeft: `12px solid ${color}`,
                       borderRadius: 8,
                       background: "#fff",
                       breakInside: "avoid",
                     }}
                   >
                     <div style={{
-                      width: 64, height: 64, borderRadius: "999px",
+                      width: 52, height: 52, borderRadius: "999px",
                       background: color, color: "#fff",
                       display: "flex", alignItems: "center", justifyContent: "center",
-                      fontSize: 36, fontWeight: 900, border: "3px solid #0a0a0a",
+                      fontSize: 28, fontWeight: 900, border: "3px solid #0a0a0a",
                     }}>
                       {ev.sort_order ?? ""}
                     </div>
                     <div style={{
-                      fontSize: 32, fontWeight: 900, color: "#1d4ed8",
+                      fontSize: 26, fontWeight: 900, color: "#1d4ed8",
                       lineHeight: 1.05,
                     }}>
                       {ev.all_day ? "All Day" : ev.time}
                     </div>
                     <div style={{ minWidth: 0 }}>
-                      <div style={{ fontSize: 32, fontWeight: 800, lineHeight: 1.1 }}>
+                      <div style={{ fontSize: 26, fontWeight: 800, lineHeight: 1.1 }}>
                         {ev.title}
                       </div>
                       <div style={{
-                        fontSize: 22, fontWeight: 600, color: "#374151",
+                        fontSize: 18, fontWeight: 600, color: "#374151",
                         marginTop: 2,
                       }}>
                         📍 {ev.location}
