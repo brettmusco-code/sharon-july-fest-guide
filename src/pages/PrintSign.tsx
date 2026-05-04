@@ -1,6 +1,17 @@
 import { useEffect } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 import { useEvents, useCategories, useMapSettings } from "@/hooks/useFestivalData";
 import festivalMapFallback from "@/assets/festival-map.jpg";
+
+interface Sponsor {
+  id: string;
+  name: string;
+  logo_url: string;
+  sort_order: number;
+}
+
+const SITE_URL = "https://sma-july4th.lovable.app";
 
 /**
  * Print-ready 20"x30" portrait sign with map + schedule on one page.
