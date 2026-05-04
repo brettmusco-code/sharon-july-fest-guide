@@ -21,7 +21,18 @@ const SITE_URL = "https://sma-july4th.lovable.app";
 const PrintSign = () => {
   const { data: events = [] } = useEvents();
   const { data: categories = [] } = useCategories();
-  const { data: settings } = useMapSettings();
+  const { data: sponsors = [] } = useQuery({
+    queryKey: ["sponsors", "print"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("sponsors")
+        .select("id, name, logo_url, sort_order")
+        .order("sort_order", { ascending: true });
+      if (error) throw error;
+      return data as Sponsor[];
+    },
+  });
+  const qrSrc = `https://api.qrserver.com/v1/create-qr-code/?size=400x400&margin=0&data=${encodeURIComponent(SITE_URL)}`;
 
   const colorFor = (slug: string) =>
     categories.find((c) => c.slug === slug)?.color ?? "#6366f1";
