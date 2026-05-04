@@ -1,6 +1,17 @@
 import { useEffect } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 import { useEvents, useCategories, useMapSettings } from "@/hooks/useFestivalData";
 import festivalMapFallback from "@/assets/festival-map.jpg";
+
+interface Sponsor {
+  id: string;
+  name: string;
+  logo_url: string;
+  sort_order: number;
+}
+
+const SITE_URL = "https://sma-july4th.lovable.app";
 
 /**
  * Print-ready 20"x30" portrait sign with map + schedule on one page.
@@ -11,6 +22,18 @@ const PrintSign = () => {
   const { data: events = [] } = useEvents();
   const { data: categories = [] } = useCategories();
   const { data: settings } = useMapSettings();
+  const { data: sponsors = [] } = useQuery({
+    queryKey: ["sponsors", "print"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("sponsors")
+        .select("id, name, logo_url, sort_order")
+        .order("sort_order", { ascending: true });
+      if (error) throw error;
+      return data as Sponsor[];
+    },
+  });
+  const qrSrc = `https://api.qrserver.com/v1/create-qr-code/?size=400x400&margin=0&data=${encodeURIComponent(SITE_URL)}`;
 
   const colorFor = (slug: string) =>
     categories.find((c) => c.slug === slug)?.color ?? "#6366f1";
@@ -197,7 +220,12 @@ const PrintSign = () => {
             }}>
               Schedule of Events
             </h2>
-            <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+            <div style={{
+              display: "grid",
+              gridTemplateColumns: "1fr 1fr",
+              gap: 10,
+              alignContent: "start",
+            }}>
               {events.map((ev) => {
                 const color = colorFor(ev.category_slug);
                 return (
@@ -205,44 +233,40 @@ const PrintSign = () => {
                     key={ev.id}
                     style={{
                       display: "grid",
-                      gridTemplateColumns: "64px 2.4in 1fr",
+                      gridTemplateColumns: "56px 1fr",
                       alignItems: "center",
-                      gap: 16,
-                      padding: "10px 14px",
+                      gap: 12,
+                      padding: "8px 12px",
                       border: "2px solid #0a0a0a",
-                      borderLeft: `14px solid ${color}`,
+                      borderLeft: `12px solid ${color}`,
                       borderRadius: 8,
                       background: "#fff",
                       breakInside: "avoid",
                     }}
                   >
                     <div style={{
-                      width: 60, height: 60, borderRadius: "999px",
+                      width: 52, height: 52, borderRadius: "999px",
                       background: color, color: "#fff",
                       display: "flex", alignItems: "center", justifyContent: "center",
-                      fontSize: 32, fontWeight: 900, border: "3px solid #0a0a0a",
+                      fontSize: 28, fontWeight: 900, border: "3px solid #0a0a0a",
                     }}>
                       {ev.sort_order ?? ""}
                     </div>
-                    <div style={{ fontSize: 34, fontWeight: 800, lineHeight: 1.05 }}>
-                      {ev.all_day ? "All Day" : ev.time}
-                    </div>
                     <div style={{ minWidth: 0 }}>
-                      <div style={{ fontSize: 34, fontWeight: 800, lineHeight: 1.1 }}>
+                      <div style={{
+                        fontSize: 24, fontWeight: 800, color: "#1d4ed8",
+                        lineHeight: 1.0, marginBottom: 2,
+                      }}>
+                        {ev.all_day ? "All Day" : ev.time}
+                      </div>
+                      <div style={{ fontSize: 26, fontWeight: 800, lineHeight: 1.1 }}>
                         {ev.title}
                       </div>
                       <div style={{
-                        fontSize: 22, fontWeight: 600, color: "#374151",
+                        fontSize: 18, fontWeight: 600, color: "#374151",
                         marginTop: 2,
                       }}>
                         📍 {ev.location}
-                        <span style={{
-                          marginLeft: 12, padding: "2px 10px",
-                          background: color, color: "#fff",
-                          borderRadius: 999, fontSize: 18, fontWeight: 700,
-                        }}>
-                          {nameFor(ev.category_slug)}
-                        </span>
                       </div>
                     </div>
                   </div>
@@ -253,15 +277,60 @@ const PrintSign = () => {
 
           <div style={{ flex: 1 }} />
 
+          {/* Sponsors strip */}
+          {sponsors.length > 0 && (
+            <section style={{
+              padding: "0.15in 0.6in 0.1in",
+              borderTop: "2px solid #e5e7eb",
+            }}>
+              <div style={{
+                fontSize: 18, fontWeight: 700, letterSpacing: "0.15em",
+                textAlign: "center", color: "#6b7280", marginBottom: 8,
+              }}>
+                THANK YOU TO OUR SPONSORS
+              </div>
+              <div style={{
+                display: "flex", flexWrap: "wrap", justifyContent: "center",
+                alignItems: "center", gap: "12px 28px",
+              }}>
+                {sponsors.map((s) => (
+                  <img
+                    key={s.id}
+                    src={s.logo_url}
+                    alt={s.name}
+                    style={{ maxHeight: 70, maxWidth: 160, objectFit: "contain" }}
+                  />
+                ))}
+              </div>
+            </section>
+          )}
+
           {/* Footer */}
           <footer style={{
             background: "#0a0a0a", color: "#fff",
-            padding: "0.35in 0.7in",
+            padding: "0.3in 0.7in",
             display: "flex", justifyContent: "space-between", alignItems: "center",
-            fontSize: 22, fontWeight: 600,
+            fontSize: 22, fontWeight: 600, gap: 24,
           }}>
-            <div>Full schedule, alerts & map → <strong>sma-july4th.lovable.app</strong></div>
-            <div style={{ opacity: 0.85 }}>#SharonJuly4th</div>
+            <div style={{ display: "flex", alignItems: "center", gap: 18 }}>
+              <img
+                src={qrSrc}
+                alt="QR code to festival site"
+                style={{
+                  width: 130, height: 130, background: "#fff",
+                  padding: 8, borderRadius: 8,
+                }}
+              />
+              <div style={{ lineHeight: 1.25 }}>
+                <div style={{ fontSize: 20, opacity: 0.8, fontWeight: 600 }}>
+                  Scan for live schedule, alerts & map
+                </div>
+                <div style={{ fontSize: 26, fontWeight: 800 }}>
+                  sma-july4th.lovable.app
+                </div>
+              </div>
+            </div>
+            <div style={{ opacity: 0.85, fontSize: 24 }}>#SharonJuly4th</div>
           </footer>
         </div>
       </div>
