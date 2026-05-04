@@ -99,42 +99,67 @@ const PrintSign = () => {
               border: "3px solid #0a0a0a", borderRadius: 12, overflow: "hidden",
               background: "#fff",
             }}>
-              <img
-                src={mapUrl}
-                alt="Festival map"
-                style={{ display: "block", width: "100%", height: "auto" }}
-              />
-              {events.map((ev) => {
-                const color = colorFor(ev.category_slug);
+              {(() => {
+                // Crop: hide top 8% and bottom 15% of the source map to focus on the beach.
+                const CROP_TOP = 0.08;
+                const CROP_BOTTOM = 0.15;
+                const VISIBLE = 1 - CROP_TOP - CROP_BOTTOM; // 0.77
                 return (
-                  <div
-                    key={ev.id}
-                    style={{
-                      position: "absolute",
-                      left: `${ev.pin_x}%`,
-                      top: `${ev.pin_y}%`,
-                      transform: "translate(-50%, -100%)",
-                      display: "flex",
-                      flexDirection: "column",
-                      alignItems: "center",
-                      pointerEvents: "none",
-                    }}
-                  >
-                    <div style={{
-                      background: color,
-                      color: "#fff",
-                      border: "3px solid #fff",
-                      boxShadow: "0 2px 4px rgba(0,0,0,0.4)",
-                      borderRadius: "999px",
-                      width: 56, height: 56,
-                      display: "flex", alignItems: "center", justifyContent: "center",
-                      fontSize: 30, fontWeight: 900,
-                    }}>
-                      {ev.sort_order ?? ""}
-                    </div>
+                  <div style={{
+                    position: "relative",
+                    width: "100%",
+                    paddingTop: `${VISIBLE * 100}%`, // square-ish container sized to visible portion
+                    overflow: "hidden",
+                  }}>
+                    <img
+                      src={mapUrl}
+                      alt="Festival map"
+                      style={{
+                        position: "absolute",
+                        top: `-${(CROP_TOP / VISIBLE) * 100}%`,
+                        left: 0,
+                        width: "100%",
+                        height: `${(1 / VISIBLE) * 100}%`,
+                        display: "block",
+                      }}
+                    />
+                    {events.map((ev) => {
+                      const color = colorFor(ev.category_slug);
+                      // Remap pin Y from full-image space to visible-crop space.
+                      const remappedY = ((ev.pin_y / 100 - CROP_TOP) / VISIBLE) * 100;
+                      if (remappedY < 0 || remappedY > 100) return null;
+                      return (
+                        <div
+                          key={ev.id}
+                          style={{
+                            position: "absolute",
+                            left: `${ev.pin_x}%`,
+                            top: `${remappedY}%`,
+                            transform: "translate(-50%, -100%)",
+                            display: "flex",
+                            flexDirection: "column",
+                            alignItems: "center",
+                            pointerEvents: "none",
+                          }}
+                        >
+                          <div style={{
+                            background: color,
+                            color: "#fff",
+                            border: "3px solid #fff",
+                            boxShadow: "0 2px 4px rgba(0,0,0,0.4)",
+                            borderRadius: "999px",
+                            width: 56, height: 56,
+                            display: "flex", alignItems: "center", justifyContent: "center",
+                            fontSize: 30, fontWeight: 900,
+                          }}>
+                            {ev.sort_order ?? ""}
+                          </div>
+                        </div>
+                      );
+                    })}
                   </div>
                 );
-              })}
+              })()}
             </div>
           </section>
 
