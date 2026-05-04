@@ -76,10 +76,10 @@ const PrintSign = () => {
               SHARON • MASSACHUSETTS
             </div>
             <h1 style={{
-              fontSize: 110, lineHeight: 1.0, margin: "10px 0 8px",
+              fontSize: 100, lineHeight: 1.0, margin: "10px 0 8px",
               fontWeight: 900, letterSpacing: "-0.02em",
             }}>
-              JULY 4<sup style={{ fontSize: 56 }}>TH</sup> CELEBRATION
+              INDEPENDENCE DAY CELEBRATION
             </h1>
             <div style={{ fontSize: 36, fontWeight: 600, opacity: 0.95 }}>
               Memorial Park Beach · Lake Massapoag
@@ -146,11 +146,11 @@ const PrintSign = () => {
             }}>
               {categories.map((cat) => (
                 <div key={cat.id} style={{
-                  display: "inline-flex", alignItems: "center", gap: 10,
-                  fontSize: 22, fontWeight: 600,
+                  display: "inline-flex", alignItems: "center", gap: 14,
+                  fontSize: 32, fontWeight: 700,
                 }}>
                   <span style={{
-                    width: 22, height: 22, borderRadius: "999px",
+                    width: 30, height: 30, borderRadius: "999px",
                     background: cat.color, border: "2px solid #0a0a0a",
                   }} />
                   {cat.name}
