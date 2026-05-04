@@ -134,24 +134,15 @@ const PrintSign = () => {
                     position: "relative",
                     width: "100%",
                     overflow: "hidden",
-                    paddingBottom: `${VISIBLE * 75}%`,
                   }}>
-                    <div style={{
-                      position: "absolute",
-                      inset: 0,
-                      overflow: "hidden",
-                    }}>
                     <img
                       src={mapUrl}
                       alt="Festival map"
                       style={{
-                        position: "absolute",
-                        top: `-${(CROP_TOP / VISIBLE) * 100}%`,
-                        left: 0,
                         width: "100%",
-                        height: `${(1 / VISIBLE) * 100}%`,
-                        objectFit: "cover",
                         display: "block",
+                        marginTop: `-${(CROP_TOP / VISIBLE) * 100}%`,
+                        marginBottom: `-${(CROP_BOTTOM / VISIBLE) * 100}%`,
                       }}
                     />
                     {events.map((ev) => {
