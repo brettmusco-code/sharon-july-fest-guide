@@ -336,23 +336,8 @@ const PrintSign = () => {
             display: "flex", justifyContent: "space-between", alignItems: "center",
             fontSize: 22, fontWeight: 600, gap: 24,
           }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 18 }}>
-              <img
-                src={qrSrc}
-                alt="QR code to festival site"
-                style={{
-                  width: 130, height: 130, background: "#fff",
-                  padding: 8, borderRadius: 8,
-                }}
-              />
-              <div style={{ lineHeight: 1.25 }}>
-                <div style={{ fontSize: 20, opacity: 0.8, fontWeight: 600 }}>
-                  Scan for live schedule, alerts & map
-                </div>
-                <div style={{ fontSize: 26, fontWeight: 800 }}>
-                  sma-july4th.lovable.app
-                </div>
-              </div>
+            <div style={{ fontSize: 26, fontWeight: 800 }}>
+              sma-july4th.lovable.app
             </div>
             <div style={{ opacity: 0.85, fontSize: 24 }}>#SharonJuly4th</div>
           </footer>
