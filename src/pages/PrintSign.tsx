@@ -238,6 +238,7 @@ const PrintSign = () => {
             flexDirection: "column",
             minHeight: 0,
             flex: 1,
+            overflow: "hidden",
           }}>
             <h2 style={{
               fontSize: 38, fontWeight: 800, margin: "0 0 8px",
@@ -246,9 +247,10 @@ const PrintSign = () => {
               Schedule of Events
             </h2>
             <div style={{
-              display: "flex",
-              flexDirection: "column",
+              display: "grid",
+              gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
               gap: 6,
+              minHeight: 0,
             }}>
               {events.map((ev) => {
                 const color = colorFor(ev.category_slug);
@@ -257,37 +259,38 @@ const PrintSign = () => {
                     key={ev.id}
                     style={{
                       display: "grid",
-                      gridTemplateColumns: "56px 2.1in 1fr",
+                      gridTemplateColumns: "46px 1.35in 1fr",
                       alignItems: "center",
-                      gap: 14,
-                      padding: "8px 14px",
+                      gap: 10,
+                      padding: "6px 10px",
                       border: "2px solid #0a0a0a",
-                      borderLeft: `12px solid ${color}`,
+                      borderLeft: `10px solid ${color}`,
                       borderRadius: 8,
                       background: "#fff",
                       breakInside: "avoid",
+                      minWidth: 0,
                     }}
                   >
                     <div style={{
-                      width: 52, height: 52, borderRadius: "999px",
+                      width: 42, height: 42, borderRadius: "999px",
                       background: color, color: "#fff",
                       display: "flex", alignItems: "center", justifyContent: "center",
-                      fontSize: 28, fontWeight: 900, border: "3px solid #0a0a0a",
+                      fontSize: 23, fontWeight: 900, border: "3px solid #0a0a0a",
                     }}>
                       {ev.sort_order ?? ""}
                     </div>
                     <div style={{
-                      fontSize: 26, fontWeight: 900, color: "#1d4ed8",
+                      fontSize: 21, fontWeight: 900, color: "#1d4ed8",
                       lineHeight: 1.05,
                     }}>
                       {ev.all_day ? "All Day" : ev.time}
                     </div>
                     <div style={{ minWidth: 0 }}>
-                      <div style={{ fontSize: 26, fontWeight: 800, lineHeight: 1.1 }}>
+                      <div style={{ fontSize: 22, fontWeight: 800, lineHeight: 1.08 }}>
                         {ev.title}
                       </div>
                       <div style={{
-                        fontSize: 18, fontWeight: 600, color: "#374151",
+                        fontSize: 15, fontWeight: 600, color: "#374151",
                         marginTop: 2,
                       }}>
                         📍 {ev.location}
@@ -327,20 +330,6 @@ const PrintSign = () => {
               </div>
             </section>
           )}
-
-          {/* Footer */}
-          <footer style={{
-            background: "#0a0a0a", color: "#fff",
-            padding: "0.22in 0.7in",
-            flexShrink: 0,
-            display: "flex", justifyContent: "space-between", alignItems: "center",
-            fontSize: 22, fontWeight: 600, gap: 24,
-          }}>
-            <div style={{ fontSize: 26, fontWeight: 800 }}>
-              sma-july4th.lovable.app
-            </div>
-            <div style={{ opacity: 0.85, fontSize: 24 }}>#SharonJuly4th</div>
-          </footer>
         </div>
       </div>
     </>
