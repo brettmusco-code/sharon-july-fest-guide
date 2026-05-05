@@ -47,7 +47,7 @@ const AdminPhotos = () => {
         .select("*")
         .order("created_at", { ascending: false });
       if (error) throw error;
-      return data as Submission[];
+      return data as unknown as Submission[];
     },
   });
 
